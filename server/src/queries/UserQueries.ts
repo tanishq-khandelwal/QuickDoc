@@ -3,7 +3,9 @@ import { gql } from "@apollo/client/core";
 export const CHECK_USER = gql`
   query check_user($email:String!) {
     users(where: { email: { _eq: $email } }) {
-      user_id
+      email,
+      password,
+      role
     }
   }
 `;

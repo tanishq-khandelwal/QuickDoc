@@ -24,6 +24,12 @@ type SignupData = {
   role: string;
 };
 
+
+type LoginData={
+    email:string;
+    password:string;
+}
+
 export const RegisterUser = async (req: Request, res: Response): Promise<Response> => {
   const { name, email, password, phone_number, role }: SignupData = req.body;
 
@@ -59,7 +65,7 @@ export const RegisterUser = async (req: Request, res: Response): Promise<Respons
       variables: { user },
     });
 
-    const token = jwt.sign({ email, role }, jwtSecret, { expiresIn: "7d" });
+    const token = jwt.sign({ email, role }, jwtSecret, { expiresIn: "7d"});
 
     res.cookie("token", token, cookieOptions);
 
@@ -70,5 +76,52 @@ export const RegisterUser = async (req: Request, res: Response): Promise<Respons
   } catch (err) {
     console.error("An error occurred during registration:", err);
     return res.status(500).json({ message: "An error occurred during registration" });
+  }
+};
+
+export const LoginUser = async (req: Request, res: Response): Promise<Response> => {
+  const { email, password }: LoginData = req.body;
+
+  try {
+    // Step 1: Check if user exists
+    const result = await apolloClient.query({
+      query: CHECK_USER,
+      variables: { email },
+    });
+
+    if (result.data.users.length === 0) {
+      return res.status(400).json({
+        message: "Account Not Found",
+      });
+    }
+
+    const user = result.data.users[0];
+
+    // Step 2: Compare password with the hashed password stored in the database
+    const isPasswordValid = await bcrypt.compare(password, user.password);
+    if (!isPasswordValid) {
+      return res.status(400).json({
+        message: "Invalid credentials",
+      });
+    }
+
+    // Step 3: Generate a JWT token
+    const jwtSecret = process.env.JWT_SECRET;
+    if (!jwtSecret) {
+      return res.status(500).json({ message: "JWT Secret not configured." });
+    }
+
+    const token = jwt.sign({ email: user.email, role: user.role }, jwtSecret, { expiresIn: "7d" });
+
+    // Step 4: Send the token in a cookie
+    res.cookie("token", token, cookieOptions);
+
+    // Step 5: Return success response
+    return res.status(200).json({
+      message: "User Logged In Successfully",
+    });
+  } catch (err) {
+    console.error("An error occurred during login:", err);
+    return res.status(500).json({ message: "An error occurred during login" });
   }
 };
