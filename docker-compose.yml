@@ -1,0 +1,13 @@
+version: '3.9'
+services:
+  hasura:
+    image: hasura/graphql-engine:latest
+    ports:
+      - "8080:8080"
+    restart: always
+    container_name: practo
+    environment:
+      HASURA_GRAPHQL_DATABASE_URL: postgresql://neondb_owner:npg_xMfYX8EC5ZQF@ep-royal-star-a875esg8-pooler.eastus2.azure.neon.tech/neondb?sslmode=require
+      HASURA_GRAPHQL_ENABLE_CONSOLE: "true"
+      HASURA_GRAPHQL_DEV_MODE: "true"
+      HASURA_GRAPHQL_ADMIN_SECRET: Tsk_2003
