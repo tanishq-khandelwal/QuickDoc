@@ -88,8 +88,8 @@ const Availability = () => {
 
   return (
     <Layout>
-      <div className="px-10 py-6">
-        <h1 className="font-bold text-3xl">Availability</h1>
+      <div className=" px-10 py-6 justify-center items-center">
+        <h1 className="font-bold text-2xl">Availability</h1>
 
         <div className="flex mt-8 border rounded-2xl shadow-md p-6 w-[70rem]">
           <div className="w-1/2 border-r-2">

@@ -45,7 +45,7 @@ export function AppSidebar() {
     <Sidebar>
       <SidebarContent>
         <SidebarGroup>
-          <SidebarGroupLabel>Application</SidebarGroupLabel>
+          <SidebarGroupLabel>Practo</SidebarGroupLabel>
           <SidebarGroupContent>
             <SidebarMenu className="gap-4">
               {items.map((item) => (
