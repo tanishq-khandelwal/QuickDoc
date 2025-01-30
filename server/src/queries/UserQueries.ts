@@ -5,6 +5,7 @@ export const CHECK_USER = gql`
     users(where: { email: { _eq: $email } }) {
       email,
       password,
+      user_id,
       role
     }
   }

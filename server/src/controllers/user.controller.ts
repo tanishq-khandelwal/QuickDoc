@@ -116,9 +116,16 @@ export const LoginUser = async (req: Request, res: Response): Promise<Response> 
     // Step 4: Send the token in a cookie
     res.cookie("token", token, cookieOptions);
 
+
+    const returnData={
+      user_id:result.data.users[0].user_id,
+      role:result.data.users[0].role,
+    }
+
     // Step 5: Return success response
     return res.status(200).json({
       message: "User Logged In Successfully",
+      data:returnData
     });
   } catch (err) {
     console.error("An error occurred during login:", err);
