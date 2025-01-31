@@ -12,6 +12,8 @@ interface LoginResponse {
   data: {
     user_id: number;
     role: string;
+    name:string;
+    doctorId:number
   };
 }
 
@@ -21,9 +23,11 @@ const loginAPI = async (credentials: LoginCredentials): Promise<LoginResponse> =
     const response = await axios.post('http://localhost:3000/api/v1/user/login', credentials,{
         withCredentials:true,
     });
+    console.log("response is"+response);
     return response.data; // Assuming API returns user data
   } catch (error: any) {
-    throw error.response ? error.response.message : 'Network Error';
+    console.error("API Error:", error.response?.data); // Debugging
+    throw error.response ? error.response.data : 'Network Error';
   }
 };
 
@@ -31,17 +35,20 @@ const loginAPI = async (credentials: LoginCredentials): Promise<LoginResponse> =
 function* loginSaga(action: { type: string; payload: LoginCredentials }) {
   try {
     const response: LoginResponse = yield call(loginAPI, action.payload);
-    const { user_id, role } = response.data; // Destructure user_id and role from response.data
+    // console.log("response is "+response);
+    const { user_id, role} = response.data; // Destructure user_id and role from response.data
 
     // Store the user ID and role in localStorage after a successful login
     if (user_id && role) {
       localStorage.setItem("userId", user_id.toString()); // Convert user_id to string
       localStorage.setItem("role", role); // Store the role as string
+      localStorage.setItem("isLoggedIn","true");
     }
 
     yield put(loginSuccess(response.data)); // Dispatch success action with the user data
   } catch (error: any) {
-    yield put(loginFailure(error)); // Dispatch failure action
+    console.error("Login error:", error); // Debugging
+    yield put(loginFailure(error.message || "Login failed")); // Extract error message
   }
 }
 

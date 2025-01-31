@@ -11,7 +11,7 @@ const signupSchema = z.object({
 
 type SignupFormValues = z.infer<typeof signupSchema>;
 
-export default function Signup() {
+export default function SignupPatient() {
   const {
     register,
     handleSubmit,
@@ -61,21 +61,6 @@ export default function Signup() {
             )}
           </div>
 
-          {/* Password Field */}
-          <div>
-            <label className="block text-sm font-medium text-gray-700">
-              Password
-            </label>
-            <input
-              type="password"
-              {...register("password")}
-              className="w-full mt-1 px-4 py-2 border border-gray-300 rounded-lg focus:ring focus:ring-blue-200"
-            />
-            {errors.password && (
-              <p className="text-red-500 text-sm">{errors.password.message}</p>
-            )}
-          </div>
-
           {/* Phone Number Field */}
           <div>
             <label className="block text-sm font-medium text-gray-700">
@@ -93,17 +78,38 @@ export default function Signup() {
             )}
           </div>
 
-          {/* Submit Button */}
-          <div className="flex items-center justify-center">
-          <button
-            type="submit"
-            className="w-auto px-8 bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700 transition"
-          >
-            Sign Up
-          </button>
+          {/* Password Field */}
+          <div>
+            <label className="block text-sm font-medium text-gray-700">
+              Password
+            </label>
+            <input
+              type="password"
+              {...register("password")}
+              className="w-full mt-1 px-4 py-2 border border-gray-300 rounded-lg focus:ring focus:ring-blue-200"
+            />
+            {errors.password && (
+              <p className="text-red-500 text-sm">{errors.password.message}</p>
+            )}
           </div>
 
-          <div>Already </div>
+          <div className="flex gap-4">
+            <div className="text-sm text-gray-500">
+              Already have an account ?
+            </div>
+            <a href="/login" className="text-sm text-blue-500 underline">
+              Login
+            </a>
+          </div>
+          {/* Submit Button */}
+          <div className="flex items-center justify-center">
+            <button
+              type="submit"
+              className="w-auto px-8 bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700 transition"
+            >
+              Sign Up
+            </button>
+          </div>
         </form>
       </div>
     </div>

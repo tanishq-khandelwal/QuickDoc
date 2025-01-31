@@ -120,6 +120,8 @@ export const LoginUser = async (req: Request, res: Response): Promise<Response> 
     const returnData={
       user_id:result.data.users[0].user_id,
       role:result.data.users[0].role,
+      name:result.data.users[0].name,
+      doctorId:result.data.users[0].doctors[0].doctor_id
     }
 
     // Step 5: Return success response

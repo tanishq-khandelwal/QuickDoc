@@ -6,10 +6,12 @@ import {
   ChevronFirst,
   Home,
   Calendar,
-  Inbox,
-  Search,
   LucideIcon,
+  Clock,
+  User,
 } from "lucide-react";
+import { useSelector } from "react-redux";
+import { RootState } from "./redux/rootSaga";
 
 // Sidebar Context Type
 interface SidebarContextType {
@@ -18,7 +20,9 @@ interface SidebarContextType {
 }
 
 // Creating Sidebar Context
-const SidebarContext = createContext<SidebarContextType | undefined>(undefined);
+export const SidebarContext = createContext<SidebarContextType | undefined>(
+  undefined
+);
 
 // Sidebar Provider Props
 interface SidebarProviderProps {
@@ -34,19 +38,22 @@ export function SidebarProvider({ children }: SidebarProviderProps) {
   );
 }
 
+
 // Sidebar Trigger Button
 export function SidebarTrigger() {
   const context = useContext(SidebarContext);
-  if (!context) throw new Error("SidebarTrigger must be used within SidebarProvider");
-  const { setExpanded } = context;
+  if (!context)
+    throw new Error("SidebarTrigger must be used within SidebarProvider");
+  //   const { setExpanded } = context;
 
   return (
-    <button
-      onClick={() => setExpanded((prev) => !prev)}
-      className=""
-    >
-     
-    </button>
+    // <button
+    //   onClick={() => setExpanded((prev) => !prev)}
+    //   className=""
+    // >
+    //  f
+    // </button>
+    <div></div>
   );
 }
 
@@ -57,28 +64,46 @@ interface SidebarItemType {
   icon: LucideIcon;
 }
 
-const sidebarItems: SidebarItemType[] = [
-  { title: "Home", url: "/", icon: Home },
-  { title: "Events", url: "/events", icon: Calendar },
-  { title: "Availability", url: "/availability", icon: Inbox },
-  { title: "Appointments", url: "/appointments", icon: Calendar },
-  { title: "Search", url: "#", icon: Search },
-];
+const role = localStorage.getItem("role");
+console.log(role);
+
+let sidebarItems: SidebarItemType[] = [];
+
+if (role === "doctor") {
+  sidebarItems = [
+    { title: "Home", url: "/", icon: Home },
+    { title: "Events", url: "/events", icon: Calendar },
+    { title: "Availability", url: "/availability", icon: Clock },
+    { title: "Appointments", url: "/appointments", icon: Calendar },
+    { title: "Profile", url: "/doctor/profile", icon: User },
+  ];
+}
 
 // Sidebar Component
 export function AppSidebar() {
   const context = useContext(SidebarContext);
-  if (!context) throw new Error("AppSidebar must be used within SidebarProvider");
+  if (!context)
+    throw new Error("AppSidebar must be used within SidebarProvider");
   const { expanded, setExpanded } = context;
 
+  const {user} = useSelector((state: RootState) => state.auth);
+
+const name:string=user?.name || "Undefined";
+console.log(name);
   return (
-    <aside className={`h-screen transition-all duration-300 ${expanded ? "w-64" : "w-16"}`}>
+    <aside
+      className={`sticky min-h-screen left-0 top-0  h-screen transition-all duration-300 ${
+        expanded ? "w-52" : "w-16"
+      }`}
+    >
       <nav className="h-full flex flex-col bg-white border-r shadow-sm">
         {/* Sidebar Header */}
         <div className="p-4 flex justify-between items-center">
           <img
             src="https://img.logoipsum.com/243.svg"
-            className={`transition-all duration-300 ${expanded ? "w-32" : "w-0 opacity-0"}`}
+            className={`transition-all duration-300 ${
+              expanded ? "w-32" : "w-0 opacity-0"
+            }`}
             alt="Logo"
           />
           <button
@@ -92,20 +117,25 @@ export function AppSidebar() {
         {/* Sidebar Menu */}
         <ul className="flex-1 px-3">
           {sidebarItems.map((item, index) => (
-            <SidebarItem key={index} icon={item.icon} text={item.title} url={item.url} />
+            <SidebarItem
+              key={index}
+              icon={item.icon}
+              text={item.title}
+              url={item.url}
+            />
           ))}
         </ul>
 
         {/* Sidebar Footer - User Info */}
         <div className="border-t flex p-3 items-center">
-          <img
-            src="https://ui-avatars.com/api/?background=c7d2fe&color=3730a3&bold=true"
-            alt="User Avatar"
-            className="w-10 h-10 rounded-md"
-          />
-          <div className={`transition-all duration-300 overflow-hidden ${expanded ? "w-52 ml-3" : "w-0 opacity-0"}`}>
-            <h4 className="font-semibold">John Doe</h4>
-            <span className="text-xs text-gray-600">johndoe@gmail.com</span>
+          <User/>
+          <div
+            className={`transition-all duration-300 overflow-hidden ${
+              expanded ? "w-52 ml-3" : "w-0 opacity-0"
+            }`}
+          >
+            <h4 className="font-semibold">{name}</h4>
+            {/* <span className="text-xs text-gray-600">johndoe@gmail.com</span> */}
           </div>
           {expanded && <MoreVertical size={20} className="ml-auto" />}
         </div>
@@ -124,14 +154,19 @@ interface SidebarItemProps {
 // Sidebar Item Component
 export function SidebarItem({ icon: Icon, text, url }: SidebarItemProps) {
   const context = useContext(SidebarContext);
-  if (!context) throw new Error("SidebarItem must be used within SidebarProvider");
+  if (!context)
+    throw new Error("SidebarItem must be used within SidebarProvider");
   const { expanded } = context;
 
   return (
     <li className="relative flex items-center py-2 px-3 my-1 font-medium rounded-md cursor-pointer transition-colors group hover:bg-indigo-50 text-gray-600">
       <Link to={url} className="flex items-center w-full">
         <Icon size={20} />
-        <span className={`transition-all duration-300 overflow-hidden ${expanded ? "w-52 ml-3" : "w-0 opacity-0"}`}>
+        <span
+          className={`transition-all duration-300 overflow-hidden ${
+            expanded ? "w-52 ml-3" : "w-0 opacity-0"
+          }`}
+        >
           {text}
         </span>
       </Link>
@@ -148,7 +183,7 @@ export default function Layout({ children }: LayoutProps) {
   return (
     <SidebarProvider>
       <AppSidebar />
-      <main className="flex-1 p-4">
+      <main className="flex-1">
         <SidebarTrigger />
         {children}
       </main>

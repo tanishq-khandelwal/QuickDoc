@@ -6,7 +6,11 @@ export const CHECK_USER = gql`
       email,
       password,
       user_id,
-      role
+      role,
+      name,
+      doctors {
+        doctor_id
+      }
     }
   }
 `;

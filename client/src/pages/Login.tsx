@@ -4,12 +4,14 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { loginRequest } from "../redux/actions/authActions";
 import { useNavigate } from "react-router-dom";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { RootState } from "../redux/rootSaga";
 import toast from "react-hot-toast";
+import hidepass from "../assets/hidpass.svg";
+import showpass from "../assets/showpass.svg";
 
 const loginSchema = z.object({
-  email: z.string().min(3, "Email must be at least 3 characters"),
+  email: z.string().email("Enter a valid email address").min(4,"Email should be atleast 4 characters"),
   password: z.string().min(4, "Password must be at least 4 characters"),
 });
 
@@ -30,28 +32,30 @@ const Login = () => {
     (state: RootState) => state.auth
   );
 
+  const [showPassword, setShowPassword] = useState(false);
+
   useEffect(() => {
     if (user) {
-    toast.dismiss("loading")
+      toast.dismiss("loading");
       toast.success("Login Successful");
-      navigate("/"); // Redirect to home page upon successful login
+      navigate("/");
     } else if (loading) {
-      toast.loading("Loading...", { id: "loading" }); // Show loading toast
+      toast.loading("Loading...", { id: "loading" });
     } else if (error) {
-      toast.error(`Login failed: ${error}`); // Show error toast
+      toast.dismiss("loading");
+      toast.error(`Login failed: ${error}`);
     }
   }, [user, navigate, loading, error]);
 
   // Submit handler
   const onSubmit = (data: LoginFormValues) => {
     const { email, password } = data;
-    // Dispatch login request
     dispatch(loginRequest({ email, password }));
   };
 
   return (
     <div className="flex justify-center items-center min-h-screen bg-gray-100 p-4">
-      <div className="w-full max-w-md border-2  bg-white shadow-lg rounded-lg p-6 py-10">
+      <div className="w-full max-w-md border-2 bg-white shadow-lg rounded-lg p-6 py-10">
         <h2 className="text-2xl font-bold text-center text-gray-800 mb-4">
           Login
         </h2>
@@ -64,26 +68,45 @@ const Login = () => {
             <input
               type="email"
               {...register("email")}
-              className="w-full mt-1 px-4 py-2 border border-gray-300 rounded-lg focus:ring focus:ring-blue-200"
+              className="w-full mt-1 px-4 py-2 border border-gray-300 rounded-lg "
             />
             {errors.email && (
               <p className="text-red-500 text-sm">{errors.email.message}</p>
             )}
           </div>
 
-          {/* Password Field */}
-          <div>
+          {/* Password Field with Show/Hide Toggle */}
+          <div className="relative">
             <label className="block text-sm font-medium text-gray-700">
               Password
             </label>
             <input
-              type="password"
+              type={showPassword ? "text" : "password"}
               {...register("password")}
-              className="w-full mt-1 px-4 py-2 border border-gray-300 rounded-lg focus:ring focus:ring-blue-200"
+              className="w-full mt-1 px-4 py-2 border border-gray-300 rounded-lg  pr-10"
             />
+            <button
+              type="button"
+              className="absolute top-9 right-3"
+              onClick={() => setShowPassword(!showPassword)}
+            >
+              <img
+                src={showPassword ? showpass : hidepass}
+                alt="Toggle Password"
+                className="w-5 h-5"
+              />
+            </button>
             {errors.password && (
               <p className="text-red-500 text-sm">{errors.password.message}</p>
             )}
+          </div>
+
+          {/* Signup Link */}
+          <div className="flex gap-4">
+            <div className="text-gray-600 text-sm">Don't have an account?</div>
+            <a href="/signup" className="text-sm underline text-blue-500">
+              Sign Up
+            </a>
           </div>
 
           {/* Login Button */}

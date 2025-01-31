@@ -12,6 +12,8 @@ type LoginCredentials ={
 type LoginUser= {
   user_id: number;
   role: string;
+  name:string,
+  doctorId:number
 }
 
 type LoginError ={
