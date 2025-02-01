@@ -1,11 +1,11 @@
-// rootReducer.ts
-import { combineReducers } from 'redux';
-import authReducer from '../redux/reducers/authReducers'; // Import your authReducer or any other reducers here
+import { all } from "redux-saga/effects";
+import { watchAuthSaga } from "./sagas/loginSaga";
+import { watchFetchAvailability } from "./sagas/doctor/availabilitySaga";
 
-const rootReducer = combineReducers({
-  auth: authReducer, // Combine your reducers here
-});
-
-export type RootState = ReturnType<typeof rootReducer>; // This infers the state shape
-
-export default rootReducer;
+export default function* rootSaga() {
+    yield all([
+      watchFetchAvailability(),
+      watchAuthSaga(),
+      // Add other watchers here
+    ]);
+  }

@@ -11,7 +11,7 @@ import {
   User,
 } from "lucide-react";
 import { useSelector } from "react-redux";
-import { RootState } from "./redux/rootSaga";
+import { RootState } from "./redux/rootReducer";
 
 // Sidebar Context Type
 interface SidebarContextType {
@@ -65,7 +65,7 @@ interface SidebarItemType {
 }
 
 const role = localStorage.getItem("role");
-console.log(role);
+// console.log(role);
 
 let sidebarItems: SidebarItemType[] = [];
 
@@ -89,7 +89,7 @@ export function AppSidebar() {
   const {user} = useSelector((state: RootState) => state.auth);
 
 const name:string=user?.name || "Undefined";
-console.log(name);
+// console.log(name);
   return (
     <aside
       className={`sticky min-h-screen left-0 top-0  h-screen transition-all duration-300 ${

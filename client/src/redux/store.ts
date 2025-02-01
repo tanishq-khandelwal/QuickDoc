@@ -1,7 +1,7 @@
 import { configureStore } from "@reduxjs/toolkit";
 import createSagaMiddleware from "redux-saga";
-import { watchAuthSaga } from "./sagas/loginSaga";
-import rootReducer from "./rootSaga";
+import rootReducer from "./rootReducer";
+import rootSaga from "./rootSaga";
 
 const sagaMiddleware=createSagaMiddleware();
 
@@ -10,7 +10,7 @@ const store=configureStore({
     middleware:(getDefaultMiddleware)=>getDefaultMiddleware().concat(sagaMiddleware),
 });
 
-sagaMiddleware.run(watchAuthSaga);
+sagaMiddleware.run(rootSaga);
 
 export type AppDispatch = typeof store.dispatch; // Typing for dispatch
 export type RootState = ReturnType<typeof store.getState>;

@@ -3,12 +3,12 @@ import axios from 'axios';
 import { LOGIN_REQUEST, loginSuccess, loginFailure } from '../actions/authActions';
 
 // Define Types for the Login Credentials and Response
-interface LoginCredentials {
+type LoginCredentials={
   email: string;
   password: string;
 }
 
-interface LoginResponse {
+type LoginResponse= {
   data: {
     user_id: number;
     role: string;

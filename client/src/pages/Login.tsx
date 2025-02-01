@@ -5,7 +5,7 @@ import { z } from "zod";
 import { loginRequest } from "../redux/actions/authActions";
 import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
-import { RootState } from "../redux/rootSaga";
+import { RootState } from "../redux/rootReducer";
 import toast from "react-hot-toast";
 import hidepass from "../assets/hidpass.svg";
 import showpass from "../assets/showpass.svg";

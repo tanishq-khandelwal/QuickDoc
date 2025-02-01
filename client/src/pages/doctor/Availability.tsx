@@ -1,8 +1,12 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Layout from "@/Layout";
 import { Button } from "@/components/ui/button"; // Import the date picker library
 import { Calendar } from "@/components/ui/calendar";
 import { Navbar } from "@/Navbar";
+import { useDispatch, useSelector } from "react-redux";
+import { fetchAvailability } from "@/redux/actions/doctor/availabilityAction";
+import { RootState } from "@/redux/rootReducer";
+import toast from "react-hot-toast";
 
 interface AvailabilityDay {
   selected: boolean;
@@ -43,6 +47,30 @@ const Availability = () => {
     "11:00 PM",
   ];
 
+  const dispatch=useDispatch();
+
+
+  const {data,loading,error}=useSelector((state:RootState)=>state.appointment);
+
+  const appointmentData=data?.data?.doctor_availability;
+  console.log(appointmentData);
+
+  useEffect(()=>{
+    dispatch(fetchAvailability());
+
+  },[dispatch]);
+  
+
+  useEffect(() => {
+    if (data) {
+      toast.dismiss("loading");
+    } else if (loading) {
+      toast.loading("Loading...", { id: "loading" });
+    } else if (error) {
+      toast.dismiss("loading");
+      toast.error(`Loading failed: ${error}`);
+    }
+  }, [data, loading, error]);
   const [availability, setAvailability] = useState<{
     [key: number]: AvailabilityDay;
   }>(
@@ -138,6 +166,7 @@ const Availability = () => {
                           onClick={() => toggleDropdown(day.id, "startTime")}
                           className="w-28 h-10 border rounded-lg px-2 text-sm cursor-pointer"
                         />
+                        
                         <span className="text-lg font-medium">-</span>
                         <input
                           type="text"
