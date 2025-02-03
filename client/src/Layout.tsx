@@ -10,8 +10,6 @@ import {
   Clock,
   User,
 } from "lucide-react";
-import { useSelector } from "react-redux";
-import { RootState } from "./redux/rootReducer";
 
 // Sidebar Context Type
 interface SidebarContextType {
@@ -65,7 +63,9 @@ interface SidebarItemType {
 }
 
 const role = localStorage.getItem("role");
-// console.log(role);
+const res =  localStorage.getItem("user");
+const isLoggedIn=localStorage.getItem("isLoggedIn");
+const user = res ? JSON.parse(res): null; 
 
 let sidebarItems: SidebarItemType[] = [];
 
@@ -86,7 +86,6 @@ export function AppSidebar() {
     throw new Error("AppSidebar must be used within SidebarProvider");
   const { expanded, setExpanded } = context;
 
-  const {user} = useSelector((state: RootState) => state.auth);
 
 const name:string=user?.name || "Undefined";
 // console.log(name);
@@ -115,7 +114,8 @@ const name:string=user?.name || "Undefined";
         </div>
 
         {/* Sidebar Menu */}
-        <ul className="flex-1 px-3">
+        {isLoggedIn?(
+          <ul className="flex-1 px-3">
           {sidebarItems.map((item, index) => (
             <SidebarItem
               key={index}
@@ -125,20 +125,36 @@ const name:string=user?.name || "Undefined";
             />
           ))}
         </ul>
+        ):(
+          <div>
+            <SidebarItem
+              icon={Home}
+              text="Home"
+              url="/" />
+          </div>
+        )}
+        
 
         {/* Sidebar Footer - User Info */}
-        <div className="border-t flex p-3 items-center">
-          <User/>
-          <div
-            className={`transition-all duration-300 overflow-hidden ${
-              expanded ? "w-52 ml-3" : "w-0 opacity-0"
-            }`}
-          >
-            <h4 className="font-semibold">{name}</h4>
-            {/* <span className="text-xs text-gray-600">johndoe@gmail.com</span> */}
+        {isLoggedIn?(
+         <div className="border-t flex p-3 items-center">
+         <User/>
+         <div
+           className={`transition-all duration-300 overflow-hidden ${
+             expanded ? "w-52 ml-3" : "w-0 opacity-0"
+           }`}
+         >
+           <h4 className="font-semibold">{name}</h4>
+           {/* <span className="text-xs text-gray-600">johndoe@gmail.com</span> */}
+         </div>
+         {expanded && <MoreVertical size={20} className="ml-auto" />}
+       </div>
+        ):(
+          <div>
+
           </div>
-          {expanded && <MoreVertical size={20} className="ml-auto" />}
-        </div>
+        )}
+        
       </nav>
     </aside>
   );

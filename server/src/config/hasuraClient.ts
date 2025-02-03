@@ -15,5 +15,18 @@ const httpLink = new HttpLink({
 
 export const apolloClient = new ApolloClient({
   link: httpLink,
-  cache: new InMemoryCache(),
+  cache: new InMemoryCache({
+    typePolicies: {
+      Query: {
+        fields: {
+          // Disable cache for all queries
+          yourQuery: {
+            read() {
+              return null;
+            },
+          },
+        },
+      },
+    },
+  }),
 });

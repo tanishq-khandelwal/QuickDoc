@@ -9,10 +9,15 @@ type availabilityResponse = {
   end_time: string;
 };
 
+ const userData=localStorage.getItem("user");
+ const doctorId=userData?JSON.parse(userData).doctorId:null;
+ console.log(doctorId)
+
 function* fetchAvailability() {
   try {
     const response: availabilityResponse = yield call(client.query, {
       query: FETCH_AVAILABILITY,
+      variables:{doctorId:doctorId}
     });
     
     // Log the response
@@ -21,7 +26,7 @@ function* fetchAvailability() {
 
   } catch (error) {
     // Handle error
-    console.error('Error fetching availability:');
+    console.error('Error fetching availability:',error);
   }
 }
 

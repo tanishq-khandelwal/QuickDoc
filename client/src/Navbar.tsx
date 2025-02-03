@@ -1,11 +1,14 @@
 import { Link } from "react-router-dom";
 import { useContext } from "react";
 import { SidebarContext } from "./Layout"; // Ensure correct import
+import UserDropdown from "./components/userDropdown";
 
 export function Navbar() {
   const context = useContext(SidebarContext);
   if (!context) throw new Error("Navbar must be used within SidebarProvider");
   const { expanded } = context;
+
+  const isLoggedIn = localStorage.getItem("isLoggedIn");
 
   return (
     <header
@@ -15,6 +18,13 @@ export function Navbar() {
     >
       <div className="container mx-auto flex justify-between items-center px-6">
         <nav className={`${expanded?"ml-auto mr-[25%] transition-all duration-300":"ml-auto mr-[20%]"}`}>
+
+        {isLoggedIn ? (
+          <div>
+            <UserDropdown />
+            
+          </div>
+        ) : (
           <ul className="flex space-x-6">
             <li>
               <Link
@@ -33,6 +43,7 @@ export function Navbar() {
               </Link>
             </li>
           </ul>
+        )}
         </nav>
       </div>
     </header>

@@ -36,10 +36,10 @@ export const RegisterUser = async (req: Request, res: Response): Promise<Respons
   try {
     const hashedPassword = await bcrypt.hash(password, 10);
 
-    const jwtSecret = process.env.JWT_SECRET;
-    if (!jwtSecret) {
-      return res.status(500).json({ message: "JWT Secret not configured." });
-    }
+    // const jwtSecret = process.env.JWT_SECRET;
+    // if (!jwtSecret) {
+    //   return res.status(500).json({ message: "JWT Secret not configured." });
+    // }
 
     const user = {
       name,
@@ -54,6 +54,7 @@ export const RegisterUser = async (req: Request, res: Response): Promise<Respons
       variables: { email },
     });
 
+    console.log(result.data.users);
     if (result.data.users.length > 0) {
       return res.status(400).json({
         message: "User Already Exists",
@@ -65,9 +66,9 @@ export const RegisterUser = async (req: Request, res: Response): Promise<Respons
       variables: { user },
     });
 
-    const token = jwt.sign({ email, role }, jwtSecret, { expiresIn: "7d"});
+    // const token = jwt.sign({ email, role }, jwtSecret, { expiresIn: "7d"});
 
-    res.cookie("token", token, cookieOptions);
+    // res.cookie("token", token, cookieOptions);
 
     return res.status(201).json({
       message: "User Registered Successfully",
@@ -88,6 +89,8 @@ export const LoginUser = async (req: Request, res: Response): Promise<Response> 
       query: CHECK_USER,
       variables: { email },
     });
+
+    console.log( result.data.users);
 
     if (result.data.users.length === 0) {
       return res.status(400).json({
@@ -121,7 +124,7 @@ export const LoginUser = async (req: Request, res: Response): Promise<Response> 
       user_id:result.data.users[0].user_id,
       role:result.data.users[0].role,
       name:result.data.users[0].name,
-      doctorId:result.data.users[0].doctors[0].doctor_id
+      doctorId:result.data?.users[0]?.doctors[0]?.doctor_id || null
     }
 
     // Step 5: Return success response
@@ -133,4 +136,10 @@ export const LoginUser = async (req: Request, res: Response): Promise<Response> 
     console.error("An error occurred during login:", err);
     return res.status(500).json({ message: "An error occurred during login" });
   }
+};
+
+
+export const LogoutUser = async (req: Request, res: Response): Promise<Response> => {
+  res.clearCookie("token");
+  return res.status(200).json({ message: "User Logged Out Successfully" });
 };

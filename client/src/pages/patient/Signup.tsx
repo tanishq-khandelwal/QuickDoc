@@ -1,28 +1,58 @@
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
+import { useDispatch, useSelector } from "react-redux";
+import { signupRequest } from "@/redux/actions/authActions";
+import { useEffect, useState } from "react";
+import { RootState } from "@/redux/rootReducer";
+import toast from "react-hot-toast";
+import { useNavigate } from "react-router-dom";
 
 const signupSchema = z.object({
   name: z.string().min(3, "Name must be at least 3 characters"),
   email: z.string().email("Invalid email address"),
   password: z.string().min(4, "Password must be at least 4 characters"),
   phone_number: z.string().regex(/^\d{10}$/, "Phone number must be 10 digits"),
+  role: z.string().default("patient"),
 });
 
 type SignupFormValues = z.infer<typeof signupSchema>;
 
 export default function SignupPatient() {
-  const {
-    register,
-    handleSubmit,
-    formState: { errors },
-  } = useForm<SignupFormValues>({
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+  
+  const [isSubmitted, setIsSubmitted] = useState(false); // Track submission state
+  
+  const { register, handleSubmit, formState: { errors } } = useForm<SignupFormValues>({
     resolver: zodResolver(signupSchema),
   });
 
+  const { loading, error } = useSelector((state: RootState) => state.auth);
+
   const onSubmit = (data: SignupFormValues) => {
-    console.log("Form Data:", data);
+    dispatch(signupRequest(data));
+    setIsSubmitted(true);  // Mark the form as submitted
   };
+
+  useEffect(() => {
+    if (loading) {
+      toast.loading("Loading...", { id: "loading" });
+    } else {
+      toast.dismiss("loading");
+    }
+
+    if (error) {
+      toast.error(`Signup failed: ${error}`);
+    }
+
+    // Only show success after submission is complete and no error exists
+    if (!loading && !error && isSubmitted) {
+      toast.success("Signup Successful");
+      navigate("/login"); // Navigate to login page after success
+      setIsSubmitted(false);  // Reset the submission state
+    }
+  }, [loading, error, isSubmitted, navigate]);
 
   return (
     <div className="flex justify-center items-center min-h-screen bg-gray-100 p-4">
@@ -72,9 +102,7 @@ export default function SignupPatient() {
               className="w-full mt-1 px-4 py-2 border border-gray-300 rounded-lg focus:ring focus:ring-blue-200"
             />
             {errors.phone_number && (
-              <p className="text-red-500 text-sm">
-                {errors.phone_number.message}
-              </p>
+              <p className="text-red-500 text-sm">{errors.phone_number.message}</p>
             )}
           </div>
 

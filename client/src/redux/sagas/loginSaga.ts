@@ -36,11 +36,11 @@ function* loginSaga(action: { type: string; payload: LoginCredentials }) {
   try {
     const response: LoginResponse = yield call(loginAPI, action.payload);
     // console.log("response is "+response);
-    const { user_id, role} = response.data; // Destructure user_id and role from response.data
+    const {role} = response.data; // Destructure user_id and role from response.data
 
     // Store the user ID and role in localStorage after a successful login
-    if (user_id && role) {
-      localStorage.setItem("userId", user_id.toString()); // Convert user_id to string
+    if (role) {
+      localStorage.setItem("user",JSON.stringify(response.data)); // Convert user_id to string
       localStorage.setItem("role", role); // Store the role as string
       localStorage.setItem("isLoggedIn","true");
     }
