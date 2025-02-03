@@ -1,4 +1,4 @@
-import { createContext, useContext, useState, ReactNode } from "react";
+import { createContext, useContext, useState, ReactNode, useEffect } from "react";
 import { Link } from "react-router-dom";
 import {
   MoreVertical,
@@ -9,6 +9,7 @@ import {
   LucideIcon,
   Clock,
   User,
+  Hospital,
 } from "lucide-react";
 
 // Sidebar Context Type
@@ -36,47 +37,11 @@ export function SidebarProvider({ children }: SidebarProviderProps) {
   );
 }
 
-
-// Sidebar Trigger Button
-export function SidebarTrigger() {
-  const context = useContext(SidebarContext);
-  if (!context)
-    throw new Error("SidebarTrigger must be used within SidebarProvider");
-  //   const { setExpanded } = context;
-
-  return (
-    // <button
-    //   onClick={() => setExpanded((prev) => !prev)}
-    //   className=""
-    // >
-    //  f
-    // </button>
-    <div></div>
-  );
-}
-
 // Sidebar Item Type
 interface SidebarItemType {
   title: string;
   url: string;
   icon: LucideIcon;
-}
-
-const role = localStorage.getItem("role");
-const res =  localStorage.getItem("user");
-const isLoggedIn=localStorage.getItem("isLoggedIn");
-const user = res ? JSON.parse(res): null; 
-
-let sidebarItems: SidebarItemType[] = [];
-
-if (role === "doctor") {
-  sidebarItems = [
-    { title: "Home", url: "/", icon: Home },
-    { title: "Events", url: "/events", icon: Calendar },
-    { title: "Availability", url: "/availability", icon: Clock },
-    { title: "Appointments", url: "/appointments", icon: Calendar },
-    { title: "Profile", url: "/doctor/profile", icon: User },
-  ];
 }
 
 // Sidebar Component
@@ -86,9 +51,44 @@ export function AppSidebar() {
     throw new Error("AppSidebar must be used within SidebarProvider");
   const { expanded, setExpanded } = context;
 
+  // Local state for role and loggedIn status
+  const [role, setRole] = useState<string | null>(localStorage.getItem("role"));
+  const [isLoggedIn, setIsLoggedIn] = useState<boolean>(
+    localStorage.getItem("isLoggedIn") === "true"
+  );
 
-const name:string=user?.name || "Undefined";
-// console.log(name);
+  // Sidebar Items based on role
+  let sidebarItems: SidebarItemType[] = [];
+
+  useEffect(() => {
+    // Update the role and login status dynamically when they change in localStorage
+    setRole(localStorage.getItem("role"));
+    setIsLoggedIn(localStorage.getItem("isLoggedIn") === "true");
+  }, [isLoggedIn, role]);
+
+  if (role === "doctor") {
+    sidebarItems = [
+      { title: "Home", url: "/", icon: Home },
+      { title: "Events", url: "/events", icon: Calendar },
+      { title: "Availability", url: "/availability", icon: Clock },
+      { title: "Appointments", url: "/appointments", icon: Calendar },
+      { title: "Profile", url: "/doctor/profile", icon: User },
+    ];
+  }
+
+  if (role === "patient") {
+    sidebarItems = [
+      { title: "Home", url: "/", icon: Home },
+      { title: "Doctors", url: "/doctors", icon: Hospital },
+      { title: "Appointments", url: "/appointments", icon: Calendar },
+      { title: "Profile", url: "/patient/profile", icon: User },
+    ];
+  }
+
+  const userName: string = localStorage.getItem("user")
+    ? JSON.parse(localStorage.getItem("user")!).name
+    : "Undefined";
+
   return (
     <aside
       className={`sticky min-h-screen left-0 top-0  h-screen transition-all duration-300 ${
@@ -114,47 +114,37 @@ const name:string=user?.name || "Undefined";
         </div>
 
         {/* Sidebar Menu */}
-        {isLoggedIn?(
+        {isLoggedIn ? (
           <ul className="flex-1 px-3">
-          {sidebarItems.map((item, index) => (
-            <SidebarItem
-              key={index}
-              icon={item.icon}
-              text={item.title}
-              url={item.url}
-            />
-          ))}
-        </ul>
-        ):(
+            {sidebarItems.map((item, index) => (
+              <SidebarItem
+                key={index}
+                icon={item.icon}
+                text={item.title}
+                url={item.url}
+              />
+            ))}
+          </ul>
+        ) : (
           <div>
-            <SidebarItem
-              icon={Home}
-              text="Home"
-              url="/" />
+            <SidebarItem icon={Home} text="Home" url="/" />
           </div>
         )}
-        
 
         {/* Sidebar Footer - User Info */}
-        {isLoggedIn?(
-         <div className="border-t flex p-3 items-center">
-         <User/>
-         <div
-           className={`transition-all duration-300 overflow-hidden ${
-             expanded ? "w-52 ml-3" : "w-0 opacity-0"
-           }`}
-         >
-           <h4 className="font-semibold">{name}</h4>
-           {/* <span className="text-xs text-gray-600">johndoe@gmail.com</span> */}
-         </div>
-         {expanded && <MoreVertical size={20} className="ml-auto" />}
-       </div>
-        ):(
-          <div>
-
+        {isLoggedIn && (
+          <div className="border-t flex p-3 items-center">
+            <User />
+            <div
+              className={`transition-all duration-300 overflow-hidden ${
+                expanded ? "w-52 ml-3" : "w-0 opacity-0"
+              }`}
+            >
+              <h4 className="font-semibold">{userName}</h4>
+            </div>
+            {expanded && <MoreVertical size={20} className="ml-auto" />}
           </div>
         )}
-        
       </nav>
     </aside>
   );
@@ -200,7 +190,6 @@ export default function Layout({ children }: LayoutProps) {
     <SidebarProvider>
       <AppSidebar />
       <main className="flex-1">
-        <SidebarTrigger />
         {children}
       </main>
     </SidebarProvider>

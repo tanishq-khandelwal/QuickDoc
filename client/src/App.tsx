@@ -8,6 +8,7 @@ import Availability from "./pages/doctor/Availability";
 import SignupSelection from "./pages/SignupSelection";
 import Profile from "./pages/doctor/Profile";
 import Appointments from "./pages/doctor/Appointments";
+import DoctorList from "./pages/patient/DoctorList";
 
 function App() {
   return (
@@ -23,6 +24,7 @@ function App() {
       <Route path="/login" element={<Login/>}></Route>
       <Route path="/events" element={<Events/>}></Route>
       <Route path="/availability" element={<Availability/>}></Route>
+      <Route path="/doctors" element={<DoctorList/>}></Route>
 
      </Routes>
     </>
