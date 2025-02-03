@@ -1,50 +1,38 @@
 import Layout from "@/Layout";
 import { Navbar } from "@/Navbar";
+import { fetchDoctors } from "@/redux/actions/patient/doctorListAction";
+import { RootState } from "@/redux/rootReducer";
 import { User } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import toast from "react-hot-toast";
+import { useDispatch, useSelector } from "react-redux";
 
 const DoctorList = () => {
-  const data = {
-    data: {
-      doctors: [
-        {
-          doctor_id: 1,
-          clinic_address: "Pune",
-          consultation_fee: 500,
-          city: "Pune",
-          experience_years: 2,
-          specialization: "MBBS",
-          created_at: "2025-01-31T07:44:26.20989",
-          user: {
-            name: "Tanishq Khandelwal",
-            email: "tsk@gmail.com",
-            phone_number: "9011616611",
-          },
-        },
-        {
-          doctor_id: 2,
-          clinic_address: "Mumbai",
-          consultation_fee: 700,
-          city: "Mumbai",
-          experience_years: 5,
-          specialization: "Dentist",
-          created_at: "2025-01-31T07:44:26.20989",
-          user: {
-            name: "John Doe",
-            email: "john@example.com",
-            phone_number: "9876543210",
-          },
-        },
-        // More doctors can be added here...
-      ],
-    },
-  };
+  const { doctors, loading, error } = useSelector(
+    (state: RootState) => state.doctor
+  );
+
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    dispatch(fetchDoctors());
+  }, [dispatch]);
+
+  useEffect(() => {
+    if (loading) {
+      toast.loading("Loading...", { id: "loading" });
+    } else {
+      toast.dismiss("loading");
+      if (error) toast.error(`Loading failed: ${error}`);
+    }
+  }, [loading, error]);
 
   const [searchQuery, setSearchQuery] = useState("");
 
-  const filteredDoctors = data.data.doctors.filter((doctor) =>
-    doctor.user.name.toLowerCase().includes(searchQuery.toLowerCase())
-  );
+  const filteredDoctors =
+    doctors?.filter((doctor) =>
+      doctor?.user?.name?.toLowerCase().includes(searchQuery.toLowerCase())
+    ) || [];
 
   return (
     <Layout>
@@ -57,7 +45,7 @@ const DoctorList = () => {
           <input
             type="text"
             placeholder="Search for doctors..."
-            className="px-4 py-2 border rounded-md w-full max-w-[50rem] focus:outline-none focus:ring-2 focus:ring-indigo-900 "
+            className="px-4 py-2 border rounded-md w-full max-w-[50rem] focus:outline-none focus:ring-2 focus:ring-indigo-900"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
           />
@@ -65,7 +53,7 @@ const DoctorList = () => {
 
         {/* Doctor Cards */}
         <div className="flex flex-wrap px-6 gap-4">
-          {filteredDoctors.length === 0 ? (
+          {filteredDoctors.length === 0 && loading ? (
             <div className="col-span-3 text-center text-xl text-gray-500">
               No doctors found.
             </div>
@@ -75,10 +63,13 @@ const DoctorList = () => {
                 key={doctor.doctor_id}
                 className="bg-white border-2 shadow-md rounded-lg p-6 flex  w-full cursor-pointer hover:shadow-xl "
               >
-                <div className="h-full px-10 flex items-center bg-gray-400 border-gray-300 border-1 rounded-full ">
-                  <User size={62} />
+                {/* Doctor Avatar */}
+                <div className="h-full px-10 flex items-center bg-gray-400 border-gray-300 border-1 rounded-full">
+                  <User size={62} className="text-white" />
                 </div>
-                <div className="items-center justify-center flex-1 ml-4">
+
+                {/* Doctor Info */}
+                <div className="flex-1 ml-4">
                   <h2 className="font-bold text-xl text-indigo-600">
                     {doctor.user.name}
                   </h2>
@@ -89,20 +80,20 @@ const DoctorList = () => {
                     Experience: {doctor.experience_years} years
                   </p>
                   <p className="text-gray-600 mt-1">City: {doctor.city}</p>
-                  {/* <p className="text-gray-600 mt-1">Consultation Fee: ₹{doctor.consultation_fee}</p> */}
                   <p className="text-gray-600 mt-1">
                     Clinic Address: {doctor.clinic_address}
                   </p>
                 </div>
 
-                <div className="flex flex-col items-center justify-center gap-4">
-                    <button className="px-4 py-2 bg-[#199ED8] text-white rounded-md">
-                        Book Appointment
-                    </button>
-                    <button className="px-8 py-2 bg-white text-blue-800 border-gray-400 border-2 rounded-md">
-                        Contact Clinic
-                    </button>
-              </div>
+                {/* Actions */}
+                <div className="flex flex-col items-center justify-center gap-3">
+                  <button className="px-4 py-2 bg-[#199ED8] text-white rounded-md shadow-md hover:bg-[#1778A8] transition">
+                    Book Appointment
+                  </button>
+                  <button className="px-8 py-2 bg-white text-blue-800 border-gray-400 border-2 rounded-md hover:bg-gray-100 transition">
+                    Contact Clinic
+                  </button>
+                </div>
               </div>
             ))
           )}

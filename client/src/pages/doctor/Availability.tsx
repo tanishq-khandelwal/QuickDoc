@@ -1,12 +1,12 @@
 import { useEffect, useState } from "react";
 import Layout from "@/Layout";
 import { Button } from "@/components/ui/button";
-import { Calendar } from "@/components/ui/calendar";
 import { Navbar } from "@/Navbar";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchAvailability } from "@/redux/actions/doctor/availabilityAction";
 import { RootState } from "@/redux/rootReducer";
 import toast from "react-hot-toast";
+import AvailabilityModal from "@/components/AvailabilityModal";
 
 interface AvailabilityDay {
   selected: boolean;
@@ -48,39 +48,44 @@ const Availability = () => {
 
   const [modifiedDays, setModifiedDays] = useState(new Set<number>());
 
-const convertTo24HourFormat = (time: string) => {
-  if (!time) return "";
-  const [hourMin, period] = time.split(" ");
-  let [hours, minutes] = hourMin.split(":").map(Number);
-  if (period === "PM" && hours !== 12) hours += 12;
-  if (period === "AM" && hours === 12) hours = 0;
-  return `${hours.toString().padStart(2, "0")}:${minutes.toString().padStart(2, "0")}`;
-};
+  const convertTo24HourFormat = (time: string) => {
+    if (!time) return "";
+    const [hourMin, period] = time.split(" ");
+    let [hours, minutes] = hourMin.split(":").map(Number);
+    if (period === "PM" && hours !== 12) hours += 12;
+    if (period === "AM" && hours === 12) hours = 0;
+    return `${hours.toString().padStart(2, "0")}:${minutes
+      .toString()
+      .padStart(2, "0")}`;
+  };
 
-const handleSave = () => {
-  const savedData = weekDays
-    .filter((day) => modifiedDays.has(day.id)) // Only log modified days
-    .map((day) => ({
-      day: day.title,
-      start_time: convertTo24HourFormat(availability[day.id]?.startTime),
-      end_time: convertTo24HourFormat(availability[day.id]?.endTime),
+  const handleSave = () => {
+    const savedData = weekDays
+      .filter((day) => modifiedDays.has(day.id)) // Only log modified days
+      .map((day) => ({
+        day: day.title,
+        start_time: convertTo24HourFormat(availability[day.id]?.startTime),
+        end_time: convertTo24HourFormat(availability[day.id]?.endTime),
+      }));
+
+    console.log("Saved Availability:", savedData);
+    setModifiedDays(new Set()); // Reset modified state after saving
+  };
+
+  const handleTimeChange = (
+    dayId: number,
+    field: "startTime" | "endTime",
+    value: string
+  ) => {
+    setAvailability((prev) => ({
+      ...prev,
+      [dayId]: {
+        ...prev[dayId],
+        [field]: value,
+      },
     }));
-
-  console.log("Saved Availability:", savedData);
-  setModifiedDays(new Set()); // Reset modified state after saving
-};
-
-const handleTimeChange = (dayId: number, field: "startTime" | "endTime", value: string) => {
-  setAvailability((prev) => ({
-    ...prev,
-    [dayId]: {
-      ...prev[dayId],
-      [field]: value,
-    },
-  }));
-  setModifiedDays((prev) => new Set(prev).add(dayId));
-};
-
+    setModifiedDays((prev) => new Set(prev).add(dayId));
+  };
 
   const formatTime = (time: string) => {
     if (!time) return "";
@@ -136,9 +141,7 @@ const handleTimeChange = (dayId: number, field: "startTime" | "endTime", value: 
             startTime: appointment
               ? formatTime(appointment.start_time)
               : "9:00 AM", // Set fetched time or default
-            endTime: appointment
-              ? formatTime(appointment.end_time)
-              : "9:00 PM",
+            endTime: appointment ? formatTime(appointment.end_time) : "9:00 PM",
             openDropdown: null,
           };
           return acc;
@@ -152,19 +155,45 @@ const handleTimeChange = (dayId: number, field: "startTime" | "endTime", value: 
     new Date()
   );
 
+  const [selectedSlot, setSelectedSlot] = useState("");
+
+  const handleChange = (e) => {
+    setSelectedSlot(e.target.value);
+  };
+
   return (
     <Layout>
       <Navbar />
       {loading ? (
         <div className="mt-14"> </div>
       ) : (
-        <div className="min-h-screen flex items-center justify-center px-4 mt-8">
-          <div className="w-full max-w-5xl bg-white shadow-lg rounded-2xl p-6">
+        <div className="min-h-screen flex items-center justify-center px-4 mt-20">
+          <div className="w-full max-w-7xl bg-white shadow-lg rounded-2xl p-6">
             <h1 className="text-center font-bold text-2xl mb-6">
               Availability
             </h1>
             <div className="mb-10 text-gray-500 font-sans">
               Set your weekly availability for your patients
+            </div>
+
+            <div>
+              <div className="flex items-center space-x-3 mb-2">
+                <span className="text-xl font-normal text-black px-">
+                  Slot:
+                </span>
+                <select
+                  id="slot-timing"
+                  className="px-3 py-2 border rounded-md text-lg focus:outline-none focus:ring-2 focus:ring-indigo-100 cursor-pointer"
+                  defaultValue={"15 min"}
+                  value={selectedSlot}
+                  onChange={handleChange}
+                >
+                  <option value="15 min">15 min</option>
+                  <option value="30 min">30 min</option>
+                  <option value="45 min">45 min</option>
+                  <option value="60 min">1 hour</option>
+                </select>
+              </div>
             </div>
 
             <div className="flex flex-col lg:flex-row border rounded-2xl shadow-md p-6 w-full">
@@ -207,7 +236,13 @@ const handleTimeChange = (dayId: number, field: "startTime" | "endTime", value: 
                               onClick={() =>
                                 toggleDropdown(day.id, "startTime")
                               }
-                              onChange={(e) => handleTimeChange(day.id, "startTime", e.target.value)}
+                              onChange={(e) =>
+                                handleTimeChange(
+                                  day.id,
+                                  "startTime",
+                                  e.target.value
+                                )
+                              }
                               className="w-28 h-10 border rounded-lg px-2 text-sm cursor-pointer"
                             />
 
@@ -282,16 +317,21 @@ const handleTimeChange = (dayId: number, field: "startTime" | "endTime", value: 
                     </div>
                   ))}
                 </div>
-                <Button onClick={handleSave} className="mt-4 bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded">
-          Save
-        </Button>
+                <div className="flex justify-center mt-6">
+                  <Button
+                    onClick={handleSave}
+                    className="mt-4 bg-white border-2 border-blue-600 text-blue-600 hover:bg-white hover:shadow-lg px-10 py-2 rounded"
+                  >
+                    Save
+                  </Button>
+                </div>
               </div>
 
               <div className="lg:w-1/2 p-4">
                 <h2 className="font-semibold text-xl">Date-Specific Hours</h2>
                 <p className="text-sm text-gray-600 mb-2">
-                  Override your availability for specific dates when your hours
-                  differ from your regular weekly hours.
+                  Override your availability / unavailability for specific dates
+                  when your hours differ from your regular weekly hours.
                 </p>
                 <Button
                   className="bg-white text-gray-600 border border-gray-600 hover:bg-gray-100 rounded-2xl"
@@ -303,40 +343,13 @@ const handleTimeChange = (dayId: number, field: "startTime" | "endTime", value: 
             </div>
           </div>
 
-          {showModal && (
-            <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-20">
-              <div className="bg-white p-6 rounded-lg shadow-lg w-96">
-                <h2 className="text-xl font-semibold mb-4 text-gray-600">
-                  Select the date(s) you want to assign specific hours
-                </h2>
-                <Calendar
-                  mode="single"
-                  selected={selectedDate}
-                  onSelect={setSelectedDate}
-                  className="rounded-md border"
-                />
-                <div className="mt-4 flex justify-end gap-2">
-                  <Button
-                    onClick={() => setShowModal(false)}
-                    className="bg-gray-300 text-gray-700 hover:bg-gray-300"
-                  >
-                    Cancel
-                  </Button>
-                  <Button
-                    onClick={() => {
-                      // Handle saving the selected date
-                      setShowModal(false);
-                    }}
-                    className="bg-blue-500 text-white hover:bg-blue-500"
-                  >
-                    Save
-                  </Button>
-                </div>
-              </div>
-            </div>
-          )}
+          <AvailabilityModal
+            showModal={showModal}
+            setShowModal={setShowModal}
+            selectedDate={selectedDate}
+            setSelectedDate={setSelectedDate}
+          />
         </div>
-        
       )}
     </Layout>
   );

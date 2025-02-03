@@ -33,9 +33,10 @@ const Login = () => {
   );
 
   const [showPassword, setShowPassword] = useState(false);
+  const [isSubmitted, setIsSubmitted] = useState(false);
 
   useEffect(() => {
-    if (user) {
+    if (user && isSubmitted) {
       toast.dismiss("loading");
       toast.success("Login Successful");
       navigate("/");
@@ -51,6 +52,7 @@ const Login = () => {
   const onSubmit = (data: LoginFormValues) => {
     const { email, password } = data;
     dispatch(loginRequest({ email, password }));
+    setIsSubmitted(true); 
   };
 
   return (

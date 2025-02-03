@@ -61,10 +61,25 @@ export function AppSidebar() {
   let sidebarItems: SidebarItemType[] = [];
 
   useEffect(() => {
-    // Update the role and login status dynamically when they change in localStorage
-    setRole(localStorage.getItem("role"));
-    setIsLoggedIn(localStorage.getItem("isLoggedIn") === "true");
-  }, [isLoggedIn, role]);
+    const updateState = () => {
+      const newRole = localStorage.getItem("role");
+    const newLoggedInStatus = localStorage.getItem("isLoggedIn") === "true";
+
+    setRole(newRole);
+    setIsLoggedIn(newLoggedInStatus);
+    };
+  
+    // Listen to localStorage changes (for dynamic updates)
+    window.addEventListener("storage", updateState);
+  
+    // Run once on mount
+    updateState();
+  
+    return () => {
+      window.removeEventListener("storage", updateState);
+    };
+  }, []);
+  
 
   if (role === "doctor") {
     sidebarItems = [

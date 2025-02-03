@@ -21,6 +21,7 @@ const personalInfoSchema = z.object({
   phone_number: z
     .string()
     .regex(/^\d{10,15}$/, "Phone number must be 10-15 digits"),
+  role:z.string().default("doctor")
 });
 
 // Step 2: Schema for Professional Details
