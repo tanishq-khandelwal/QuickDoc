@@ -11,7 +11,7 @@ type availabilityResponse = {
 
  const userData=localStorage.getItem("user");
  const doctorId=userData?JSON.parse(userData).doctorId:null;
- console.log(doctorId)
+//  console.log(doctorId)
 
 function* fetchAvailability() {
   try {

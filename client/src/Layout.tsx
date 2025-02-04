@@ -155,9 +155,9 @@ export function AppSidebar() {
                 expanded ? "w-52 ml-3" : "w-0 opacity-0"
               }`}
             >
-              <h4 className="font-semibold">{userName}</h4>
+              <h4 className="font-semibold hover:cursor-pointer">{userName}</h4>
             </div>
-            {expanded && <MoreVertical size={20} className="ml-auto" />}
+            {/* {expanded && <MoreVertical size={20} className="ml-auto" />} */}
           </div>
         )}
       </nav>

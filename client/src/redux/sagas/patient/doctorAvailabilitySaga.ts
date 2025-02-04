@@ -6,15 +6,15 @@ import { FETCH_DOCTOR_AVAILABILTY_FAILURE, FETCH_DOCTOR_AVAILABILTY_REQUEST, FET
 
 export function* fetchDoctorAvailability() {
     try {
-        console.log("Reached API Saga");
+        // console.log("Reached API Saga");
         const doctorId = 1;
-        console.log(doctorId);
+        // console.log(doctorId);
         const response = yield call(client.query, {
             query: FETCH_DOCTOR_AVAILABILITY,
             variables: { doctorId },
             fetchPolicy: "network-only",
         });
-        console.log(response);
+        // console.log(response);
         yield put({ type: FETCH_DOCTOR_AVAILABILTY_SUCCESS, payload: response?.data?.doctors });
     } catch (error:any) {
         console.error('Error fetching doctors:', error);
