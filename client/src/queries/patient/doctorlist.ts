@@ -17,3 +17,28 @@ export const FETCH_DOCTORS = gql`
     }
   }
 `;
+
+export const FETCH_DOCTOR_AVAILABILITY = gql`
+  query doctor_availability($doctorId: Int!) {
+    doctors(where: { doctor_id: { _eq: $doctorId } }) {
+      slot_duration
+      specialization
+      experience_years
+      city
+      clinic_address
+      doctor_availabilities {
+        end_time
+        start_time
+        available_days
+      }
+      appointments {
+        appointment_date
+        end_time
+        start_time
+      }
+      user {
+        name
+      }
+    }
+  }
+`;

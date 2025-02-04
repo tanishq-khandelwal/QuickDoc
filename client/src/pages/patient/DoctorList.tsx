@@ -6,6 +6,7 @@ import { User } from "lucide-react";
 import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import { useDispatch, useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
 
 const DoctorList = () => {
   const { doctors, loading, error } = useSelector(
@@ -13,6 +14,11 @@ const DoctorList = () => {
   );
 
   const dispatch = useDispatch();
+  const navigate = useNavigate();
+
+  const handleDoctorClick = (doctor_id:number) => {
+    navigate(`/doctorPreview?doctorId=${doctor_id}`);
+  };
 
   useEffect(() => {
     dispatch(fetchDoctors());
@@ -34,6 +40,7 @@ const DoctorList = () => {
       doctor?.user?.name?.toLowerCase().includes(searchQuery.toLowerCase())
     ) || [];
 
+  
   return (
     <Layout>
       <Navbar />
@@ -87,7 +94,7 @@ const DoctorList = () => {
 
                 {/* Actions */}
                 <div className="flex flex-col items-center justify-center gap-3">
-                  <button className="px-4 py-2 bg-[#199ED8] text-white rounded-md shadow-md hover:bg-[#1778A8] transition">
+                  <button className="px-4 py-2 bg-[#199ED8] text-white rounded-md shadow-md hover:bg-[#1778A8] transition" onClick={() => handleDoctorClick(doctor.doctor_id)}>
                     Book Appointment
                   </button>
                   <button className="px-8 py-2 bg-white text-blue-800 border-gray-400 border-2 rounded-md hover:bg-gray-100 transition">

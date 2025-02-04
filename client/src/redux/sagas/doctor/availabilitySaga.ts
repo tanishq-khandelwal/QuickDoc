@@ -21,7 +21,7 @@ function* fetchAvailability() {
     });
     
     // Log the response
-    console.log(response);
+    // console.log(response);
     yield put({ type: FETCH_AVAILABILITY_SUCCESS, payload: response});
 
   } catch (error) {
@@ -32,6 +32,6 @@ function* fetchAvailability() {
 
 // Watch for the FETCH_AVAILABILITY action and call the fetchAvailability saga
 export function* watchFetchAvailability() {
-    console.log("REached saga");
+    // console.log("REached saga");
   yield takeLatest(FETCH_AVAILABILITY_REQUEST, fetchAvailability);
 }

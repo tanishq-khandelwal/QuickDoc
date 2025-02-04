@@ -10,7 +10,7 @@ import { LOGOUT_REQUEST } from "@/redux/actions/authActions";
 const UserDropdown = () => {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const res =  localStorage.getItem("user");
-  console.log(res)
+  // console.log(res)
   const user = res ? JSON.parse(res): null; 
   const navigate = useNavigate();
 

@@ -11,7 +11,7 @@ export function* fetchDoctors() {
             query: FETCH_DOCTORS,
             fetchPolicy: "network-only",
         });
-        console.log(response);
+        // console.log(response);
         yield put({ type: FETCH_DOCTORS_SUCCESS, payload: response.data.doctors });
     } catch (error:any) {
         console.error('Error fetching doctors:', error);
