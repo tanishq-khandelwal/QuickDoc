@@ -12,7 +12,7 @@ export function Navbar() {
 
   return (
     <header
-      className={`fixed overflow-auto bg-white text-black shadow-md py-4  top-0 w-full z-10 transition-all duration-300 ${
+      className={`fixed  bg-white text-black shadow-md py-4  top-0 w-full z-10 transition-all duration-300 ${
         expanded ? "" : ""
       }`}
     >

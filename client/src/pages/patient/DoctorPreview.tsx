@@ -12,12 +12,17 @@ import {
   getUserAvailability,
 } from "@/helper/patient/availability";
 import { Button } from "@/components/ui/button";
-import { useSearchParams } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
+import { addMinutes, set } from "date-fns";
+import { bookAppointment } from "@/redux/actions/patient/bookAppointmentAction";
 
 const DoctorPreview = () => {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const doctorId = Number(searchParams.get("doctorId"));
+  const userData = localStorage.getItem("user");
+  const userId = JSON.parse(userData || "{}").user_id;
   // console.log(doctorId);
 
   useEffect(() => {
@@ -36,6 +41,32 @@ const DoctorPreview = () => {
   const [availableTimeSlots, setAvailableTimeSlots] = useState<string[]>([]);
   const [selectedDate, setSelectedDate] = useState(new Date());
   const [selectedTime, setSelectedTime] = useState<string | null>(null);
+  const [Booked,setBooked] = useState(false);
+
+  const formattedDate = new Date(selectedDate).toISOString().split("T")[0];
+
+  const handleBookingAppointment = () => {
+    const addMinutes = (time: string, minutes: number) => {
+      const [hours, mins] = time?.split(":")?.map(Number);
+      const date = new Date();
+      date.setHours(hours);
+      date.setMinutes(mins + minutes);
+
+      return date?.toTimeString()?.split(" ")[0]?.slice(0, 5); // Formats back to "HH:MM"
+    };
+
+    const appointmentData = {
+      doctorId: doctorId,
+      appointmentDate: formattedDate,
+      patientId: userId,
+      startTime: selectedTime,
+      endTime: addMinutes(selectedTime, data?.slot_duration),
+    };
+
+    console.log(appointmentData);
+    setBooked(true);
+    dispatch(bookAppointment(appointmentData));
+  };
 
   useEffect(() => {
     const fetchAvailability = async () => {
@@ -57,6 +88,22 @@ const DoctorPreview = () => {
       if (error) toast.error(`Loading failed: ${error}`);
     }
   }, [loading, error]);
+
+  const { isloading, iserror,appointment } = useSelector((state: RootState) => state.bookAppointment);
+  
+    useEffect(() => {
+      if (isloading && Booked) {
+        toast.loading("Booking Appointment...", { id: "loading" });
+      } else {
+        toast.dismiss("loading");
+        if (iserror) {
+          toast.error(`Booking failed: ${error}`);
+        } else if (appointment && Booked) {
+          toast.success("Appointment booked successfully!");
+          navigate('/appointments');
+        }
+      }
+    }, [isloading, iserror,appointment]);
 
   // Calendar
   const today = new Date();
@@ -139,16 +186,18 @@ const DoctorPreview = () => {
 
               <div className="text-gray-600 mt-4 md:mt-0 justify-center items-center">
                 <div className="flex gap-2">
-                <p className="text-sm">Consultation Fee :</p>
-                <p className="text-medium font-semibold  text-green-700">
-                  ₹{data?.consultation_fee || 0}
-                </p>
-              </div>
+                  <p className="text-sm">Consultation Fee :</p>
+                  <p className="text-medium font-semibold  text-green-700">
+                    ₹{data?.consultation_fee || 0}
+                  </p>
+                </div>
 
-              <div className="flex gap-2">
-                <p className="text-sm">Slot Duration:</p>
-                <p className="text-sm text-red-700">{data?.slot_duration} minutes</p>
-              </div>
+                <div className="flex gap-2">
+                  <p className="text-sm">Slot Duration:</p>
+                  <p className="text-sm text-red-700">
+                    {data?.slot_duration} minutes
+                  </p>
+                </div>
               </div>
             </div>
 
@@ -182,24 +231,30 @@ const DoctorPreview = () => {
                     Available Time Slots
                   </h3>
                   {/* add hide scroll bar code */}
-                  <div className="h-full w-full py-2 scrollbar-hide px-5">
+                  <div className="h-full w-full py-2 px-5 overflow-y-auto max-h-[40vh] scrollbar-hide lg:overflow-visible">
                     {selectedDate && (
                       <div className="mb-4">
-                        <div className="grid grid-cols-2 lg:grid-cols-6 gap-2">
-                          {availableTimeSlots?.map((slot) => (
-                            <Button
-                              key={slot}
-                              onClick={() => setSelectedTime(slot)}
-                              className={`border-2 ${
-                                selectedTime === slot
-                                  ? "bg-[#0067E7] text-white shadow-xl"
-                                  : "bg-[#F2F8FF]] text-[#0067E7] border-[#0169FE]"
-                              } hover:bg-[#0067E7] hover:text-white`}
-                            >
-                              {slot}
-                            </Button>
-                          ))}
-                        </div>
+                        {availableTimeSlots?.length > 0 ? (
+                          <div className="grid grid-cols-2 lg:grid-cols-6 gap-2">
+                            {availableTimeSlots.map((slot) => (
+                              <Button
+                                key={slot}
+                                onClick={() => setSelectedTime(slot)}
+                                className={`border-2 ${
+                                  selectedTime === slot
+                                    ? "bg-[#0067E7] text-white shadow-xl"
+                                    : "bg-[#F2F8FF] text-[#0067E7] border-[#0169FE]"
+                                } hover:bg-[#0067E7] hover:text-white`}
+                              >
+                                {slot}
+                              </Button>
+                            ))}
+                          </div>
+                        ) : (
+                          <p className="flex items-center justify-center text-center text-red-500">
+                            No time slots available for this day
+                          </p>
+                        )}
                       </div>
                     )}
                   </div>
@@ -215,7 +270,10 @@ const DoctorPreview = () => {
                       </div>{" "}
                       at <div className="text-red-600">{selectedTime}</div>
                     </div>
-                    <Button className="border-2 bg-[#0067E7] text-white shadow-xl hover:bg-[white] hover:text-[#0067E7] hover:border-[#0067E7]">
+                    <Button
+                      className="border-2 bg-[#0067E7] text-white shadow-xl hover:bg-[white] hover:text-[#0067E7] hover:border-[#0067E7]"
+                      onClick={handleBookingAppointment}
+                    >
                       Book Appointment
                     </Button>
                   </div>

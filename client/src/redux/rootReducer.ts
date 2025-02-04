@@ -1,15 +1,19 @@
 // rootReducer.ts
 import { combineReducers } from 'redux';
 import authReducer from './reducers/authReducers'; // Import your authReducer or any other reducers here
-import appointmentReducer from './reducers/doctor/appointmentReducers';
+import availabiltyReducer from './reducers/doctor/availabilityReducers';
 import doctorlistReducer from './reducers/patient/doctorlistReducers';
 import doctorAvailabilityReducer from './reducers/patient/doctorAvailabilityReducer';
+import bookAppointmentReducer from './reducers/patient/bookAppointmentReducer';
+import appointmentReducer from './reducers/doctor/fetchAppointmentReducer';
 
 const rootReducer = combineReducers({
   auth: authReducer,
-  appointment:appointmentReducer, // Combine your reducers here
+  doctoravailabilty:availabiltyReducer, // Combine your reducers here
   doctor:doctorlistReducer,
   availability:doctorAvailabilityReducer,
+  bookAppointment:bookAppointmentReducer,
+  allAppointments:appointmentReducer
 });
 
 export type RootState = ReturnType<typeof rootReducer>; // This infers the state shape

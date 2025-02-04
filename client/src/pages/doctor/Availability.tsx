@@ -108,7 +108,7 @@ const Availability = () => {
 
   const dispatch = useDispatch();
   const { data, loading, error } = useSelector(
-    (state: RootState) => state.appointment
+    (state: RootState) => state.doctoravailabilty
   );
 
   useEffect(() => {

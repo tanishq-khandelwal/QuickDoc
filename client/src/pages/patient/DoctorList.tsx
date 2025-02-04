@@ -62,7 +62,7 @@ const DoctorList = () => {
         <div className="flex flex-wrap px-6 gap-4">
           {filteredDoctors.length === 0 && loading ? (
             <div className="col-span-3 text-center text-xl text-gray-500">
-              No doctors found.
+              
             </div>
           ) : (
             filteredDoctors.map((doctor) => (

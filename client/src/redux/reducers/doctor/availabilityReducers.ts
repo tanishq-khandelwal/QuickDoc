@@ -2,27 +2,27 @@ export const FETCH_AVAILABILITY_REQUEST = "FETCH_AVAILABILITY_REQUEST";
 export const FETCH_AVAILABILITY_SUCCESS = "FETCH_AVAILABILITY_SUCCESS";
 export const FETCH_AVAILABILITY_FAILURE = "FETCH_AVAILABILITY_FAILURE";
 
-type AppointmentState = {
+type AvailabiltyState = {
   data: any;
   loading: boolean;
   error: string | null;
 };
 
-type AppointmentAction = {
+type AvailabiltyAction = {
   type: string;
   payload?: any;
 };
 
-const initialState: AppointmentState = {
+const initialState: AvailabiltyState = {
   data: null,
   loading: false,
   error: null,
 };
 
-const appointmentReducer = (
+const availabiltyReducer = (
   state = initialState,
-  action: AppointmentAction
-): AppointmentState => {
+  action: AvailabiltyAction
+): AvailabiltyState => {
   switch (action.type) {
     case FETCH_AVAILABILITY_REQUEST:
       return { ...state, loading: true, error: null };
@@ -38,4 +38,4 @@ const appointmentReducer = (
   }
 };
 
-export default appointmentReducer;
+export default availabiltyReducer;
