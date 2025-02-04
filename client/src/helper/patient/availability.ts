@@ -1,7 +1,7 @@
 import {format, addMinutes, isBefore } from "date-fns";
 
 export async function getUserAvailability(data: any) {
-  console.log(data);
+//   console.log(data);
 
   const daysOfWeek = [
     "monday",

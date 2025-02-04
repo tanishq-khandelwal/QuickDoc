@@ -2,8 +2,9 @@ export const FETCH_DOCTOR_AVAILABILTY_REQUEST = "FETCH_DOCTOR_AVAILABILTY_REQUES
 export const FETCH_DOCTOR_AVAILABILTY_SUCCESS = "FETCH_DOCTOR_AVAILABILTY_SUCCESS";
 export const FETCH_DOCTOR_AVAILABILTY_FAILURE = "FETCH_DOCTOR_AVAILABILTY_FAILURE";
 
-export const fetchDoctorAvailabilty = () => ({
+export const fetchDoctorAvailabilty = (doctorId: number) => ({
     type: FETCH_DOCTOR_AVAILABILTY_REQUEST,
+    payload:{ doctorId }
     });
 
 export const fetchDoctorAvailabiltySuccess = (payload: any) => ({

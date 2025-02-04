@@ -84,7 +84,7 @@ export function AppSidebar() {
   if (role === "doctor") {
     sidebarItems = [
       { title: "Home", url: "/", icon: Home },
-      { title: "Events", url: "/events", icon: Calendar },
+      // { title: "Events", url: "/events", icon: Calendar },
       { title: "Availability", url: "/availability", icon: Clock },
       { title: "Appointments", url: "/appointments", icon: Calendar },
       { title: "Profile", url: "/doctor/profile", icon: User },

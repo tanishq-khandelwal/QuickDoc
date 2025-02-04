@@ -24,6 +24,7 @@ export const FETCH_DOCTOR_AVAILABILITY = gql`
       slot_duration
       specialization
       experience_years
+      consultation_fee
       city
       clinic_address
       doctor_availabilities {

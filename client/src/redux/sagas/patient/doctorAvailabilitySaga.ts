@@ -3,11 +3,14 @@ import client from "../../../apolloClient";
 import { FETCH_DOCTOR_AVAILABILITY } from "@/queries/patient/doctorlist";
 import { FETCH_DOCTOR_AVAILABILTY_FAILURE, FETCH_DOCTOR_AVAILABILTY_REQUEST, FETCH_DOCTOR_AVAILABILTY_SUCCESS } from "@/redux/reducers/patient/doctorAvailabilityReducer";
 
+interface FetchDoctorAvailabilityAction {
+    type: typeof FETCH_DOCTOR_AVAILABILTY_REQUEST;
+    payload: { doctorId: number };
+  }
 
-export function* fetchDoctorAvailability() {
+export function* fetchDoctorAvailability(action: FetchDoctorAvailabilityAction) {
     try {
-        // console.log("Reached API Saga");
-        const doctorId = 1;
+        const { doctorId } = action.payload;
         // console.log(doctorId);
         const response = yield call(client.query, {
             query: FETCH_DOCTOR_AVAILABILITY,

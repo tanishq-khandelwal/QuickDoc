@@ -12,13 +12,19 @@ import {
   getUserAvailability,
 } from "@/helper/patient/availability";
 import { Button } from "@/components/ui/button";
+import { useSearchParams } from "react-router-dom";
 
 const DoctorPreview = () => {
   const dispatch = useDispatch();
+  const [searchParams] = useSearchParams();
+  const doctorId = Number(searchParams.get("doctorId"));
+  // console.log(doctorId);
 
   useEffect(() => {
-    dispatch(fetchDoctorAvailabilty());
-  }, [dispatch]);
+    if (doctorId) {
+      dispatch(fetchDoctorAvailabilty(doctorId)); // Pass doctorId as payload
+    }
+  }, [dispatch, doctorId]);
 
   const { doctorAvailability, loading, error } = useSelector(
     (state: RootState) => state.availability
@@ -27,21 +33,21 @@ const DoctorPreview = () => {
   const data = doctorAvailability?.[0];
 
   const [availableDays, setAvailableDays] = useState<any[]>([]);
-  const [availableTimeSlots, setAvailableTimeSlots] = useState<string[]>([]); // State to hold available time slots
-  const [selectedDate, setSelectedDate] = useState(new Date()); // Default to today's date
+  const [availableTimeSlots, setAvailableTimeSlots] = useState<string[]>([]);
+  const [selectedDate, setSelectedDate] = useState(new Date());
   const [selectedTime, setSelectedTime] = useState<string | null>(null);
 
   useEffect(() => {
     const fetchAvailability = async () => {
       const availability = await getUserAvailability(data);
       setAvailableDays(availability);
-      console.log(availability); // Logs the correct value after fetching
+      // console.log(availability);
     };
 
     if (data) {
       fetchAvailability();
     }
-  }, [data]); // Dependency on `data` ensures fetch runs when `data` changes
+  }, [data]);
 
   useEffect(() => {
     if (loading) {
@@ -64,7 +70,7 @@ const DoctorPreview = () => {
         selectedDate.toLocaleString("en-US", { weekday: "long" }).toLowerCase()
     );
 
-    console.log(selectedDay); // Logs the correct value after selecting a day
+    // console.log(selectedDay); // Logs the correct value after selecting a day
 
     if (
       selectedDay &&
@@ -75,12 +81,12 @@ const DoctorPreview = () => {
       const timeSlots = generateAvailableTimeSlots(
         new Date(`1970-01-01T${selectedDay.start_time}`), // Convert time to Date object
         new Date(`1970-01-01T${selectedDay.end_time}`), // Convert time to Date object
-        15, // 15-minute slots (you can change this)
+        data?.slot_duration, // 15-minute slots (you can change this)
         selectedDate, // Pass the date string
         [] // Pass any existing bookings, if necessary
       );
       setAvailableTimeSlots(timeSlots);
-      console.log(timeSlots); // Logs the correct value after generating
+      // console.log(timeSlots); // Logs the correct value after generating
     }
   }, [selectedDate, availableDays]);
 
@@ -130,15 +136,33 @@ const DoctorPreview = () => {
                   Clinic Address: {data?.clinic_address || "Not Available"}
                 </p>
               </div>
+
+              <div className="text-gray-600 mt-4 md:mt-0 justify-center items-center">
+                <div className="flex gap-2">
+                <p className="text-sm">Consultation Fee :</p>
+                <p className="text-medium font-semibold  text-green-700">
+                  ₹{data?.consultation_fee || 0}
+                </p>
+              </div>
+
+              <div className="flex gap-2">
+                <p className="text-sm">Slot Duration:</p>
+                <p className="text-sm text-red-700">{data?.slot_duration} minutes</p>
+              </div>
+              </div>
             </div>
 
             <div>
-              <h2 className="text-xl font-semibold mt-6">
-                Doctor's Availability
-              </h2>
-              <span className="text-gray-600 pt-2">
-                Select the date and time slot to book an appointment
-              </span>
+              <div className="flex justify-between">
+                <div>
+                  <h2 className="text-xl font-semibold mt-6">
+                    Doctor's Availability
+                  </h2>
+                  <span className="text-gray-600 pt-2">
+                    Select the date and time slot to book an appointment
+                  </span>
+                </div>
+              </div>
 
               <div className="flex justify-around px-4 ">
                 <div className="bg-white rounded-lg p-6  w-96">
@@ -166,7 +190,11 @@ const DoctorPreview = () => {
                             <Button
                               key={slot}
                               onClick={() => setSelectedTime(slot)}
-                              className="border-2 border-[#A6BAD0] bg-white text-[#0A2441] hover:bg-[#0067E7] hover:text-white"
+                              className={`border-2 ${
+                                selectedTime === slot
+                                  ? "bg-[#0067E7] text-white shadow-xl"
+                                  : "bg-[#F2F8FF]] text-[#0067E7] border-[#0169FE]"
+                              } hover:bg-[#0067E7] hover:text-white`}
                             >
                               {slot}
                             </Button>
@@ -176,6 +204,22 @@ const DoctorPreview = () => {
                     )}
                   </div>
                 </div>
+              </div>
+              <div className="flex justify-center mt-4">
+                {selectedTime && (
+                  <div className="flex flex-col items-center gap-4">
+                    <div className="flex gap-2 text-lg font-medium mb-2">
+                      Click to Book Appointment for{" "}
+                      <div className="text-red-600">
+                        {selectedDate?.toLocaleDateString()}
+                      </div>{" "}
+                      at <div className="text-red-600">{selectedTime}</div>
+                    </div>
+                    <Button className="border-2 bg-[#0067E7] text-white shadow-xl hover:bg-[white] hover:text-[#0067E7] hover:border-[#0067E7]">
+                      Book Appointment
+                    </Button>
+                  </div>
+                )}
               </div>
             </div>
           </div>
