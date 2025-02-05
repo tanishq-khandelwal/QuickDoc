@@ -1,8 +1,8 @@
+import { useState, useEffect } from "react";
 import Layout from "@/Layout";
 import { Navbar } from "@/Navbar";
 import { fetchMyAppointments } from "@/redux/actions/patient/MyAppointmentAction";
-import { User } from "lucide-react";
-import { useEffect } from "react";
+import { Calendar, Clipboard, Clock, Phone, User } from "lucide-react";
 import toast from "react-hot-toast";
 import { useDispatch, useSelector } from "react-redux";
 
@@ -11,9 +11,12 @@ const MyAppointments = () => {
   const { data, loading, error } = useSelector(
     (state: any) => state.myAppointments
   );
-  const appointments = data?.data?.appointments;
+  const appointments = Array.isArray(data?.data?.appointments)
+    ? data.data.appointments
+    : [];
 
-  console.log(data);
+  const [selectedStatus, setSelectedStatus] = useState("all");
+
   useEffect(() => {
     dispatch(fetchMyAppointments());
   }, [dispatch]);
@@ -27,44 +30,105 @@ const MyAppointments = () => {
     }
   }, [loading, error]);
 
+  const getStatusColor = (status: string) => {
+    switch (status.toLowerCase()) {
+      case "pending":
+        return "bg-yellow-600";
+      case "approved":
+        return "bg-green-600";
+      case "rejected":
+        return "bg-red-600";
+      default:
+        return "bg-gray-500";
+    }
+  };
+
+  const formatTime = (time: string) => {
+    const [hours, minutes] = time.split(":").map(Number);
+    const suffix = hours >= 12 ? "PM" : "AM";
+    const formattedHours = hours % 12 || 12; // Convert 0 -> 12 for 12 AM
+    return `${formattedHours}:${minutes.toString().padStart(2, "0")} ${suffix}`;
+  };
+
+  // Filter appointments based on selected status
+  const filteredAppointments = selectedStatus === "all"
+    ? appointments
+    : appointments.filter((appointment) => appointment.status.toLowerCase() === selectedStatus);
 
   return (
     <Layout>
       <Navbar />
       <div className="container mx-auto p-4 mt-20">
+        <div className="flex justify-between">
+          <div>
         <h1 className="text-2xl font-bold mb-4">My Appointments</h1>
-        <div className="flex  gap-4 flex-wrap">
-          {appointments && appointments.length > 0 && !loading? (
-            appointments.map((appointment: any) => (
+        </div>
+        {/* Status Filter Dropdown */}
+        <div className="mb-4 ">
+          <label className="mr-2 font-semibold">Filter by Status:</label>
+          <select
+            value={selectedStatus}
+            onChange={(e) => setSelectedStatus(e.target.value)}
+            className="border px-3 py-2 rounded-md cursor-pointer"
+          >
+            <option value="all">All</option>
+            <option value="pending">Pending</option>
+            <option value="approved">Approved</option>
+            <option value="rejected">Rejected</option>
+            <option value="completed">Completed</option>
+          </select>
+        </div>
+        </div>
+
+        <div className="flex gap-4 flex-wrap">
+          {loading ? (
+            <p className="text-center w-full">Loading your appointments...</p>
+          ) : error ? (
+            <p className="text-red-500 text-center w-full">Error: {error}</p>
+          ) : filteredAppointments.length > 0 ? (
+            filteredAppointments.map((appointment: any) => (
               <div
                 key={appointment.appointment_id}
-                className="bg-white border-2 shadow-md rounded-lg p-6 flex w-full cursor-pointer hover:shadow-xl"
+                className="bg-white border shadow-md rounded-lg p-6 flex w-full cursor-pointer hover:shadow-xl"
               >
-                <div className="h-24 w-24 px-8 flex items-center bg-gray-400 border-gray-300 border-1 rounded-full">
+                <div className="h-24 w-24 px-8 flex items-center bg-gray-400 border-gray-300 border rounded-full">
                   <User size={62} className="text-white" />
                 </div>
 
                 <div className="flex-1 ml-4">
-                  <h2 className="text-lg font-semibold">
-                    {appointment?.doctor?.user?.name}
+                  <h2 className="flex text-lg font-semibold items-center gap-2">
+                    <Clipboard className="h-5 w-5" />
+                    Dr {appointment?.doctor?.user?.name}
                   </h2>
-                  <p className="text-gray-600">
+
+                  <h2 className="text-gray-600 flex gap-2 items-center">
+                    <Phone className="h-5 w-5" />
+                    {appointment?.doctor?.user?.phone_number}
+                  </h2>
+                  <p className="flex text-red-600 font-semibold items-center gap-2">
+                    <Calendar className="h-5 w-5" />
                     Date: {appointment?.appointment_date}
                   </p>
-                  <p className="text-gray-600">
-                    Time: {appointment.start_time} - {appointment.end_time}
+                  <p className="flex gap-2 text-blue-700 font-semibold items-center">
+                    <Clock className="h-5 w-5" />
+                    {formatTime(appointment.start_time)} - {formatTime(appointment.end_time)}
                   </p>
                 </div>
 
-                {/* <div>
-                <p className="text-gray-600">Status: {appointment.status}</p>
-                </div> */}
-
-
+                <div
+                  className={`px-3 py-1 text-white rounded-lg ${getStatusColor(
+                    appointment.status
+                  )} self-start inline-flex gap-2`}
+                >
+                  <p>Status:</p>
+                  <p className="font-sans font-semibold">
+                    {appointment.status.toUpperCase()}
+                  </p>
+                </div>
               </div>
             ))
           ) : (
-            <p>No appointments found</p>
+            <p className="text-center w-full">No appointments found</p>
           )}
         </div>
       </div>

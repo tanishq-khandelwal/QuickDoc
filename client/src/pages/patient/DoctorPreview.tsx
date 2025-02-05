@@ -100,7 +100,7 @@ const DoctorPreview = () => {
           toast.error(`Booking failed: ${error}`);
         } else if (appointment && Booked) {
           toast.success("Appointment booked successfully!");
-          navigate('/appointments');
+          navigate('/');
         }
       }
     }, [isloading, iserror,appointment]);
@@ -130,7 +130,7 @@ const DoctorPreview = () => {
         new Date(`1970-01-01T${selectedDay.end_time}`), // Convert time to Date object
         data?.slot_duration, // 15-minute slots (you can change this)
         selectedDate, // Pass the date string
-        [] // Pass any existing bookings, if necessary
+        data?.appointments // Pass any existing bookings, if necessary
       );
       setAvailableTimeSlots(timeSlots);
       // console.log(timeSlots); // Logs the correct value after generating
