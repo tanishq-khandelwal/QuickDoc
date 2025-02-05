@@ -1,9 +1,9 @@
 import { gql } from "@apollo/client";
 
 export const GET_ALL_APPOINTMENTS = gql`
-  query GET_ALL_APPOINTMNETS {
+  query GET_ALL_APPOINTMNETS($doctorId: Int!) {
     appointments(
-      where: { doctor_id: { _eq: 1 } }
+      where: { doctor_id: { _eq: $doctorId } }
       order_by: { appointment_date: asc }
     ) {
       appointment_id

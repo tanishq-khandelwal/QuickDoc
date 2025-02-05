@@ -95,7 +95,7 @@ export function AppSidebar() {
     sidebarItems = [
       { title: "Home", url: "/", icon: Home },
       { title: "Doctors", url: "/doctors", icon: Hospital },
-      { title: "Appointments", url: "/appointments", icon: Calendar },
+      { title: "Appointments", url: "/appointments/me", icon: Calendar },
       { title: "Profile", url: "/patient/profile", icon: User },
     ];
   }

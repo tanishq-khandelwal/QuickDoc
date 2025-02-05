@@ -6,8 +6,8 @@ import { watchSignupSaga } from "./sagas/patient/signupSaga";
 import { watchFetchDoctors } from "./sagas/patient/doctorlistSaga.";
 import { watchDoctorAvailabilty } from "./sagas/patient/doctorAvailabilitySaga";
 import { watchBookAppointment } from "./sagas/patient/bookAppointmentSaga";
-import { watch } from "fs";
 import { watchFetchAppointment } from "./sagas/doctor/fetchAppointmentSaga";
+import { watchFetchMyAppointment } from "./sagas/patient/MyAppointmentSaga";
 
 export default function* rootSaga() {
     yield all([
@@ -19,6 +19,7 @@ export default function* rootSaga() {
       watchDoctorAvailabilty(),
       watchBookAppointment(),
       watchFetchAppointment(),
+      watchFetchMyAppointment(),
       // Add other watchers here
     ]);
   }

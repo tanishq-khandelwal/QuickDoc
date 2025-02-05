@@ -17,7 +17,7 @@ import {
 1;
 const userData = localStorage.getItem("user");
 const doctorId = userData ? JSON.parse(userData).doctorId : null;
-//  console.log(doctorId)
+ console.log(doctorId)
 function* fetchAppointment() {
   try {
     const response = yield call(client.query, {

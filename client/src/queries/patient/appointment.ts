@@ -26,8 +26,8 @@ export const BOOK_APPOINTMENT = gql`
 
 
 export const GET_APPOINTMENTS = gql`
-query GET_APPOINTMENTS {
-  appointments(where: {patient_id: {_eq: 8}}) {
+query GET_APPOINTMENTS ($userId: Int!) {  
+  appointments(where: {patient_id: {_eq:$userId }}) {
     appointment_date
     start_time
     end_time

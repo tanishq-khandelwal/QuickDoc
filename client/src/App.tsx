@@ -10,6 +10,7 @@ import Profile from "./pages/doctor/Profile";
 import Appointments from "./pages/doctor/Appointments";
 import DoctorList from "./pages/patient/DoctorList";
 import DoctorPreview from "./pages/patient/DoctorPreview";
+import MyAppointments from "./pages/patient/Appointments";
 
 function App() {
   return (
@@ -22,6 +23,7 @@ function App() {
       <Route path="/doctor/profile" element={<Profile/>}></Route>
       <Route path="/signup/patient" element={<SignupPatient/>}></Route>
       <Route path="/appointments" element={<Appointments/>}></Route>
+      <Route path="/appointments/me" element={<MyAppointments/>}></Route>
       <Route path="/login" element={<Login/>}></Route>
       <Route path="/events" element={<Events/>}></Route>
       <Route path="/availability" element={<Availability/>}></Route>
