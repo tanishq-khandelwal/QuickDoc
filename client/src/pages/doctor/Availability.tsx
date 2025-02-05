@@ -121,8 +121,9 @@ const Availability = () => {
     } else {
       toast.dismiss("loading");
       if (error) toast.error(`Loading failed: ${error}`);
+      if(data) toast.dismiss("loading");
     }
-  }, [loading, error]);
+  }, [loading, error,data]);
 
   const [availability, setAvailability] = useState<{
     [key: number]: AvailabilityDay;

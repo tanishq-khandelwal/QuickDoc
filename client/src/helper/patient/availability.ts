@@ -1,5 +1,5 @@
 import { format, addMinutes, isBefore } from "date-fns";
-
+// luxon
 export async function getUserAvailability(data: any) {
   console.log(data);
 
@@ -108,7 +108,7 @@ export function generateAvailableTimeSlots(
         parseInt(booking.end_time.split(":")[1])
       );
 
-      console.log(bookingStart,bookingEnd)
+      // console.log(bookingStart,bookingEnd)
       return (
         (currentTime >= bookingStart && currentTime < bookingEnd) ||
         (slotEnd > bookingStart && slotEnd <= bookingEnd) ||

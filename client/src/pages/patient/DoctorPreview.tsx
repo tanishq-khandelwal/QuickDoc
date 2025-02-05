@@ -41,10 +41,17 @@ const DoctorPreview = () => {
   const [availableTimeSlots, setAvailableTimeSlots] = useState<string[]>([]);
   const [selectedDate, setSelectedDate] = useState(new Date());
   const [selectedTime, setSelectedTime] = useState<string | null>(null);
-  const [Booked,setBooked] = useState(false);
+  const [Booked, setBooked] = useState(false);
 
-  const formattedDate = new Date(selectedDate).toISOString().split("T")[0];
+  const formattedDate = new Date(selectedDate);
+  formattedDate.setHours(0, 0, 0, 0); // Reset time to 00:00 to avoid time zone adjustments
+  const finalformattedDate = selectedDate.getFullYear() +
+  '-' +
+  (selectedDate.getMonth() + 1).toString().padStart(2, '0') + 
+  '-' +
+  selectedDate.getDate().toString().padStart(2, '0');
 
+console.log(finalformattedDate); 
   const handleBookingAppointment = () => {
     const addMinutes = (time: string, minutes: number) => {
       const [hours, mins] = time?.split(":")?.map(Number);
@@ -57,7 +64,7 @@ const DoctorPreview = () => {
 
     const appointmentData = {
       doctorId: doctorId,
-      appointmentDate: formattedDate,
+      appointmentDate: finalformattedDate,
       patientId: userId,
       startTime: selectedTime,
       endTime: addMinutes(selectedTime, data?.slot_duration),
@@ -89,21 +96,23 @@ const DoctorPreview = () => {
     }
   }, [loading, error]);
 
-  const { isloading, iserror,appointment } = useSelector((state: RootState) => state.bookAppointment);
-  
-    useEffect(() => {
-      if (isloading && Booked) {
-        toast.loading("Booking Appointment...", { id: "loading" });
-      } else {
-        toast.dismiss("loading");
-        if (iserror) {
-          toast.error(`Booking failed: ${error}`);
-        } else if (appointment && Booked) {
-          toast.success("Appointment booked successfully!");
-          navigate('/');
-        }
+  const { isloading, iserror, appointment } = useSelector(
+    (state: RootState) => state.bookAppointment
+  );
+
+  useEffect(() => {
+    if (isloading && Booked) {
+      toast.loading("Booking Appointment...", { id: "loading" });
+    } else {
+      toast.dismiss("loading");
+      if (iserror) {
+        toast.error(`Booking failed: ${error}`);
+      } else if (appointment && Booked) {
+        toast.success("Appointment booked successfully!");
+        navigate("/");
       }
-    }, [isloading, iserror,appointment]);
+    }
+  }, [isloading, iserror, appointment]);
 
   // Calendar
   const today = new Date();
@@ -117,8 +126,8 @@ const DoctorPreview = () => {
         selectedDate.toLocaleString("en-US", { weekday: "long" }).toLowerCase()
     );
 
-    // console.log(selectedDay); // Logs the correct value after selecting a day
-
+    console.log(selectedDay); // Logs the correct value after selecting a day
+    console.log(selectedDate);
     if (
       selectedDay &&
       selectedDay.available &&
