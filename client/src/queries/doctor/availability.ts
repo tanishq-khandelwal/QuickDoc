@@ -7,20 +7,34 @@ export const FETCH_AVAILABILITY = gql`
       available_days
       start_time
       end_time
+      is_available
     }
   }
 `;
 
 export const UPDATE_AVAILABILITY = gql`
-  mutation UPDATE_AVAILABILITY($doctorId:Int!,$startTime:date,$endTime:date,$slotTime:INT!) {
+  mutation UPDATE_AVAILABILITY(
+    $doctorId: Int!
+    $availableDay:String
+    $startTime: time
+    $endTime: time
+    $available: Boolean
+  ) {
     update_doctor_availability(
       where: {
         doctor_id: { _eq: $doctorId }
-        start_time: { _eq: $startTime }
+        available_days: { _eq: $availableDay }
+        }
+        _set:{
+          start_time: { _eq: $startTime }
         end_time: { _eq: $endTime }
-        doctor: { slot_duration: { _eq: $slotTime } }
+        is_available: { _eq: $available }
+        }
+    ) {
+      returning {
+        doctor_id
       }
-    )
+    }
   }
 `;
 

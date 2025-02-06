@@ -3,7 +3,7 @@ import { Input } from "@/components/ui/input";
 import Layout from "@/Layout";
 import { Navbar } from "@/Navbar";
 import { Search } from "lucide-react";
-import Footer from "../Footer";
+import Footer from "./Footer";
 
 const Homepage = () => {
   const services = [

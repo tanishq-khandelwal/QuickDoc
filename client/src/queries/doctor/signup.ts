@@ -14,7 +14,9 @@ export const SIGNUP_DOCTOR = gql`
     { available_days: "Tuesday", start_time: "09:00", end_time: "17:00" },
     { available_days: "Wednesday", start_time: "09:00", end_time: "17:00" },
     { available_days: "Thursday", start_time: "09:00", end_time: "17:00" },
-    { available_days: "Friday", start_time: "09:00", end_time: "17:00" }
+    { available_days: "Friday", start_time: "09:00", end_time: "17:00" },
+    { available_days: "Saturday", start_time: "09:00", end_time: "17:00" ,is_available:false},
+    { available_days: "Sunday", start_time: "09:00", end_time: "17:00",is_available:false }
   ]
 ) {
   insert_doctors(

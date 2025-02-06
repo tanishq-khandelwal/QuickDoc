@@ -1,27 +1,52 @@
 import toast from "react-hot-toast";
 import { Navigate, Outlet, useLocation } from "react-router-dom";
+import Cookies from "js-cookie";
+import { jwtDecode as jwt_decode } from "jwt-decode";
+import { useState, useEffect } from "react";
 
 interface ProtectedRouteProps {
-  allowedRoles: string[]; 
+  allowedRoles: string[];
 }
 
 const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ allowedRoles }) => {
-  const isLoggedIn = localStorage.getItem("isLoggedIn");
-  const role = localStorage.getItem("role");
-
   const location = useLocation();
+  const [role, setRole] = useState<string | null>(null);
+  const [isLoading, setIsLoading] = useState(true); // Add loading state
 
-  if (!isLoggedIn) {
-    toast.error("Unauthenticated ! Please Login to Continue....");
+  useEffect(() => {
+    const token = Cookies.get("token"); // Get token from cookies
+
+    if (token) {
+      try {
+        const decodedToken = jwt_decode<{ email: string; role: string }>(token);
+        setRole(decodedToken.role);
+      } catch (error) {
+        console.error("Error decoding token:", error);
+        toast.error("Invalid token! Please log in again.");
+        Cookies.remove("token"); // Clear invalid token
+      }
+    }
+
+    setIsLoading(false);
+  }, []);
+
+  // Show a loading screen while checking authentication
+  if (isLoading) {
+    return <div>Loading...</div>;
   }
 
-  return isLoggedIn && allowedRoles.includes(role!) ? (
-    <Outlet/>
-  ) : isLoggedIn ? (
-    <Navigate to={"/denied"} state={{ from: location }} replace />
-  ) : (
-    <Navigate to={"/login"} state={{ from: location }} replace />
-  );
+  // If no valid role, redirect to login
+  if (!role) {
+    toast.error("Unauthenticated! Please log in to continue...");
+    return <Navigate to="/login" state={{ from: location }} replace />;
+  }
+
+  // If role is not allowed, redirect to denied page
+  if (!allowedRoles.includes(role)) {
+    return <Navigate to="/denied" state={{ from: location }} replace />;
+  }
+
+  return <Outlet />;
 };
 
 export default ProtectedRoute;

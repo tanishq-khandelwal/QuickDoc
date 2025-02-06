@@ -6,7 +6,11 @@ import { useDispatch, useSelector } from "react-redux";
 import { fetchAvailability } from "@/redux/actions/doctor/availabilityAction";
 import { RootState } from "@/redux/rootReducer";
 import toast from "react-hot-toast";
-import AvailabilityModal from "@/components/AvailabilityModal";
+import AvailabilityModal from "@/components/availability/AvailabilityModal";
+import TimezoneDropdown from "@/components/availability/TimeZoneDropDown";
+import { useMutation } from "@apollo/client";
+import { UPDATE_AVAILABILITY } from "@/queries/doctor/availability";
+import { DateTime } from "luxon";
 
 interface AvailabilityDay {
   selected: boolean;
@@ -47,45 +51,56 @@ const Availability = () => {
   ];
 
   const [modifiedDays, setModifiedDays] = useState(new Set<number>());
+  const [availability, setAvailability] = useState<{
+    [key: number]: AvailabilityDay;
+  }>({});
+  const [initialAvailability, setInitialAvailability] = useState<{
+    [key: number]: AvailabilityDay;
+  }>({});
 
-  const convertTo24HourFormat = (time: string) => {
-    if (!time) return "";
-    const [hourMin, period] = time.split(" ");
-    let [hours, minutes] = hourMin.split(":").map(Number);
-    if (period === "PM" && hours !== 12) hours += 12;
-    if (period === "AM" && hours === 12) hours = 0;
-    return `${hours.toString().padStart(2, "0")}:${minutes
-      .toString()
-      .padStart(2, "0")}`;
-  };
+  const [updateAvailability] = useMutation(UPDATE_AVAILABILITY);
 
-  const handleSave = () => {
-    const savedData = weekDays
-      .filter((day) => modifiedDays.has(day.id)) // Only log modified days
-      .map((day) => ({
-        day: day.title,
-        start_time: convertTo24HourFormat(availability[day.id]?.startTime),
-        end_time: convertTo24HourFormat(availability[day.id]?.endTime),
-      }));
+  const dispatch = useDispatch();
+  const { data, loading, error } = useSelector(
+    (state: RootState) => state.doctoravailabilty
+  );
 
-    console.log("Saved Availability:", savedData);
-    setModifiedDays(new Set()); // Reset modified state after saving
-  };
+  useEffect(() => {
+    dispatch(fetchAvailability());
+  }, [dispatch]);
 
-  const handleTimeChange = (
-    dayId: number,
-    field: "startTime" | "endTime",
-    value: string
-  ) => {
-    setAvailability((prev) => ({
-      ...prev,
-      [dayId]: {
-        ...prev[dayId],
-        [field]: value,
-      },
-    }));
-    setModifiedDays((prev) => new Set(prev).add(dayId));
-  };
+  useEffect(() => {
+    if (loading) {
+      toast.loading("Loading...", { id: "loading" });
+    } else {
+      toast.dismiss("loading");
+      if (error) toast.error(`Loading failed: ${error}`);
+    }
+  }, [loading, error]);
+
+  useEffect(() => {
+    if (data?.data?.doctor_availability) {
+      const appointmentData = data.data.doctor_availability;
+      const newAvailability = weekDays.reduce((acc, day) => {
+        const appointment = appointmentData.find(
+          (appt: any) => appt.available_days === day.title
+        );
+        acc[day.id] = {
+          selected: appointment?.is_available,
+          startTime: appointment
+            ? formatTime(appointment.start_time)
+            : "9:00 AM",
+          endTime: appointment ? formatTime(appointment.end_time) : "9:00 PM",
+          openDropdown: null,
+        };
+        return acc;
+      }, {} as { [key: number]: AvailabilityDay });
+
+      // Set the initial data after the first load
+      setInitialAvailability(newAvailability);
+      setAvailability(newAvailability);
+    }
+  }, [data]);
 
   const formatTime = (time: string) => {
     if (!time) return "";
@@ -106,50 +121,27 @@ const Availability = () => {
     }));
   };
 
-  const dispatch = useDispatch();
-  const { data, loading, error } = useSelector(
-    (state: RootState) => state.doctoravailabilty
-  );
+  const handleTimeChange = (
+    dayId: number,
+    field: "startTime" | "endTime",
+    value: string
+  ) => {
+    setAvailability((prev) => ({
+      ...prev,
+      [dayId]: {
+        ...prev[dayId],
+        [field]: value,
+      },
+    }));
+    setModifiedDays((prev) => new Set(prev).add(dayId));
+  };
 
-  useEffect(() => {
-    dispatch(fetchAvailability());
-  }, [dispatch]);
-
-  useEffect(() => {
-    if (loading) {
-      toast.loading("Loading...", { id: "loading" });
-    } else {
-      toast.dismiss("loading");
-      if (error) toast.error(`Loading failed: ${error}`);
-      if(data) toast.dismiss("loading");
-    }
-  }, [loading, error,data]);
-
-  const [availability, setAvailability] = useState<{
-    [key: number]: AvailabilityDay;
-  }>({});
-
-  useEffect(() => {
-    if (data?.data?.doctor_availability) {
-      const appointmentData = data.data.doctor_availability;
-      setAvailability(
-        weekDays.reduce((acc, day) => {
-          const appointment = appointmentData.find(
-            (appt: any) => appt.available_days === day.title
-          );
-          acc[day.id] = {
-            selected: !!appointment,
-            startTime: appointment
-              ? formatTime(appointment.start_time)
-              : "9:00 AM", // Set fetched time or default
-            endTime: appointment ? formatTime(appointment.end_time) : "9:00 PM",
-            openDropdown: null,
-          };
-          return acc;
-        }, {} as { [key: number]: AvailabilityDay })
-      );
-    }
-  }, [data]);
+  type ChangedDay = {
+    availableDay: string;
+    startTime: string;
+    endTime: string;
+    available: boolean; // Track the selected status of the day
+  };
 
   const [showModal, setShowModal] = useState(false);
   const [selectedDate, setSelectedDate] = useState<Date | undefined>(
@@ -162,6 +154,59 @@ const Availability = () => {
     setSelectedSlot(e.target.value);
   };
 
+  const handleSave = () => {
+    const changedDaysArray: ChangedDay[] = weekDays.reduce((acc, day) => {
+      const initialDay = initialAvailability[day.id];
+      const modifiedDay = availability[day.id];
+
+      const isTimeChanged =
+        initialDay.startTime !== modifiedDay.startTime ||
+        initialDay.endTime !== modifiedDay.endTime;
+      const isSelectedChanged = initialDay.selected !== modifiedDay.selected;
+
+      // If either time or selection status has changed
+      if (isTimeChanged || isSelectedChanged) {
+        acc.push({
+          availableDay: day.title,
+          startTime: modifiedDay.startTime,
+          endTime: modifiedDay.endTime,
+          available: modifiedDay.selected, // Add the selection status
+        });
+      }
+
+      return acc;
+    }, [] as ChangedDay[]); // Explicitly specify the type of the array here
+
+    if (changedDaysArray.length > 0) {
+      console.log("Changed Days and Timings:", changedDaysArray);
+      console.log("Selected Slot:", selectedSlot.split(" ")[0]);
+      // changedDaysArray.forEach((day) => {
+      //   console.log(
+      //     `${day.title}: Start Time: ${day.startTime}, End Time: ${day.endTime}, Selected: ${day.selected}`
+      //   );
+      // });
+    }
+
+    setModifiedDays(new Set()); // Reset modified state after saving
+    const userData = localStorage.getItem("user");
+    const doctorId = userData ? JSON.parse(userData).doctorId : null;
+
+    try {
+      const response = updateAvailability({
+        variables: {
+          doctorId: doctorId,
+          availableDay: changedDaysArray[0].availableDay,
+          startTime:String(DateTime.fromFormat(changedDaysArray[0].startTime, "h:mm a").toFormat("HH:mm:ss")),
+          endTime: String(DateTime.fromFormat(changedDaysArray[0].endTime, "h:mm a").toFormat("HH:mm:ss")),
+          available: changedDaysArray[0].available,
+        },  
+      });
+
+      console.log(response);
+    } catch (error) {
+      console.error(error);
+    }
+  };
   return (
     <Layout>
       <Navbar />
@@ -177,7 +222,7 @@ const Availability = () => {
               Set your weekly availability for your patients
             </div>
 
-            <div>
+            <div className="flex gap-8">
               <div className="flex items-center space-x-3 mb-2">
                 <span className="text-xl font-normal text-black px-">
                   Slot:
@@ -194,6 +239,10 @@ const Availability = () => {
                   <option value="45 min">45 min</option>
                   <option value="60 min">1 hour</option>
                 </select>
+              </div>
+
+              <div>
+                <TimezoneDropdown />
               </div>
             </div>
 
