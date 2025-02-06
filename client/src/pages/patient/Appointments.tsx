@@ -81,11 +81,7 @@ const MyAppointments = () => {
         </div>
 
         <div className="flex gap-4 flex-wrap">
-          {loading ? (
-            <p className="text-center w-full">Loading your appointments...</p>
-          ) : error ? (
-            <p className="text-red-500 text-center w-full">Error: {error}</p>
-          ) : filteredAppointments.length > 0 ? (
+          {filteredAppointments.length > 0 ? (
             filteredAppointments.map((appointment: any) => (
               <div
                 key={appointment.appointment_id}

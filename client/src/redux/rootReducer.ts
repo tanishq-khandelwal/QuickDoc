@@ -7,6 +7,7 @@ import doctorAvailabilityReducer from './reducers/patient/doctorAvailabilityRedu
 import bookAppointmentReducer from './reducers/patient/bookAppointmentReducer';
 import appointmentReducer from './reducers/doctor/fetchAppointmentReducer';
 import MyappointmentReducer from './reducers/patient/MyAppointmentReducer';
+import updateAppointmentReducer from './reducers/doctor/updateAppointmentReducer';
 
 const rootReducer = combineReducers({
   auth: authReducer,
@@ -16,6 +17,7 @@ const rootReducer = combineReducers({
   bookAppointment:bookAppointmentReducer,
   allAppointments:appointmentReducer,
   myAppointments:MyappointmentReducer,
+  updateAppointment:updateAppointmentReducer,
 });
 
 export type RootState = ReturnType<typeof rootReducer>; // This infers the state shape

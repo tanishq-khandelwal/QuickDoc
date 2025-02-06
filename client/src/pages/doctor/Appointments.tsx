@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import Layout from "@/Layout";
 import { Navbar } from "@/Navbar";
-import { fetchAppointments } from "@/redux/actions/doctor/appointmentAction";
+import { fetchAppointments, updateApppointment } from "@/redux/actions/doctor/appointmentAction";
 import { Calendar, Clock, Mail, Phone, User } from "lucide-react";
 import toast from "react-hot-toast";
 import { useDispatch, useSelector } from "react-redux";
@@ -30,16 +30,19 @@ const Appointments = () => {
     }
   }, [loading, error]);
 
-  const handleAccept = (id: string) => {
-    dispatch({ type: "ACCEPT_APPOINTMENT", payload: id });
-    toast.success("Appointment accepted!");
+  const handleAccept = (appointmentId: number) => {
+    dispatch(updateApppointment({ appointmentId, status: "approved" }));
+    toast.success("Appointment Accepted");
+    setTimeout(() => window.location.reload(), 500); 
   };
-
-  const handleReject = (id: string) => {
-    dispatch({ type: "REJECT_APPOINTMENT", payload: id });
-    toast.error("Appointment rejected!");
+  
+  const handleReject = (appointmentId: number) => {
+    dispatch(updateApppointment({ appointmentId, status: "rejected" }));
+    toast.error("Appointment Rejected");
+    setTimeout(() => window.location.reload(), 500);
   };
-
+  
+  
   const getStatusColor = (status: string) => {
     switch (status.toLowerCase()) {
       case "pending":
@@ -142,13 +145,13 @@ const Appointments = () => {
                     <div className="flex gap-2 mt-auto">
                       <button
                         className="bg-green-700 text-white px-8 py-2 rounded-full"
-                        onClick={() => handleAccept(appointment.id)}
+                        onClick={() => handleAccept(appointment.appointment_id)}
                       >
                         Accept
                       </button>
                       <button
                         className="bg-red-600 text-white px-8 py-2 rounded-full"
-                        onClick={() => handleReject(appointment.id)}
+                        onClick={() => handleReject(appointment.appointment_id)}
                       >
                         Reject
                       </button>

@@ -21,3 +21,16 @@ export const GET_ALL_APPOINTMENTS = gql`
     }
   }
 `;
+
+export const UPDATE_APPOINTMENT_STATUS = gql`
+  mutation UPDATE_APPOINTMENT_STATUS($appointmentId:Int,$status:String) {
+    update_appointments(
+      where: { appointment_id: { _eq: $appointmentId } }
+      _set: { status: $status }
+    ) {
+      returning {
+        appointment_id  
+      }
+    }
+  }
+`;
