@@ -52,9 +52,10 @@ export const RegisterUser = async (req: Request, res: Response): Promise<Respons
     const result = await apolloClient.query({
       query: CHECK_USER,
       variables: { email },
+      fetchPolicy:"network-only",
     });
 
-    console.log(result.data.users);
+    console.log(result.data);
     if (result.data.users.length > 0) {
       return res.status(400).json({
         message: "User Already Exists",
@@ -88,6 +89,7 @@ export const LoginUser = async (req: Request, res: Response): Promise<Response> 
     const result = await apolloClient.query({
       query: CHECK_USER,
       variables: { email },
+      fetchPolicy:"network-only",
     });
 
     console.log( result.data.users);

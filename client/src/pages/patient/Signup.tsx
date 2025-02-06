@@ -7,6 +7,8 @@ import { useEffect, useState } from "react";
 import { RootState } from "@/redux/rootReducer";
 import toast from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
+import hidepass from "../../assets/hidpass.svg";
+import showpass from "../../assets/showpass.svg";
 
 const signupSchema = z.object({
   name: z.string().min(3, "Name must be at least 3 characters"),
@@ -23,7 +25,8 @@ export default function SignupPatient() {
   const navigate = useNavigate();
   
   const [isSubmitted, setIsSubmitted] = useState(false); // Track submission state
-  
+  const [showPassword, setShowPassword] = useState(false);
+
   const { register, handleSubmit, formState: { errors } } = useForm<SignupFormValues>({
     resolver: zodResolver(signupSchema),
   });
@@ -69,7 +72,7 @@ export default function SignupPatient() {
             <input
               type="text"
               {...register("name")}
-              className="w-full mt-1 px-4 py-2 border border-gray-300 rounded-lg focus:ring focus:ring-blue-200"
+              className="w-full mt-1 px-4 py-2 border border-gray-300 rounded-lg"
             />
             {errors.name && (
               <p className="text-red-500 text-sm">{errors.name.message}</p>
@@ -84,7 +87,7 @@ export default function SignupPatient() {
             <input
               type="email"
               {...register("email")}
-              className="w-full mt-1 px-4 py-2 border border-gray-300 rounded-lg focus:ring focus:ring-blue-200"
+              className="w-full mt-1 px-4 py-2 border border-gray-300 rounded-lg "
             />
             {errors.email && (
               <p className="text-red-500 text-sm">{errors.email.message}</p>
@@ -99,7 +102,7 @@ export default function SignupPatient() {
             <input
               type="text"
               {...register("phone_number")}
-              className="w-full mt-1 px-4 py-2 border border-gray-300 rounded-lg focus:ring focus:ring-blue-200"
+              className="w-full mt-1 px-4 py-2 border border-gray-300 rounded-lg "
             />
             {errors.phone_number && (
               <p className="text-red-500 text-sm">{errors.phone_number.message}</p>
@@ -107,15 +110,26 @@ export default function SignupPatient() {
           </div>
 
           {/* Password Field */}
-          <div>
+           <div className="relative">
             <label className="block text-sm font-medium text-gray-700">
               Password
             </label>
             <input
-              type="password"
+              type={showPassword ? "text" : "password"}
               {...register("password")}
-              className="w-full mt-1 px-4 py-2 border border-gray-300 rounded-lg focus:ring focus:ring-blue-200"
+              className="w-full mt-1 px-4 py-2 border border-gray-300 rounded-lg  pr-10"
             />
+            <button
+              type="button"
+              className="absolute top-9 right-3"
+              onClick={() => setShowPassword(!showPassword)}
+            >
+              <img
+                src={showPassword ? showpass : hidepass}
+                alt="Toggle Password"
+                className="w-5 h-5"
+              />
+            </button>
             {errors.password && (
               <p className="text-red-500 text-sm">{errors.password.message}</p>
             )}

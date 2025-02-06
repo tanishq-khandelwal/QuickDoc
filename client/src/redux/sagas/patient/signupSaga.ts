@@ -12,9 +12,10 @@ type SignupCredentials={
 }
 
 type SignupResponse= {
-  data: {
+  data: Array<{
     user_id: number;
-  };
+    __typename: string;
+  }>;
 }
 
 // Function to call the actual login API
@@ -23,7 +24,7 @@ const signupAPI = async (credentials: SignupCredentials): Promise<SignupResponse
     const response = await axios.post('http://localhost:3000/api/v1/user/register', credentials,{
         withCredentials:true,
     });
-    console.log("response is"+response);
+    console.log("response is"+response.data);
     return response.data; // Assuming API returns user data
   } catch (error: any) {
     console.error("API Error:", error.response?.data); // Debugging
@@ -35,7 +36,7 @@ const signupAPI = async (credentials: SignupCredentials): Promise<SignupResponse
 function* signupSaga(action: { type: string; payload: SignupCredentials }) {
   try {
     const response: SignupResponse = yield call(signupAPI, action.payload);
-    console.log("response is "+response);
+    console.log("response is "+response.data);
     // const {role} = response.data; // Destructure user_id and role from response.data
 
     // // Store the user ID and role in localStorage after a successful login
@@ -45,7 +46,7 @@ function* signupSaga(action: { type: string; payload: SignupCredentials }) {
     //   localStorage.setItem("isLoggedIn","true");
     // }
 
-    yield put(signupSuccess(response.data)); // Dispatch success action with the user data
+    yield put(signupSuccess(response)); // Dispatch success action with the user data
   } catch (error: any) {
     console.error("Login error:", error); // Debugging
     yield put(signupFailure(error.message || "Failed to Register User")); // Extract error message

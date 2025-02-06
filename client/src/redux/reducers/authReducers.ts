@@ -57,7 +57,7 @@ const authReducer = (state = initialState, action: AuthAction): AuthState => {
     case SIGNUP_SUCCESS:
       return {
         ...state,
-        // user: action.payload,
+        user: action.payload,
         error: null,
         loading: false,
       };

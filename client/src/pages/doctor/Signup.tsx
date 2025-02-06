@@ -9,18 +9,32 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Briefcase, Mail, MapPin, Phone, User } from "lucide-react";
 import hidepass from "../../assets/hidpass.svg";
 import showpass from "../../assets/showpass.svg";
-
+import { useDispatch, useSelector } from "react-redux";
+import { signupRequest } from "@/redux/actions/authActions";
+import { SIGNUP_DOCTOR } from "@/queries/doctor/signup";
+import { RootState } from "@/redux/rootReducer";
+import { useMutation } from "@apollo/client";
+import toast from "react-hot-toast";
+import { useNavigate } from "react-router-dom";
 // QuickDoc Colors
 const primaryColor = "text-blue-600";
 
 // Step 1: Schema for Personal Information
+interface ProfessionalData {
+  specialization: string;
+  experience_years: string;
+  clinic_address?: string;
+  city: string;
+  consultation_fee: string;
+}
+
 const personalInfoSchema = z.object({
   name: z.string().min(3, "Name must be at least 3 characters"),
   email: z.string().email("Invalid email"),
   password: z.string().min(6, "Password must be at least 6 characters"),
   phone_number: z
     .string()
-    .regex(/^\d{10,15}$/, "Phone number must be 10-15 digits"),
+    .regex(/^\d{9,15}$/, "Phone number must be 10-15 digits"),
   role:z.string().default("doctor")
 });
 
@@ -36,8 +50,10 @@ const professionalInfoSchema = z.object({
 export default function Signup() {
   const [step, setStep] = useState(1);
   const [personalData, setPersonalData] = useState({});
-  const [professionalData, setProfessionalData] = useState({});
+  const [professionalData, setProfessionalData] = useState<ProfessionalData |{}>({});
   const [showPassword, setShowPassword] = useState(false);
+  const dispatch=useDispatch();
+  const navigate=useNavigate();
 
   // Step 1: Personal Info Form
   const {
@@ -60,14 +76,62 @@ export default function Signup() {
   // Handle Step 1 Submission
   const onSubmitStep1 = (data: any) => {
     setPersonalData(data);
+    dispatch(signupRequest(data)); 
     setStep(2);
   };
 
   // Handle Step 2 Submission
-  const onSubmitStep2 = (data: any) => {
+  const [signupDoctor] = useMutation(SIGNUP_DOCTOR);
+  const { user} = useSelector((state: RootState) => state.auth);
+
+
+  const onSubmitStep2 = async (data: any) => {
+    // Update professionalData with form data
     setProfessionalData(data);
-    console.log("Final Form Data:", { ...personalData, ...data });
-    alert("Signup Successful!");
+
+    // Extract userId from the response (assuming it's correctly populated in Redux state)
+    const userId = user?.response[0]?.user_id;
+    console.log("User ID:", userId);
+
+    // Ensure userId is present
+    if (!userId) {
+      console.error("User ID is missing.");
+      return;
+    }
+
+    console.log("professionalData is:",professionalData);
+    const {specialization, experience_years, clinic_address, city, consultation_fee } = data;
+    console.log("Form Data:", specialization, experience_years, clinic_address, city, consultation_fee);
+
+    const loadingToast = toast.loading("Signing up...");
+
+    try {
+      const response = await signupDoctor({
+        variables: {
+          userId,
+          specialization,
+          experience_years,
+          clinic_address,
+          city,
+          consultation_fee,
+        },
+      });
+
+      console.log(response?.data?.insert_doctors?.returning);
+
+      if(response?.data?.insert_doctors?.returning){
+        toast.success("Sign Up Successful", { id: loadingToast })
+        navigate('/login')
+      }
+
+      if(response?.errors){
+        toast.error("Error while Signing Up", { id: loadingToast });
+      }
+      console.log("Final Form Data:", { ...personalData, ...data });
+    } catch (error) {
+      console.log("Reached here");
+      console.error("Mutation Error:", error);
+    }
   };
 
   return (

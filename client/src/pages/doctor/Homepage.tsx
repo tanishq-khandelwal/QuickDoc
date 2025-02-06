@@ -95,15 +95,13 @@ const Homepage = () => {
       <div className="mt-16">
         <div className="p-6 max-w-6xl mx-auto mt-16">
           {/* Search Section Start*/}
-          <div className="flex gap-4 mb-6">
-            <Input placeholder="Search location" className="w-1/2" />
+          <div className="flex mb-6">
+            <Input placeholder="Search location" className="w-1/3 rounded-none border border-gray-500 border-r-0  focus:border-none" />
             <Input
               placeholder="Search doctors, clinics, hospitals, etc."
-              className="w-1/2"
+              className="w-1/4 rounded-none border border-gray-500 focus:border-none"
             />
-            <Button>
-              <Search />
-            </Button>
+
           </div>
         </div>
         {/* Search Section End */}
