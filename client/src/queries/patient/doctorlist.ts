@@ -31,6 +31,7 @@ export const FETCH_DOCTOR_AVAILABILITY = gql`
         end_time
         start_time
         available_days
+        is_available
       }
       appointments {
         appointment_date

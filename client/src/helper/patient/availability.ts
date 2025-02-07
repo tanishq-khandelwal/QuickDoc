@@ -18,9 +18,10 @@ export async function getUserAvailability(data: any) {
       (availability) => availability.available_days.toLowerCase() === day
     );
 
+    console.log(dayAvailability);
     return {
       day,
-      available: dayAvailability ? true : false,
+      available: dayAvailability?dayAvailability.is_available:false,
       start_time: dayAvailability ? dayAvailability.start_time : null,
       end_time: dayAvailability ? dayAvailability.end_time : null,
     };

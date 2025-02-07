@@ -1,10 +1,14 @@
 import { useState, useEffect } from "react";
 import Layout from "@/Layout";
 import { Navbar } from "@/Navbar";
-import { fetchAppointments, updateApppointment } from "@/redux/actions/doctor/appointmentAction";
+import {
+  fetchAppointments,
+  updateApppointment,
+} from "@/redux/actions/doctor/appointmentAction";
 import { Calendar, Clock, Mail, Phone, User } from "lucide-react";
 import toast from "react-hot-toast";
 import { useDispatch, useSelector } from "react-redux";
+import { DateTime } from "luxon";
 
 const Appointments = () => {
   const dispatch = useDispatch();
@@ -33,16 +37,15 @@ const Appointments = () => {
   const handleAccept = (appointmentId: number) => {
     dispatch(updateApppointment({ appointmentId, status: "approved" }));
     toast.success("Appointment Accepted");
-    setTimeout(() => window.location.reload(), 500); 
+    setTimeout(() => window.location.reload(), 500);
   };
-  
+
   const handleReject = (appointmentId: number) => {
     dispatch(updateApppointment({ appointmentId, status: "rejected" }));
     toast.error("Appointment Rejected");
     setTimeout(() => window.location.reload(), 500);
   };
-  
-  
+
   const getStatusColor = (status: string) => {
     switch (status.toLowerCase()) {
       case "pending":
@@ -57,11 +60,7 @@ const Appointments = () => {
   };
 
   const formatTime = (time: string) => {
-    const [hours, minutes] = time.split(":").map(Number);
-    const suffix = hours >= 12 ? "PM" : "AM";
-    return `${hours % 12 || 12}:${minutes
-      .toString()
-      .padStart(2, "0")} ${suffix}`;
+    return DateTime.fromISO(time).toFormat("hh:mm a");
   };
 
   const filteredAppointments =
@@ -120,7 +119,11 @@ const Appointments = () => {
                   </h2>
                   <p className="text-red-600 font-semibold flex gap-2 items-center">
                     <Calendar className="h-5 w-5" /> Date:{" "}
-                    {appointment?.appointment_date}
+                    {appointment?.appointment_date
+                      ? DateTime.fromISO(
+                          appointment.appointment_date
+                        ).toLocaleString(DateTime.DATE_MED_WITH_WEEKDAY)
+                      : "Invalid Date"}
                   </p>
                   <p className="text-blue-700 font-semibold flex gap-2 items-center">
                     <Clock className="h-5 w-5" />{" "}

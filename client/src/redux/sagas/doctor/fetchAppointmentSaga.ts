@@ -14,7 +14,7 @@ import {
 //   patient_phone: string;
 
 // };
-1;
+// 1;
 const userData = localStorage.getItem("user");
 const doctorId = userData ? JSON.parse(userData).doctorId : null;
  console.log(doctorId)

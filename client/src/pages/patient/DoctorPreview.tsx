@@ -158,6 +158,8 @@ console.log(finalformattedDate);
     return date < today || !dayAvailability?.available;
   };
 
+  console.log(availableDays);
+
   return (
     <Layout>
       <Navbar />

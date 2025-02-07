@@ -6,8 +6,8 @@ import { useDispatch, useSelector } from "react-redux";
 import { fetchAvailability } from "@/redux/actions/doctor/availabilityAction";
 import { RootState } from "@/redux/rootReducer";
 import toast from "react-hot-toast";
-import AvailabilityModal from "@/components/availability/AvailabilityModal";
-import TimezoneDropdown from "@/components/availability/TimeZoneDropDown";
+import AvailabilityModal from "@/components/availability/AvailabilityModal/AvailabilityModal";
+import TimezoneDropdown from "@/components/availability/timezone/TimeZoneDropDown";
 import { useMutation } from "@apollo/client";
 import { UPDATE_AVAILABILITY } from "@/queries/doctor/availability";
 import { DateTime } from "luxon";
@@ -50,7 +50,7 @@ const Availability = () => {
     "11:00 PM",
   ];
 
-  const [modifiedDays, setModifiedDays] = useState(new Set<number>());
+  const [_modifiedDays, setModifiedDays] = useState(new Set<number>());
   const [availability, setAvailability] = useState<{
     [key: number]: AvailabilityDay;
   }>({});
@@ -103,12 +103,9 @@ const Availability = () => {
   }, [data]);
 
   const formatTime = (time: string) => {
-    if (!time) return "";
-    const [hours, minutes] = time.split(":").map(Number);
-    const period = hours >= 12 ? "PM" : "AM";
-    const formattedHours = hours % 12 || 12;
-    return `${formattedHours}:${minutes.toString().padStart(2, "0")} ${period}`;
+    return DateTime.fromISO(time).toFormat("hh:mm a"); 
   };
+
 
   const toggleDropdown = (id: number, field: string | null) => {
     // console.log("Toggling", id, field);
@@ -138,7 +135,7 @@ const Availability = () => {
 
   type ChangedDay = {
     availableDay: string;
-    startTime: string;
+    startTime: string ;
     endTime: string;
     available: boolean; // Track the selected status of the day
   };
@@ -196,8 +193,13 @@ const Availability = () => {
         variables: {
           doctorId: doctorId,
           availableDay: changedDaysArray[0].availableDay,
-          startTime:String(DateTime.fromFormat(changedDaysArray[0].startTime, "h:mm a").toFormat("HH:mm:ss")),
-          endTime: String(DateTime.fromFormat(changedDaysArray[0].endTime, "h:mm a").toFormat("HH:mm:ss")),
+          startTime: String(
+            DateTime.fromFormat(changedDaysArray[0].startTime, "h:mm a").toFormat("HH:mm:ss")
+          ),
+          endTime: String(
+            DateTime.fromFormat(changedDaysArray[0].endTime, "h:mm a").toFormat("HH:mm:ss")
+          ),
+          
           available: changedDaysArray[0].available,
         },  
       });
@@ -207,6 +209,8 @@ const Availability = () => {
       console.error(error);
     }
   };
+
+ 
   return (
     <Layout>
       <Navbar />

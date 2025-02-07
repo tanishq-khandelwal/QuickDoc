@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import {useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import avatar from "../assets/avatar.svg"
+import avatar from "../../../assets/avatar.svg"
 import toast from "react-hot-toast";
 import { LOGOUT_REQUEST } from "@/redux/actions/authActions";
 

@@ -15,7 +15,7 @@ export const FETCH_AVAILABILITY = gql`
 export const UPDATE_AVAILABILITY = gql`
   mutation UPDATE_AVAILABILITY(
     $doctorId: Int!
-    $availableDay:String
+    $availableDay: String
     $startTime: time
     $endTime: time
     $available: Boolean
@@ -24,12 +24,12 @@ export const UPDATE_AVAILABILITY = gql`
       where: {
         doctor_id: { _eq: $doctorId }
         available_days: { _eq: $availableDay }
-        }
-        _set:{
-          start_time: { _eq: $startTime }
-        end_time: { _eq: $endTime }
-        is_available: { _eq: $available }
-        }
+      }
+      _set: {
+        start_time: $startTime
+        end_time: $endTime
+        is_available: $available
+      }
     ) {
       returning {
         doctor_id

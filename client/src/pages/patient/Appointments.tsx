@@ -5,6 +5,7 @@ import { fetchMyAppointments } from "@/redux/actions/patient/MyAppointmentAction
 import { Calendar, Clipboard, Clock, Phone, User } from "lucide-react";
 import toast from "react-hot-toast";
 import { useDispatch, useSelector } from "react-redux";
+import { DateTime } from "luxon";
 
 const MyAppointments = () => {
   const dispatch = useDispatch();
@@ -43,17 +44,22 @@ const MyAppointments = () => {
     }
   };
 
+  var local = DateTime.local(2017, 5, 15, 9, 10, 23);
+  const systemZone = local.zoneName || "";
+
   const formatTime = (time: string) => {
-    const [hours, minutes] = time.split(":").map(Number);
-    const suffix = hours >= 12 ? "PM" : "AM";
-    const formattedHours = hours % 12 || 12; // Convert 0 -> 12 for 12 AM
-    return `${formattedHours}:${minutes.toString().padStart(2, "0")} ${suffix}`;
+    return DateTime.fromISO(time).setZone(systemZone).toFormat("hh:mm a 'IST'");
+
+
   };
 
   // Filter appointments based on selected status
-  const filteredAppointments = selectedStatus === "all"
-    ? appointments
-    : appointments.filter((appointment) => appointment.status.toLowerCase() === selectedStatus);
+  const filteredAppointments =
+    selectedStatus === "all"
+      ? appointments
+      : appointments.filter(
+          (appointment) => appointment.status.toLowerCase() === selectedStatus
+        );
 
   return (
     <Layout>
@@ -61,23 +67,23 @@ const MyAppointments = () => {
       <div className="container mx-auto p-4 mt-20">
         <div className="flex justify-between">
           <div>
-        <h1 className="text-2xl font-bold mb-4">My Appointments</h1>
-        </div>
-        {/* Status Filter Dropdown */}
-        <div className="mb-4 ">
-          <label className="mr-2 font-semibold">Filter by Status:</label>
-          <select
-            value={selectedStatus}
-            onChange={(e) => setSelectedStatus(e.target.value)}
-            className="border px-3 py-2 rounded-md cursor-pointer"
-          >
-            <option value="all">All</option>
-            <option value="pending">Pending</option>
-            <option value="approved">Approved</option>
-            <option value="rejected">Rejected</option>
-            <option value="completed">Completed</option>
-          </select>
-        </div>
+            <h1 className="text-2xl font-bold mb-4">My Appointments</h1>
+          </div>
+          {/* Status Filter Dropdown */}
+          <div className="mb-4 ">
+            <label className="mr-2 font-semibold">Filter by Status:</label>
+            <select
+              value={selectedStatus}
+              onChange={(e) => setSelectedStatus(e.target.value)}
+              className="border px-3 py-2 rounded-md cursor-pointer"
+            >
+              <option value="all">All</option>
+              <option value="pending">Pending</option>
+              <option value="approved">Approved</option>
+              <option value="rejected">Rejected</option>
+              <option value="completed">Completed</option>
+            </select>
+          </div>
         </div>
 
         <div className="flex gap-4 flex-wrap">
@@ -103,11 +109,17 @@ const MyAppointments = () => {
                   </h2>
                   <p className="flex text-red-600 font-semibold items-center gap-2">
                     <Calendar className="h-5 w-5" />
-                    Date: {appointment?.appointment_date}
+                    Date:{" "}
+                    {appointment?.appointment_date
+                      ? DateTime.fromISO(
+                          appointment.appointment_date
+                        ).toLocaleString(DateTime.DATE_MED_WITH_WEEKDAY)
+                      : "Invalid Date"}
                   </p>
                   <p className="flex gap-2 text-blue-700 font-semibold items-center">
                     <Clock className="h-5 w-5" />
-                    {formatTime(appointment.start_time)} - {formatTime(appointment.end_time)}
+                    {formatTime(appointment.start_time)} -{" "}
+                    {formatTime(appointment.end_time)}
                   </p>
                 </div>
 
