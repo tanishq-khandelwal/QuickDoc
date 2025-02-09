@@ -63,10 +63,14 @@ const Appointments = () => {
   const systemZone = local.zoneName || "";
 
   const formatTime = (date: string, time: string, patientTimeZone: string) => {
-    return DateTime.fromISO(`${date}T${time}`, { zone: patientTimeZone })
-      .setZone(systemZone)
-      .toFormat("hh:mm a 'IST'");
-  };
+    const localTime = DateTime.fromISO(`${date}T${time}`, { zone: patientTimeZone }).setZone(systemZone);
+    
+    if (systemZone === "Asia/Calcutta") {
+      return localTime.toFormat("hh:mm a 'IST'");
+    } else {
+      return localTime.toFormat("hh:mm a ZZZZ"); 
+    }
+  };  
 
   const filteredAppointments =
     selectedStatus === "all"

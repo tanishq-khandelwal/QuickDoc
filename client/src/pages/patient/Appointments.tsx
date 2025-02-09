@@ -48,10 +48,16 @@ const MyAppointments = () => {
   const systemZone = local.zoneName || "";
 
   const formatTime = (date: string, time: string, patientTimeZone: string) => {
-    return DateTime.fromISO(`${date}T${time}`, { zone: patientTimeZone })
-      .setZone(systemZone)
-      .toFormat("hh:mm a 'IST'");
+    const localTime = DateTime.fromISO(`${date}T${time}`, { zone: patientTimeZone }).setZone(systemZone);
+    
+    // Check if the system timezone is India
+    if (systemZone === "Asia/Calcutta") {
+      return localTime.toFormat("hh:mm a 'IST'"); // Force IST label
+    } else {
+      return localTime.toFormat("hh:mm a ZZZZ"); // Show the correct timezone abbreviation
+    }
   };
+  
 
   // Filter appointments based on selected status
   const filteredAppointments =
