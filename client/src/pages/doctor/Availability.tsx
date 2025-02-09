@@ -103,9 +103,8 @@ const Availability = () => {
   }, [data]);
 
   const formatTime = (time: string) => {
-    return DateTime.fromISO(time).toFormat("hh:mm a"); 
+    return DateTime.fromISO(time).toFormat("hh:mm a");
   };
-
 
   const toggleDropdown = (id: number, field: string | null) => {
     // console.log("Toggling", id, field);
@@ -118,24 +117,42 @@ const Availability = () => {
     }));
   };
 
+  const [errors, setErrors] = useState<{ [key: number]: string }>({});
+  console.log(errors);
   const handleTimeChange = (
     dayId: number,
     field: "startTime" | "endTime",
     value: string
   ) => {
-    setAvailability((prev) => ({
-      ...prev,
-      [dayId]: {
-        ...prev[dayId],
-        [field]: value,
-      },
-    }));
+    setAvailability((prev) => {
+      const updatedAvailability = {
+        ...prev,
+        [dayId]: { ...prev[dayId], [field]: value },
+      };
+  
+      const start = DateTime.fromFormat(updatedAvailability[dayId].startTime, "h:mm a");
+      const end = DateTime.fromFormat(updatedAvailability[dayId].endTime, "h:mm a");
+  
+      setErrors((prevErrors) => {
+        const newErrors = { ...prevErrors };
+        if (start >= end) {
+          newErrors[dayId] = "Start time must be earlier than end time";
+        } else {
+          delete newErrors[dayId]; // Remove error if time is valid
+        }
+        return newErrors;
+      });
+  
+      return updatedAvailability;
+    });
+  
     setModifiedDays((prev) => new Set(prev).add(dayId));
   };
+  
 
   type ChangedDay = {
     availableDay: string;
-    startTime: string ;
+    startTime: string;
     endTime: string;
     available: boolean; // Track the selected status of the day
   };
@@ -194,23 +211,33 @@ const Availability = () => {
           doctorId: doctorId,
           availableDay: changedDaysArray[0].availableDay,
           startTime: String(
-            DateTime.fromFormat(changedDaysArray[0].startTime, "h:mm a").toFormat("HH:mm:ss")
+            DateTime.fromFormat(
+              changedDaysArray[0].startTime,
+              "h:mm a"
+            ).toFormat("HH:mm:ss")
           ),
           endTime: String(
-            DateTime.fromFormat(changedDaysArray[0].endTime, "h:mm a").toFormat("HH:mm:ss")
+            DateTime.fromFormat(changedDaysArray[0].endTime, "h:mm a").toFormat(
+              "HH:mm:ss"
+            )
           ),
-          
+
           available: changedDaysArray[0].available,
-        },  
+        },
       });
 
-      console.log(response);
+      response
+        .then(() => {
+          toast.success("Saved");
+        })
+        .catch((error) => {
+          toast.error("Failed to Save", error);
+        });
     } catch (error) {
       console.error(error);
     }
   };
 
- 
   return (
     <Layout>
       <Navbar />
@@ -367,6 +394,7 @@ const Availability = () => {
                             )}
                           </div>
                         </div>
+                        
                       )}
                     </div>
                   ))}

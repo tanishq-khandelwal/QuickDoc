@@ -59,10 +59,12 @@ const Appointments = () => {
     }
   };
 
-  const formatTime = (time: string) => {
-    return DateTime.fromISO(time).toFormat("hh:mm a");
-  };
+  var local = DateTime.local(2017, 5, 15, 9, 10, 23);
+  const systemZone = local.zoneName || "";
 
+  const formatTime = (time: string) => {
+    return DateTime.fromISO(time).setZone(systemZone).toFormat("hh:mm a 'IST'");
+  };
   const filteredAppointments =
     selectedStatus === "all"
       ? appointments

@@ -1,4 +1,4 @@
-import { format, addMinutes, isBefore } from "date-fns";
+import { DateTime } from "luxon";
 // luxon
 export async function getUserAvailability(data: any) {
   console.log(data);
@@ -18,12 +18,13 @@ export async function getUserAvailability(data: any) {
       (availability) => availability.available_days.toLowerCase() === day
     );
 
-    console.log(dayAvailability);
+    // console.log(dayAvailability);
     return {
       day,
       available: dayAvailability?dayAvailability.is_available:false,
       start_time: dayAvailability ? dayAvailability.start_time : null,
       end_time: dayAvailability ? dayAvailability.end_time : null,
+      time_zone:dayAvailability ?dayAvailability.time_zone:null
     };
   });
 
@@ -32,84 +33,57 @@ export async function getUserAvailability(data: any) {
 }
 
 export function generateAvailableTimeSlots(
-  startTime: Date, // Start time (Date object)
-  endTime: Date, // End time (Date object)
-  slot_duration = 15, // Default slot duration to 15 minutes
-  selectedDate: Date, // Date object (e.g., "2025-02-04")
-  bookings: any[] // Existing bookings data
+  startTime: string, // Start time (ISO string)
+  endTime: string, // End time (ISO string)
+  slot_duration = 15, // Slot duration in minutes
+  selectedDate: string, // Selected date as a full Date string (e.g., "Mon Feb 10 2025 00:00:00 GMT+0530")
+  doctorTimeZone: string, // Doctor's timezone (e.g., "Asia/Kolkata")
+  bookings: any[] // List of existing bookings
 ) {
-  const slots = [];
+  const slots: string[] = [];
 
-  // Extract date components from selectedDate (year, month, day)
-  const year = selectedDate.getFullYear();
-  const month = selectedDate.getMonth(); // 0-indexed (January is 0)
-  const day = selectedDate.getDate();
+  // Get patient's system time zone
+  const patientTimeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
 
-  // Combine date with the time to create full start and end date-times
-  const startDateTime = new Date(
-    year,
-    month,
-    day,
-    startTime.getHours(),
-    startTime.getMinutes()
-  );
-  const endDateTime = new Date(
-    year,
-    month,
-    day,
-    endTime.getHours(),
-    endTime.getMinutes()
-  );
+  // Convert selectedDate properly to YYYY-MM-DD format
+  const selectedDateTime = DateTime.fromJSDate(new Date(selectedDate), { zone: doctorTimeZone }).toISODate();
 
-  // console.log("Start DateTime:", startDateTime);
-  // console.log("End DateTime:", endDateTime);
+  // Convert start and end times to doctor's timezone and attach the selected date
+  const doctorStartDateTime = DateTime.fromISO(`${selectedDateTime}T${startTime}`, { zone: doctorTimeZone })
+    .setZone(patientTimeZone);
 
-  // If the date is today, start from the next available slot after the current time
-  const now = new Date();
-  const additionalMinutes = addMinutes(now, 30);
-  let currentTime = startDateTime;
+  const doctorEndDateTime = DateTime.fromISO(`${selectedDateTime}T${endTime}`, { zone: doctorTimeZone })
+    .setZone(patientTimeZone);
 
-  // Adjust the starting point if the date is today and currentTime is in the past
-  if (format(now, "yyyy-MM-dd") === selectedDate.toLocaleDateString()) {
-    if (isBefore(currentTime, now)) {
-      // Add slot duration to current time to avoid generating past slots
-      currentTime = addMinutes(now, slot_duration);
-    }
-  }
+  console.log("Doctor's Time Zone:", doctorTimeZone);
+  console.log("System (Patient's) Time Zone:", patientTimeZone);
+  console.log("Doctor's Start Time:", doctorStartDateTime.toISO());
+  console.log("Doctor's End Time:", doctorEndDateTime.toISO());
 
-  console.log("Current Time:", currentTime);
+  let currentTime = doctorStartDateTime;
 
-  // Loop to generate time slots
-  console.log(bookings);
-  while (currentTime < endDateTime) {
-    const slotEnd = new Date(currentTime.getTime() + slot_duration * 60000);
-    // console.log("Slot End:", slotEnd);
-    //   console.log("Current Time:", currentTime);
+  // Get the current time in the system's time zone and the next available slot time
+  const now = DateTime.now().setZone(patientTimeZone);
+  const nextAvailableTime = now.plus({ minutes: 30 });
 
-    // Check if the slot is available
+  console.log(nextAvailableTime.toISOTime());
 
+  while (currentTime < doctorEndDateTime) {
+    const slotEnd = currentTime.plus({ minutes: slot_duration });
+
+    // Check if the slot is already book  ed
     const isSlotAvailable = !bookings?.some((booking) => {
-      const [year, month, day] = booking.appointment_date
-        .split("-")
-        .map(Number); // Extract year, month, day
-
-      const bookingStart = new Date(
-        year,
-        month - 1,
-        day, // Month is 0-based in JS Date
-        parseInt(booking.start_time.split(":")[0]), // Hours
-        parseInt(booking.start_time.split(":")[1]) // Minutes
+      const bookingStart = DateTime.fromFormat(
+        `${booking.appointment_date}T${booking.start_time}`,
+        "yyyy-MM-dd'T'HH:mm:ss",
+        { zone: patientTimeZone }
+      );
+      const bookingEnd = DateTime.fromFormat(
+        `${booking.appointment_date}T${booking.end_time}`,
+        "yyyy-MM-dd'T'HH:mm:ss",
+        { zone: patientTimeZone }
       );
 
-      const bookingEnd = new Date(
-        year,
-        month - 1,
-        day,
-        parseInt(booking.end_time.split(":")[0]),
-        parseInt(booking.end_time.split(":")[1])
-      );
-
-      // console.log(bookingStart,bookingEnd)
       return (
         (currentTime >= bookingStart && currentTime < bookingEnd) ||
         (slotEnd > bookingStart && slotEnd <= bookingEnd) ||
@@ -117,11 +91,14 @@ export function generateAvailableTimeSlots(
       );
     });
 
-    if (isSlotAvailable && currentTime >= additionalMinutes) {
-      slots.push(format(currentTime, "HH:mm"));
+    // console.log(isSlotAvailable);
+    console.log(currentTime.toISO(),nextAvailableTime.toISO());
+    console.log(currentTime >= nextAvailableTime)
+
+    if (isSlotAvailable && currentTime >= nextAvailableTime) {
+      slots.push(currentTime.toFormat("HH:mm"));
     }
 
-    // Move to the next slot
     currentTime = slotEnd;
   }
 

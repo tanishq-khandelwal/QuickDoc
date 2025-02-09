@@ -13,7 +13,6 @@ import {
 } from "@/helper/patient/availability";
 import { Button } from "@/components/ui/button";
 import { useNavigate, useSearchParams } from "react-router-dom";
-import { addMinutes, set } from "date-fns";
 import { bookAppointment } from "@/redux/actions/patient/bookAppointmentAction";
 
 const DoctorPreview = () => {
@@ -45,7 +44,7 @@ const DoctorPreview = () => {
 
   const formattedDate = new Date(selectedDate);
   formattedDate.setHours(0, 0, 0, 0); // Reset time to 00:00 to avoid time zone adjustments
-  const finalformattedDate = selectedDate.getFullYear() +
+  const finalformattedDate = selectedDate?.getFullYear() +
   '-' +
   (selectedDate.getMonth() + 1).toString().padStart(2, '0') + 
   '-' +
@@ -130,19 +129,21 @@ console.log(finalformattedDate);
     console.log(selectedDate);
     if (
       selectedDay &&
-      selectedDay.available &&
-      selectedDay.start_time &&
-      selectedDay.end_time
+      selectedDay?.available &&
+      selectedDay?.start_time &&
+      selectedDay?.end_time
     ) {
-      const timeSlots = generateAvailableTimeSlots(
-        new Date(`1970-01-01T${selectedDay.start_time}`), // Convert time to Date object
-        new Date(`1970-01-01T${selectedDay.end_time}`), // Convert time to Date object
+      const timeSlots =generateAvailableTimeSlots(
+        selectedDay.start_time, // Convert time to Date object
+        selectedDay.end_time, // Convert time to Date object
         data?.slot_duration, // 15-minute slots (you can change this)
-        selectedDate, // Pass the date string
+        finalformattedDate,
+        selectedDay.time_zone,
+         // Pass the date string
         data?.appointments // Pass any existing bookings, if necessary
       );
       setAvailableTimeSlots(timeSlots);
-      // console.log(timeSlots); // Logs the correct value after generating
+      console.log(selectedDate); // Logs the correct value after generating
     }
   }, [selectedDate, availableDays]);
 
