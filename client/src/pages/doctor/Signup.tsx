@@ -45,6 +45,7 @@ const professionalInfoSchema = z.object({
   clinic_address: z.string().optional(),
   city: z.string().min(2, "City is required"),
   consultation_fee: z.string().regex(/^\d+(\.\d{1,2})?$/, "Invalid fee format"),
+  
 });
 
 export default function Signup() {

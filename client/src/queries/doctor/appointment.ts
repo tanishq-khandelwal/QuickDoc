@@ -12,6 +12,7 @@ export const GET_ALL_APPOINTMENTS = gql`
       patient_id
       start_time
       end_time
+      patient_time_zone
       status
       user {
         name

@@ -62,9 +62,12 @@ const Appointments = () => {
   var local = DateTime.local(2017, 5, 15, 9, 10, 23);
   const systemZone = local.zoneName || "";
 
-  const formatTime = (time: string) => {
-    return DateTime.fromISO(time).setZone(systemZone).toFormat("hh:mm a 'IST'");
+  const formatTime = (date: string, time: string, patientTimeZone: string) => {
+    return DateTime.fromISO(`${date}T${time}`, { zone: patientTimeZone })
+      .setZone(systemZone)
+      .toFormat("hh:mm a 'IST'");
   };
+
   const filteredAppointments =
     selectedStatus === "all"
       ? appointments
@@ -127,10 +130,19 @@ const Appointments = () => {
                         ).toLocaleString(DateTime.DATE_MED_WITH_WEEKDAY)
                       : "Invalid Date"}
                   </p>
-                  <p className="text-blue-700 font-semibold flex gap-2 items-center">
-                    <Clock className="h-5 w-5" />{" "}
-                    {formatTime(appointment.start_time)} -{" "}
-                    {formatTime(appointment.end_time)}
+                  <p className="flex gap-2 text-blue-700 font-semibold items-center">
+                    <Clock className="h-5 w-5" />
+                    {formatTime(
+                      appointment.appointment_date,
+                      appointment.start_time,
+                      appointment.patient_time_zone
+                    )}{" "}
+                    -
+                    {formatTime(
+                      appointment.appointment_date,
+                      appointment.end_time,
+                      appointment.patient_time_zone
+                    )}
                   </p>
                 </div>
 

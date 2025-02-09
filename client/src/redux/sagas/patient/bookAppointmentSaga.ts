@@ -17,10 +17,11 @@ type appointmentAction = {
 export function *bookAppointment(action: appointmentAction) {
     try {
         const { doctorId, appointmentDate, patientId, startTime, endTime } = action.payload;
+        const patientTimeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
         console.log(doctorId, appointmentDate, patientId, startTime, endTime);
         const response = yield call(client.mutate, {
             mutation: BOOK_APPOINTMENT,
-            variables: { doctorId, appointmentDate, patientId, startTime, endTime },
+            variables: { doctorId, appointmentDate, patientId, startTime, endTime,patientTimeZone },
         });
         console.log(response);
         yield put({ type: BOOK_APPOINTMENT_SUCCESS, payload: response?.data?.insert_appointments?.returning[0]?.appointment_id });

@@ -1,5 +1,6 @@
 import { gql } from "@apollo/client";
 
+
 export const BOOK_APPOINTMENT = gql`
   mutation BOOK_APPOINTMENT(
     $doctorId: Int!
@@ -7,6 +8,7 @@ export const BOOK_APPOINTMENT = gql`
     $patientId: Int!
     $startTime: time
     $endTime: time
+    $patientTimeZone:String!
   ) {
     insert_appointments(
       objects: {
@@ -15,6 +17,7 @@ export const BOOK_APPOINTMENT = gql`
         patient_id: $patientId
         start_time: $startTime
         end_time: $endTime
+        patient_time_zone:$patientTimeZone
       }
     ) {
       returning {
@@ -31,6 +34,7 @@ query GET_APPOINTMENTS ($userId: Int!) {
     appointment_date
     start_time
     end_time
+    patient_time_zone
     status
     doctor {
       user {
