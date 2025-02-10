@@ -1,0 +1,23 @@
+import { screen, render } from "@testing-library/react";
+import "@testing-library/jest-dom";
+import ServicesSection from "./servicesSection";
+
+describe("Service Section Component Test", () => {
+  it("Renders all service cards correctly", () => {
+    render(<ServicesSection />);
+
+    expect(screen.getByText("Instant Video Consultation")).toBeInTheDocument();
+    expect(screen.getByText("Find Doctors Near You")).toBeInTheDocument();
+    expect(screen.getByText("Surgeries")).toBeInTheDocument();
+  });
+
+  it("Renders images with correct Alt text", () => {
+    render(<ServicesSection />);
+
+    expect(
+      screen.getByAltText("Instant Video Consultation")
+    ).toBeInTheDocument();
+    expect(screen.getByAltText("Find Doctors Near You")).toBeInTheDocument();
+    expect(screen.getByAltText("Surgeries")).toBeInTheDocument();
+  });
+});

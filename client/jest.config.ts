@@ -11,6 +11,9 @@ const config: Config = {
       },
     ],
   },
+  moduleNameMapper: {
+    "^@/(.*)$": "<rootDir>/src/$1", // Map '@/' to 'src/' for Jest
+  },
 };
 
 export default config;
