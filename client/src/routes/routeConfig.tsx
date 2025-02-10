@@ -10,6 +10,7 @@ import DoctorList from "../pages/patient/DoctorList";
 import DoctorPreview from "../pages/patient/DoctorPreview";
 import MyAppointments from "../pages/patient/Appointments";
 import Homepage from "../pages/Homepage";
+import PatientProfile from "../pages/patient/Profile";
 
 export const publicRoutes = [
   { path: "/", element: <Homepage /> },
@@ -30,4 +31,5 @@ export const patientRoutes = [
   { path: "/doctors", element: <DoctorList /> },
   { path: "/doctorPreview", element: <DoctorPreview /> },
   { path: "/appointments/me", element: <MyAppointments /> },
+  { path: "/patient/profile/:id", element: <PatientProfile /> },
 ];

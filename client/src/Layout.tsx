@@ -1,4 +1,10 @@
-import { createContext, useContext, useState, ReactNode, useEffect } from "react";
+import {
+  createContext,
+  useContext,
+  useState,
+  ReactNode,
+  useEffect,
+} from "react";
 import { Link } from "react-router-dom";
 import {
   MoreVertical,
@@ -63,23 +69,22 @@ export function AppSidebar() {
   useEffect(() => {
     const updateState = () => {
       const newRole = localStorage.getItem("role");
-    const newLoggedInStatus = localStorage.getItem("isLoggedIn") === "true";
+      const newLoggedInStatus = localStorage.getItem("isLoggedIn") === "true";
 
-    setRole(newRole);
-    setIsLoggedIn(newLoggedInStatus);
+      setRole(newRole);
+      setIsLoggedIn(newLoggedInStatus);
     };
-  
+
     // Listen to localStorage changes (for dynamic updates)
     window.addEventListener("storage", updateState);
-  
+
     // Run once on mount
     updateState();
-  
+
     return () => {
       window.removeEventListener("storage", updateState);
     };
   }, []);
-  
 
   if (role === "doctor") {
     sidebarItems = [
@@ -91,12 +96,16 @@ export function AppSidebar() {
     ];
   }
 
+  const userData = localStorage.getItem("user");
+  const patientId = userData ? JSON.parse(userData).user_id : null;
+
+
   if (role === "patient") {
     sidebarItems = [
       { title: "Home", url: "/", icon: Home },
       { title: "Doctors", url: "/doctors", icon: Hospital },
       { title: "Appointments", url: "/appointments/me", icon: Calendar },
-      { title: "Profile", url: "/patient/profile", icon: User },
+      { title: "Profile", url: `/patient/profile/${patientId}`, icon: User },
     ];
   }
 
@@ -204,9 +213,7 @@ export default function Layout({ children }: LayoutProps) {
   return (
     <SidebarProvider>
       <AppSidebar />
-      <main className="flex-1">
-        {children}
-      </main>
+      <main className="flex-1">{children}</main>
     </SidebarProvider>
   );
 }
