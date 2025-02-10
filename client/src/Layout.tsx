@@ -7,7 +7,6 @@ import {
 } from "react";
 import { Link } from "react-router-dom";
 import {
-  MoreVertical,
   ChevronLast,
   ChevronFirst,
   Home,
