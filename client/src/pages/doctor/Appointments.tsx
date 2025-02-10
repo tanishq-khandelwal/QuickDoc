@@ -76,7 +76,7 @@ const Appointments = () => {
     selectedStatus === "all"
       ? appointments
       : appointments.filter(
-          (appointment) => appointment.status.toLowerCase() === selectedStatus
+          (appointment:any) => appointment.status.toLowerCase() === selectedStatus
         );
 
   return (

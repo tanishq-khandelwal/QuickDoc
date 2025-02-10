@@ -42,4 +42,4 @@ export const UPDATE_AVAILABILITY = gql`
 const userData = localStorage.getItem("user");
 const doctorId = userData ? JSON.parse(userData).doctorId : null;
 
-// console.log(doctorId); // This will log the doctorId from localStorage or null if not found
+console.log(doctorId); // This will log the doctorId from localStorage or null if not found

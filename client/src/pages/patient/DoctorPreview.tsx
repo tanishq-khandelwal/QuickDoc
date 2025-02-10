@@ -65,8 +65,8 @@ console.log(finalformattedDate);
       doctorId: doctorId,
       appointmentDate: finalformattedDate,
       patientId: userId,
-      startTime: selectedTime,
-      endTime: addMinutes(selectedTime, data?.slot_duration),
+      startTime: selectedTime!,
+      endTime: addMinutes(selectedTime!, data?.slot_duration),
     };
 
     console.log(appointmentData);
@@ -232,7 +232,7 @@ console.log(finalformattedDate);
                     className="mb-6 rounded-lg border p-4"
                     selected={selectedDate}
                     onSelect={(date) => {
-                      setSelectedDate(date);
+                      setSelectedDate(date ?? new Date());
                     }}
                     disabled={disabledDays} // Disable unavailable days
                   />

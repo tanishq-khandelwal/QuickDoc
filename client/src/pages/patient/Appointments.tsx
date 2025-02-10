@@ -64,7 +64,7 @@ const MyAppointments = () => {
     selectedStatus === "all"
       ? appointments
       : appointments.filter(
-          (appointment) => appointment.status.toLowerCase() === selectedStatus
+          (appointment:any) => appointment.status.toLowerCase() === selectedStatus
         );
 
   return (
@@ -129,7 +129,8 @@ const MyAppointments = () => {
                       appointment.start_time,
                       appointment.patient_time_zone
                     )}{" "}
-                    -
+                    - 
+                    {" "}
                     {formatTime(
                       appointment.appointment_date,
                       appointment.end_time,

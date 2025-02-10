@@ -164,7 +164,7 @@ const Availability = () => {
 
   const [selectedSlot, setSelectedSlot] = useState("");
 
-  const handleChange = (e) => {
+  const handleChange = (e:React.ChangeEvent<HTMLSelectElement>) => {
     setSelectedSlot(e.target.value);
   };
 
