@@ -2,7 +2,7 @@ import { gql } from "@apollo/client";
 
 export const FETCH_DOCTORS = gql`
   query MyQuery {
-    doctors {
+    doctors(order_by: { doctor_id: asc }) {
       clinic_address
       created_at
       slot_duration

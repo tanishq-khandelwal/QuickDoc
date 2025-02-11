@@ -162,11 +162,11 @@ const Availability = () => {
     new Date()
   );
 
-  const [selectedSlot, setSelectedSlot] = useState("");
+  // const [selectedSlot, setSelectedSlot] = useState("");
 
-  const handleChange = (e:React.ChangeEvent<HTMLSelectElement>) => {
-    setSelectedSlot(e.target.value);
-  };
+  // const handleChange = (e:React.ChangeEvent<HTMLSelectElement>) => {
+  //   setSelectedSlot(e.target.value);
+  // };
 
   const handleSave = () => {
     toast.loading("Loading..",{id:"loading"});
@@ -194,12 +194,6 @@ const Availability = () => {
 
     if (changedDaysArray.length > 0) {
       console.log("Changed Days and Timings:", changedDaysArray);
-      console.log("Selected Slot:", selectedSlot.split(" ")[0]);
-      // changedDaysArray.forEach((day) => {
-      //   console.log(
-      //     `${day.title}: Start Time: ${day.startTime}, End Time: ${day.endTime}, Selected: ${day.selected}`
-      //   );
-      // });
     }
 
     setModifiedDays(new Set()); // Reset modified state after saving
@@ -251,25 +245,10 @@ const Availability = () => {
               Set your weekly availability for your patients
             </div>
 
-            <div className="flex gap-8">
-              <div className="flex items-center space-x-3 mb-2">
-                <span className="text-xl font-normal text-black px-">
-                  Slot:
+            <div className="flex mb-2 gap-4 items-center">
+              <span className="text-xl text-black font-semibold">
+                  Time Zone :
                 </span>
-                <select
-                  id="slot-timing"
-                  className="px-3 py-2 border rounded-md text-lg focus:outline-none focus:ring-2 focus:ring-indigo-100 cursor-pointer"
-                  defaultValue={"15 min"}
-                  value={selectedSlot}
-                  onChange={handleChange}
-                >
-                  <option value="15 min">15 min</option>
-                  <option value="30 min">30 min</option>
-                  <option value="45 min">45 min</option>
-                  <option value="60 min">1 hour</option>
-                </select>
-              </div>
-
               <div>
                 <TimezoneDropdown />
               </div>
