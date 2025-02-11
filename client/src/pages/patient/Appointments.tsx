@@ -9,6 +9,17 @@ import { DateTime } from "luxon";
 
 const MyAppointments = () => {
   const dispatch = useDispatch();
+
+  
+  
+const userData = localStorage.getItem("user");
+const userId = userData ? JSON.parse(userData).user_id : null;
+console.log(userId);
+
+  useEffect(() => {
+    dispatch(fetchMyAppointments(userId));
+  }, [dispatch]);
+
   const { data, loading, error } = useSelector(
     (state: any) => state.myAppointments
   );
@@ -18,9 +29,6 @@ const MyAppointments = () => {
 
   const [selectedStatus, setSelectedStatus] = useState("all");
 
-  useEffect(() => {
-    dispatch(fetchMyAppointments());
-  }, [dispatch]);
 
   useEffect(() => {
     if (loading) {
@@ -93,7 +101,7 @@ const MyAppointments = () => {
         </div>
 
         <div className="flex gap-4 flex-wrap">
-          {filteredAppointments.length > 0 ? (
+          {filteredAppointments.length > 0  ? (
             filteredAppointments.map((appointment: any) => (
               <div
                 key={appointment.appointment_id}

@@ -30,7 +30,7 @@ const Profile = () => {
     <Layout>
       <Navbar />
       <div className="flex justify-center items-center min-h-screen bg-gradient-to-br from-blue-50 to-white mt-16">
-        <div className="w-full max-w-4xl bg-white rounded-lg shadow-lg p-6">
+        <div className="w-full max-w-4xl bg-white rounded-lg shadow-lg p-6 border-2 border-gray-200">
           <h1 className="text-2xl font-bold text-center mb-6">
             Doctor Profile
           </h1>

@@ -61,22 +61,22 @@ const Availability = () => {
   const [updateAvailability] = useMutation(UPDATE_AVAILABILITY);
 
   const dispatch = useDispatch();
-  const { data, loading, error } = useSelector(
+  const { data, loading: reduxLoading, error: reduxError } = useSelector(
     (state: RootState) => state.doctoravailabilty
   );
-
+  
   useEffect(() => {
     dispatch(fetchAvailability());
   }, [dispatch]);
 
   useEffect(() => {
-    if (loading) {
+    if (reduxLoading) {
       toast.loading("Loading...", { id: "loading" });
     } else {
       toast.dismiss("loading");
-      if (error) toast.error(`Loading failed: ${error}`);
+      if (reduxError) toast.error(`Loading failed: ${reduxError}`);
     }
-  }, [loading, error]);
+  }, [reduxLoading, reduxError]);
 
   useEffect(() => {
     if (data?.data?.doctor_availability) {
@@ -169,6 +169,7 @@ const Availability = () => {
   };
 
   const handleSave = () => {
+    toast.loading("Loading..",{id:"loading"});
     const changedDaysArray: ChangedDay[] = weekDays.reduce((acc, day) => {
       const initialDay = initialAvailability[day.id];
       const modifiedDay = availability[day.id];
@@ -226,14 +227,11 @@ const Availability = () => {
         },
       });
 
-      response
-        .then(() => {
-          toast.success("Saved");
-        })
-        .catch((error) => {
-          toast.error("Failed to Save", error);
-        });
+      console.log(response);
+      toast.dismiss("loading");
+      toast.success("Availability Updated");
     } catch (error) {
+      toast.error(`Failed to update availability ${error}`)
       console.error(error);
     }
   };
@@ -241,7 +239,7 @@ const Availability = () => {
   return (
     <Layout>
       <Navbar />
-      {loading ? (
+      {reduxLoading ? (
         <div className="mt-14"> </div>
       ) : (
         <div className="min-h-screen flex items-center justify-center px-4 mt-20">

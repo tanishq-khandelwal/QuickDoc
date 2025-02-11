@@ -3,16 +3,18 @@ import client from "../../../apolloClient";
 import { GET_APPOINTMENTS } from "@/queries/patient/appointment";
 import { FETCH_MY_APPOINTMENTS_FAILURE,FETCH_MY_APPOINTMENTS_SUCCESS,FETCH_MY_APPOINTMENTS_REQUEST } from "@/redux/reducers/patient/MyAppointmentReducer";
 
+interface fetchMyAppointmentAction{
+  type:typeof FETCH_MY_APPOINTMENTS_REQUEST;
+  payload:{userId:number}
+}
 
-const userData = localStorage.getItem("user");
-const userId = userData ? JSON.parse(userData).user_id : null;
-console.log(userId);
-function* fetchMyAppointment() {
-    console.log("REached saga");
+function* fetchMyAppointment(action:fetchMyAppointmentAction) {
+    console.log("Reached saga");
   try {
+    const userId=action.payload;
     const response = yield call(client.query, {
       query: GET_APPOINTMENTS,
-      variables: { userId: userId },
+      variables: userId ,
 
       
     });

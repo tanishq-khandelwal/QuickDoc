@@ -33,8 +33,8 @@ const PatientProfile = () => {
     }
   }, [data]);
 
-  if (loading)
-    return <p className="text-center mt-8 text-gray-500">Loading profile...</p>;
+  // if (loading)
+  //   return <p className="text-center mt-8 text-gray-500">Loading profile...</p>;
   if (error)
     return (
       <p className="text-center mt-8 text-red-500">Error: {error.message}</p>

@@ -38,6 +38,24 @@ export const UPDATE_AVAILABILITY = gql`
   }
 `;
 
+export const UPDATE_EXCEPTION_AVAILABILITY = gql`
+  mutation INSERT_EXCEPTION($doctorId:Int!,$startTime:time,$endTime:time,$available:Boolean,$date:date) {
+    insert_exception_availability(
+      objects: {
+        doctor_id: $doctorId
+        start_time: $startTime
+        end_time: $endTime
+        is_available: $available
+        special_date: $date
+      }
+    ) {
+      returning {
+        availability_id
+      }
+    }
+  }
+`;
+
 // Assuming you're fetching doctorId from localStorage
 const userData = localStorage.getItem("user");
 const doctorId = userData ? JSON.parse(userData).doctorId : null;
