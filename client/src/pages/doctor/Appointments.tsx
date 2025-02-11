@@ -59,6 +59,22 @@ const Appointments = () => {
     }
   };
 
+  type AppointmentType = {
+    appointment_id: number;
+    appointment_date: string; 
+    patient_id: number;
+    start_time: string; 
+    end_time: string;
+    patient_time_zone: string;
+    status: string;
+    user: {
+      name: string;
+      email: string;
+      phone_number: string;
+    };
+  };
+  
+
   var local = DateTime.local(2017, 5, 15, 9, 10, 23);
   const systemZone = local.zoneName || "";
 
@@ -76,7 +92,7 @@ const Appointments = () => {
     selectedStatus === "all"
       ? appointments
       : appointments.filter(
-          (appointment:any) => appointment.status.toLowerCase() === selectedStatus
+          (appointment:AppointmentType) => appointment.status.toLowerCase() === selectedStatus
         );
 
   return (

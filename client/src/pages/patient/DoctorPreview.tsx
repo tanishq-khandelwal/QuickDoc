@@ -50,7 +50,7 @@ const DoctorPreview = () => {
   '-' +
   selectedDate.getDate().toString().padStart(2, '0');
 
-console.log(finalformattedDate); 
+// console.log(finalformattedDate); 
   const handleBookingAppointment = () => {
     const addMinutes = (time: string, minutes: number) => {
       const [hours, mins] = time?.split(":")?.map(Number);
@@ -69,7 +69,7 @@ console.log(finalformattedDate);
       endTime: addMinutes(selectedTime!, data?.slot_duration),
     };
 
-    console.log(appointmentData);
+    // console.log(appointmentData);
     setBooked(true);
     dispatch(bookAppointment(appointmentData));
   };
@@ -125,8 +125,8 @@ console.log(finalformattedDate);
         selectedDate.toLocaleString("en-US", { weekday: "long" }).toLowerCase()
     );
 
-    console.log(selectedDay); // Logs the correct value after selecting a day
-    console.log(selectedDate);
+    // console.log(selectedDay); // Logs the correct value after selecting a day
+    // console.log(selectedDate);
     if (
       selectedDay &&
       selectedDay?.available &&
@@ -143,7 +143,7 @@ console.log(finalformattedDate);
         data?.appointments // Pass any existing bookings, if necessary
       );
       setAvailableTimeSlots(timeSlots);
-      console.log(selectedDate); // Logs the correct value after generating
+      // console.log(selectedDate); // Logs the correct value after generating
     }
   }, [selectedDate, availableDays]);
 
@@ -156,10 +156,10 @@ console.log(finalformattedDate);
     const dayAvailability = availableDays.find((d) => d.day === dayOfWeek);
 
     // Disable the day if it's before today or unavailable
-    return date < today || !dayAvailability?.available;
+    return date < today || !dayAvailability?.available ;
   };
 
-  console.log(availableDays);
+  // console.log(availableDays);
 
   return (
     <Layout>

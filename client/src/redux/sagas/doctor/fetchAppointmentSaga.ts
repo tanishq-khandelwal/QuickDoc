@@ -6,21 +6,28 @@ import {
   FETCH_APPOINTMENTS_SUCCESS,
 } from "@/redux/reducers/doctor/fetchAppointmentReducer";
 
-// type appointmentResponse = {
-//   appointment_date: string;
-//   appointment_time: string;
-//   patient_name: string;
-//   patient_email: string;
-//   patient_phone: string;
 
-// };
-// 1;
+type AppointmentType = {
+  appointment_id: number;
+  appointment_date: string; 
+  patient_id: number;
+  start_time: string; 
+  end_time: string;
+  patient_time_zone: string;
+  status: string;
+  user: {
+    name: string;
+    email: string;
+    phone_number: string;
+  };
+};
+
 const userData = localStorage.getItem("user");
 const doctorId = userData ? JSON.parse(userData).doctorId : null;
  console.log(doctorId)
 function* fetchAppointment() {
   try {
-    const response = yield call(client.query, {
+    const response:AppointmentType = yield call(client.query, {
       query: GET_ALL_APPOINTMENTS,
       variables: { doctorId: doctorId },
     });

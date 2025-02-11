@@ -1,5 +1,5 @@
 import { DateTime } from "luxon";
-// luxon
+
 export async function getUserAvailability(data: any) {
   console.log(data);
 
@@ -15,7 +15,7 @@ export async function getUserAvailability(data: any) {
 
   const availability = daysOfWeek.map((day) => {
     const dayAvailability = data.doctor_availabilities.find(
-      (availability) => availability.available_days.toLowerCase() === day
+      (availability:any) => availability.available_days.toLowerCase() === day
     );
 
     // console.log(dayAvailability);
@@ -55,10 +55,10 @@ export function generateAvailableTimeSlots(
   const doctorEndDateTime = DateTime.fromISO(`${selectedDateTime}T${endTime}`, { zone: doctorTimeZone })
     .setZone(patientTimeZone);
 
-  console.log("Doctor's Time Zone:", doctorTimeZone);
-  console.log("System (Patient's) Time Zone:", patientTimeZone);
-  console.log("Doctor's Start Time:", doctorStartDateTime.toISO());
-  console.log("Doctor's End Time:", doctorEndDateTime.toISO());
+  // console.log("Doctor's Time Zone:", doctorTimeZone);
+  // console.log("System (Patient's) Time Zone:", patientTimeZone);
+  // console.log("Doctor's Start Time:", doctorStartDateTime.toISO());
+  // console.log("Doctor's End Time:", doctorEndDateTime.toISO());
 
   let currentTime = doctorStartDateTime;
 
@@ -66,7 +66,7 @@ export function generateAvailableTimeSlots(
   const now = DateTime.now().setZone(patientTimeZone);
   const nextAvailableTime = now.plus({ minutes: 30 });
 
-  console.log(nextAvailableTime.toISOTime());
+  // console.log(nextAvailableTime.toISOTime());
 
   while (currentTime < doctorEndDateTime) {
     const slotEnd = currentTime.plus({ minutes: slot_duration });
@@ -92,8 +92,8 @@ export function generateAvailableTimeSlots(
     });
 
     // console.log(isSlotAvailable);
-    console.log(currentTime.toISO(),nextAvailableTime.toISO());
-    console.log(currentTime >= nextAvailableTime)
+    // console.log(currentTime.toISO(),nextAvailableTime.toISO());
+    // console.log(currentTime >= nextAvailableTime)
 
     if (isSlotAvailable && currentTime >= nextAvailableTime) {
       slots.push(currentTime.toFormat("HH:mm"));
