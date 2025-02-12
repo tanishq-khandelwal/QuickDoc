@@ -10,11 +10,9 @@ import { DateTime } from "luxon";
 const MyAppointments = () => {
   const dispatch = useDispatch();
 
-  
-  
-const userData = localStorage.getItem("user");
-const userId = userData ? JSON.parse(userData).user_id : null;
-console.log(userId);
+  const userData = localStorage.getItem("user");
+  const userId = userData ? JSON.parse(userData).user_id : null;
+  console.log(userId);
 
   useEffect(() => {
     dispatch(fetchMyAppointments(userId));
@@ -28,7 +26,6 @@ console.log(userId);
     : [];
 
   const [selectedStatus, setSelectedStatus] = useState("all");
-
 
   useEffect(() => {
     if (loading) {
@@ -56,8 +53,10 @@ console.log(userId);
   const systemZone = local.zoneName || "";
 
   const formatTime = (date: string, time: string, patientTimeZone: string) => {
-    const localTime = DateTime.fromISO(`${date}T${time}`, { zone: patientTimeZone }).setZone(systemZone);
-    
+    const localTime = DateTime.fromISO(`${date}T${time}`, {
+      zone: patientTimeZone,
+    }).setZone(systemZone);
+
     // Check if the system timezone is India
     if (systemZone === "Asia/Calcutta") {
       return localTime.toFormat("hh:mm a 'IST'"); // Force IST label
@@ -65,14 +64,28 @@ console.log(userId);
       return localTime.toFormat("hh:mm a ZZZZ"); // Show the correct timezone abbreviation
     }
   };
-  
 
+  type AppointmentType = {
+    appointment_id: number;
+    appointment_date: string;
+    patient_id: number;
+    start_time: string;
+    end_time: string;
+    patient_time_zone: string;
+    status: string;
+    user: {
+      name: string;
+      email: string;
+      phone_number: string;
+    };
+  };
   // Filter appointments based on selected status
   const filteredAppointments =
     selectedStatus === "all"
       ? appointments
       : appointments.filter(
-          (appointment:any) => appointment.status.toLowerCase() === selectedStatus
+          (appointment: AppointmentType) =>
+            appointment.status.toLowerCase() === selectedStatus
         );
 
   return (
@@ -101,7 +114,7 @@ console.log(userId);
         </div>
 
         <div className="flex gap-4 flex-wrap">
-          {filteredAppointments.length > 0  ? (
+          {filteredAppointments.length > 0 ? (
             filteredAppointments.map((appointment: any) => (
               <div
                 key={appointment.appointment_id}
@@ -137,8 +150,7 @@ console.log(userId);
                       appointment.start_time,
                       appointment.patient_time_zone
                     )}{" "}
-                    - 
-                    {" "}
+                    -{" "}
                     {formatTime(
                       appointment.appointment_date,
                       appointment.end_time,

@@ -27,6 +27,12 @@ export const FETCH_DOCTOR_AVAILABILITY = gql`
       consultation_fee
       city
       clinic_address
+      exception_availabilities {
+        special_date
+        start_time
+        end_time
+        is_available
+      }
       doctor_availabilities {
         end_time
         start_time
