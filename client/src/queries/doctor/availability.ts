@@ -39,7 +39,13 @@ export const UPDATE_AVAILABILITY = gql`
 `;
 
 export const UPDATE_EXCEPTION_AVAILABILITY = gql`
-  mutation INSERT_EXCEPTION($doctorId:Int!,$startTime:time,$endTime:time,$available:Boolean,$date:date) {
+  mutation INSERT_EXCEPTION(
+    $doctorId: Int!
+    $startTime: time
+    $endTime: time
+    $available: Boolean
+    $date: date
+  ) {
     insert_exception_availability(
       objects: {
         doctor_id: $doctorId
@@ -52,6 +58,18 @@ export const UPDATE_EXCEPTION_AVAILABILITY = gql`
       returning {
         availability_id
       }
+    }
+  }
+`;
+
+export const GET_EXCEPTION_AVAILABILITY = gql`
+  query GET_EXCEPTION_AVAILABILITY {
+    exception_availability(where: { doctor_id: { _eq: 1 } }) {
+      availability_id
+      special_date
+      start_time
+      end_time
+      is_available
     }
   }
 `;

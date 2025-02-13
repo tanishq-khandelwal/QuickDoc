@@ -14,6 +14,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { bookAppointment } from "@/redux/actions/patient/bookAppointmentAction";
+import { DateTime } from "luxon";
 
 const DoctorPreview = () => {
   const dispatch = useDispatch();
@@ -40,6 +41,8 @@ const DoctorPreview = () => {
   const [availableTimeSlots, setAvailableTimeSlots] = useState<string[]>([]);
   const [selectedDate, setSelectedDate] = useState(new Date());
   const [selectedTime, setSelectedTime] = useState<string | null>(null);
+  const [exceptionAvailabilities, setExceptionAvailabilities] = useState<any[]>([]);
+
   const [Booked, setBooked] = useState(false);
 
   const formattedDate = new Date(selectedDate);
@@ -76,9 +79,11 @@ const DoctorPreview = () => {
 
   useEffect(() => {
     const fetchAvailability = async () => {
-      const availability = await getUserAvailability(data);
+      const {availability,exceptionAvailabilities } = await getUserAvailability(data);
       setAvailableDays(availability);
-      // console.log(availability);
+      setExceptionAvailabilities(exceptionAvailabilities);
+      console.log("Calendar Availability",availability);
+      console.log("Exception Availiobilty",exceptionAvailabilities);
     };
 
     if (data) {
@@ -118,46 +123,71 @@ const DoctorPreview = () => {
   today.setHours(0, 0, 0, 0);
 
   useEffect(() => {
-    // Generate available time slots when a day is selected
+    const formattedDate = DateTime.fromJSDate(selectedDate).toISODate();
+    console.log("Formatted Date",formattedDate);
+    // Check if the selected date is an exception date
+    const exceptionDay = exceptionAvailabilities.find((e) => e.date === formattedDate);
+  
+    if (exceptionDay) {
+      if (exceptionDay.available) {
+        // Generate time slots based on exception timing
+        const timeSlots = generateAvailableTimeSlots(
+          exceptionDay.start_time,
+          exceptionDay.end_time,
+          data?.slot_duration,
+          formattedDate,
+          exceptionDay.time_zone,
+          data?.appointments
+        );
+        setAvailableTimeSlots(timeSlots);
+      } else {
+        setAvailableTimeSlots([]); // If unavailable, set no slots
+      }
+      return;
+    }
+  
+    // Fallback to regular availability if no exception exists
     const selectedDay = availableDays.find(
       (day) =>
         day.day.toLowerCase() ===
         selectedDate.toLocaleString("en-US", { weekday: "long" }).toLowerCase()
     );
-
-    // console.log(selectedDay); // Logs the correct value after selecting a day
-    // console.log(selectedDate);
-    if (
-      selectedDay &&
-      selectedDay?.available &&
-      selectedDay?.start_time &&
-      selectedDay?.end_time
-    ) {
-      const timeSlots =generateAvailableTimeSlots(
-        selectedDay.start_time, // Convert time to Date object
-        selectedDay.end_time, // Convert time to Date object
-        data?.slot_duration, // 15-minute slots (you can change this)
-        finalformattedDate,
+  
+    if (selectedDay && selectedDay.available) {
+      const timeSlots = generateAvailableTimeSlots(
+        selectedDay.start_time,
+        selectedDay.end_time,
+        data?.slot_duration,
+        formattedDate,
         selectedDay.time_zone,
-         // Pass the date string
-        data?.appointments // Pass any existing bookings, if necessary
+        data?.appointments
       );
       setAvailableTimeSlots(timeSlots);
-      // console.log(selectedDate); // Logs the correct value after generating
     }
-  }, [selectedDate, availableDays]);
+  }, [selectedDate, availableDays, exceptionAvailabilities]);
+  
+
+  console.log("Selected Date is:",selectedDate);
 
   const disabledDays = (date: Date) => {
-    const today = new Date();
-    today.setHours(0, 0, 0, 0); // Set to midnight for accurate comparison
-    const dayOfWeek = date
-      .toLocaleString("en-us", { weekday: "long" })
-      .toLowerCase();
-    const dayAvailability = availableDays.find((d) => d.day === dayOfWeek);
+    const today = DateTime.local().startOf("day"); // Ensures time is 00:00
+  const formattedDate = DateTime.fromJSDate(date).toISODate(); // Convert to "YYYY-MM-DD"
 
-    // Disable the day if it's before today or unavailable
-    return date < today || !dayAvailability?.available ;
+  
+    // Check if the date exists in exception availabilities
+    const exceptionDay = exceptionAvailabilities.find((e) => e.date === formattedDate);
+  
+    if (exceptionDay) {
+      return !exceptionDay.available; // If exception exists, return its availability
+    }
+  
+    // Check if the date falls under regular weekly availability
+    const dayOfWeek = date.toLocaleString("en-us", { weekday: "long" }).toLowerCase();
+    const dayAvailability = availableDays.find((d) => d.day === dayOfWeek);
+  
+    return DateTime.fromJSDate(date) < today || !dayAvailability?.available;
   };
+  
 
   // console.log(availableDays);
 

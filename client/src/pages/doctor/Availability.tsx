@@ -8,9 +8,13 @@ import { RootState } from "@/redux/rootReducer";
 import toast from "react-hot-toast";
 import AvailabilityModal from "@/components/availability/AvailabilityModal/AvailabilityModal";
 import TimezoneDropdown from "@/components/availability/timezone/TimeZoneDropDown";
-import { useMutation } from "@apollo/client";
-import { UPDATE_AVAILABILITY } from "@/queries/doctor/availability";
+import { useMutation, useQuery } from "@apollo/client";
+import {
+  GET_EXCEPTION_AVAILABILITY,
+  UPDATE_AVAILABILITY,
+} from "@/queries/doctor/availability";
 import { DateTime } from "luxon";
+import { Trash2 } from "lucide-react";
 
 interface AvailabilityDay {
   selected: boolean;
@@ -59,12 +63,22 @@ const Availability = () => {
   }>({});
 
   const [updateAvailability] = useMutation(UPDATE_AVAILABILITY);
+  const {
+    data: exceptionData,
+    loading: _exceptionLoading,
+    error: _exceptionError,
+  } = useQuery(GET_EXCEPTION_AVAILABILITY);
+
+  const exceptionDates = exceptionData?.exception_availability;
+  console.log("Exception Availability", exceptionData);
 
   const dispatch = useDispatch();
-  const { data, loading: reduxLoading, error: reduxError } = useSelector(
-    (state: RootState) => state.doctoravailabilty
-  );
-  
+  const {
+    data,
+    loading: reduxLoading,
+    error: reduxError,
+  } = useSelector((state: RootState) => state.doctoravailabilty);
+
   useEffect(() => {
     dispatch(fetchAvailability());
   }, [dispatch]);
@@ -129,10 +143,16 @@ const Availability = () => {
         ...prev,
         [dayId]: { ...prev[dayId], [field]: value },
       };
-  
-      const start = DateTime.fromFormat(updatedAvailability[dayId].startTime, "h:mm a");
-      const end = DateTime.fromFormat(updatedAvailability[dayId].endTime, "h:mm a");
-  
+
+      const start = DateTime.fromFormat(
+        updatedAvailability[dayId].startTime,
+        "h:mm a"
+      );
+      const end = DateTime.fromFormat(
+        updatedAvailability[dayId].endTime,
+        "h:mm a"
+      );
+
       setErrors((prevErrors) => {
         const newErrors = { ...prevErrors };
         if (start >= end) {
@@ -142,13 +162,12 @@ const Availability = () => {
         }
         return newErrors;
       });
-  
+
       return updatedAvailability;
     });
-  
+
     setModifiedDays((prev) => new Set(prev).add(dayId));
   };
-  
 
   type ChangedDay = {
     availableDay: string;
@@ -169,7 +188,7 @@ const Availability = () => {
   // };
 
   const handleSave = () => {
-    toast.loading("Loading..",{id:"loading"});
+    toast.loading("Loading..", { id: "loading" });
     const changedDaysArray: ChangedDay[] = weekDays.reduce((acc, day) => {
       const initialDay = initialAvailability[day.id];
       const modifiedDay = availability[day.id];
@@ -225,7 +244,7 @@ const Availability = () => {
       toast.dismiss("loading");
       toast.success("Availability Updated");
     } catch (error) {
-      toast.error(`Failed to update availability ${error}`)
+      toast.error(`Failed to update availability ${error}`);
       console.error(error);
     }
   };
@@ -247,8 +266,8 @@ const Availability = () => {
 
             <div className="flex mb-2 gap-4 items-center">
               <span className="text-xl text-black font-semibold">
-                  Time Zone :
-                </span>
+                Time Zone :
+              </span>
               <div>
                 <TimezoneDropdown />
               </div>
@@ -371,7 +390,6 @@ const Availability = () => {
                             )}
                           </div>
                         </div>
-                        
                       )}
                     </div>
                   ))}
@@ -398,6 +416,41 @@ const Availability = () => {
                 >
                   + Add date-specific hours
                 </Button>
+
+                <div className="mt-4 ">
+                  {Array.isArray(exceptionDates) &&
+                  exceptionDates.length > 0 ? (
+                    exceptionDates.map((item, index) => (
+                      <div
+                        key={index}
+                        className="flex items-center justify-between gap-4 p-3 border border-blue-200 rounded-lg shadow-lg bg-gray-50 mt-2"
+                      >
+                        <p className="text-sm font-medium text-gray-700">
+                          {item.special_date}
+                        </p>
+                        <p className="text-sm text-gray-600">
+                          {item.is_available?(formatTime(item.start_time)):("- -") }
+                        </p>
+                        <p className="text-sm text-gray-600">{item.is_available?(formatTime(item.end_time)):("- -") }</p>
+                        <p
+                          className={`text-sm font-semibold ${
+                            item.is_available
+                              ? "text-green-500"
+                              : "text-red-500"
+                          }`}
+                        >
+                          {item.is_available ? "Available" : "Not Available"}
+                        </p>
+
+                        <Button className="bg-white hover:bg-white">
+                          <Trash2 className="text-red-600"/>
+                        </Button>
+                      </div>
+                    ))
+                  ) : (
+                    <div></div>
+                  )}
+                </div>
               </div>
             </div>
           </div>
