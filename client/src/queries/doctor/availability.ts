@@ -57,6 +57,15 @@ export const GET_EXCEPTION_AVAILABILITY = gql`
   }
 `;
 
+export const DELETE_EXCEPTION_AVAILABILITY=gql`
+mutation delete_exception($availabilityId:Int!) {
+  delete_exception_availability(where: {availability_id: {_eq: $availabilityId}}) {
+    affected_rows
+  }
+}
+
+`
+
 // Assuming you're fetching doctorId from localStorage
 const userData = localStorage.getItem("user");
 const doctorId = userData ? JSON.parse(userData).doctorId : null;

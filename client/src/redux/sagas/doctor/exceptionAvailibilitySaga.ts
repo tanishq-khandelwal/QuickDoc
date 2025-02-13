@@ -5,7 +5,6 @@ import {
 } from "../../reducers/doctor/exceptionAvailabilityReducer";
 import { GET_EXCEPTION_AVAILABILITY } from "../../../queries/doctor/availability";
 import client from "../../../apolloClient";
-import { DocumentNode } from "@apollo/client";
 
 
 interface FetchExceptionAvailabilityAction {
@@ -25,7 +24,7 @@ function* fetchExceptionAvailabilitySaga(
 ): Generator<any, void, ExceptionAvailabilityResponse> {
   try {
     const response: ExceptionAvailabilityResponse = yield call(client.query, {
-      query: GET_EXCEPTION_AVAILABILITY as DocumentNode,
+      query: GET_EXCEPTION_AVAILABILITY,
       variables: { doctorId: action.payload },
     });
     yield put({
@@ -43,6 +42,7 @@ function* fetchExceptionAvailabilitySaga(
     });
   }
 }
+
 
 // Watcher Saga
 export function* watchFetchExceptionAvailability() {

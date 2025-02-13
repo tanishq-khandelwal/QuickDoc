@@ -1,6 +1,7 @@
 export const FETCH_EXCEPTION_AVAILABILITY = "FETCH_EXCEPTION_AVAILABILITY";
 export const FETCH_EXCEPTION_AVAILABILITY_SUCCESS =
   "FETCH_EXCEPTION_AVAILABILITY_SUCCESS";
+export const DELETE_EXCEPTION_AVAILABILITY = "DELETE_EXCEPTION_AVAILABILITY";
 
 type ExceptionAvailabilityState = {
   data: any;
@@ -30,8 +31,16 @@ const ExceptionavailabiltyReducer = (
     case FETCH_EXCEPTION_AVAILABILITY_SUCCESS:
       return { ...state, data: action.payload, loading: false, error: null };
 
+    case DELETE_EXCEPTION_AVAILABILITY:
+      return {
+        ...state,
+        data: Array.isArray(state.data)
+          ? state.data.filter((item) => item.availability_id !== action.payload)
+          : state.data,
+      };
+
     default:
-      return state;
+      return state; 
   }
 };
 

@@ -4,24 +4,32 @@ import { DateTime } from "luxon";
 import { useEffect, useState } from "react";
 import AvailabilityModal from "../AvailabilityModal/AvailabilityModal";
 import { useDispatch, useSelector } from "react-redux";
-import { fetchException } from "@/redux/actions/doctor/ExceptionAvailabilityAction";
+import {
+  deleteExceptionAvailability,
+  fetchException,
+} from "@/redux/actions/doctor/ExceptionAvailabilityAction";
 import { RootState } from "@/redux/rootReducer";
+import { useMutation } from "@apollo/client";
+import { DELETE_EXCEPTION_AVAILABILITY } from "@/queries/doctor/availability";
+import toast from "react-hot-toast";
 
 const ExceptionAvailability = () => {
-  const dispatch=useDispatch();
-  const userData=localStorage.getItem("user");
-  const doctorId=userData?JSON.parse(userData).doctorId:null;
+  const dispatch = useDispatch();
+  const userData = localStorage.getItem("user");
+  const doctorId = userData ? JSON.parse(userData).doctorId : null;
+  const[disabled,setDisable]=useState(false);
 
-  useEffect(()=>{
-    dispatch(fetchException(doctorId))
-  },[dispatch]);
+  useEffect(() => {
+    dispatch(fetchException(doctorId));
+  }, [dispatch]);
 
+  const [deleteException] = useMutation(
+    DELETE_EXCEPTION_AVAILABILITY
+  );
 
-  const { data} = useSelector(
+  const { data } = useSelector(
     (state: RootState) => state?.exceptionAvailability
   );
-  
-
 
   const [showModal, setShowModal] = useState(false);
   const [selectedDate, setSelectedDate] = useState<Date | undefined>(
@@ -34,6 +42,27 @@ const ExceptionAvailability = () => {
   const formatTime = (time: string) => {
     return DateTime.fromISO(time).toFormat("hh:mm a");
   };
+
+  const handleDelete = async (availabilityId: number) => {
+    const toastId = toast.loading("Deleting exception...");
+  
+    try {
+      const { data } = await deleteException({
+        variables: { availabilityId },
+      });
+  
+      if (data) {
+        toast.success("Exception deleted successfully", { id: toastId });
+        dispatch(deleteExceptionAvailability(availabilityId));
+      } else {
+        toast.error("Failed to delete exception. Please try again.", { id: toastId });
+      }
+    } catch (error) {
+      toast.error("Error deleting exception. Please try later.", { id: toastId });
+      console.error("Error deleting exception availability:", error);
+    }
+  };
+  
 
   return (
     <div className="p-4">
@@ -50,11 +79,11 @@ const ExceptionAvailability = () => {
       </Button>
 
       <AvailabilityModal
-                showModal={showModal}
-                setShowModal={setShowModal}
-                selectedDate={selectedDate}
-                setSelectedDate={setSelectedDate}
-              />
+        showModal={showModal}
+        setShowModal={setShowModal}
+        selectedDate={selectedDate}
+        setSelectedDate={setSelectedDate}
+      />
 
       <div className="mt-4 ">
         {Array.isArray(exceptionDates) && exceptionDates.length > 0 ? (
@@ -80,11 +109,16 @@ const ExceptionAvailability = () => {
                 {item.is_available ? "Available" : "Not Available"}
               </p>
 
-              <Button className="bg-white hover:bg-white">
+              <Button
+                className="bg-white hover:bg-white"
+                onClick={() => {
+                  handleDelete(item?.availability_id),
+                  setDisable(true);
+                }}
+                disabled={disabled}
+              >
                 <Trash2 className="text-red-600" />
               </Button>
-
-              
             </div>
           ))
         ) : (
