@@ -6,15 +6,11 @@ import { useDispatch, useSelector } from "react-redux";
 import { fetchAvailability } from "@/redux/actions/doctor/availabilityAction";
 import { RootState } from "@/redux/rootReducer";
 import toast from "react-hot-toast";
-import AvailabilityModal from "@/components/availability/AvailabilityModal/AvailabilityModal";
 import TimezoneDropdown from "@/components/availability/timezone/TimeZoneDropDown";
-import { useMutation, useQuery } from "@apollo/client";
-import {
-  GET_EXCEPTION_AVAILABILITY,
-  UPDATE_AVAILABILITY,
-} from "@/queries/doctor/availability";
+import { useMutation } from "@apollo/client";
+import {  UPDATE_MULTIPLE_AVAILABILITIES } from "@/queries/doctor/availability";
 import { DateTime } from "luxon";
-import { Trash2 } from "lucide-react";
+import ExceptionAvailability from "@/components/availability/ExceptionAvailability/ExceptionAvailability";
 
 interface AvailabilityDay {
   selected: boolean;
@@ -62,15 +58,7 @@ const Availability = () => {
     [key: number]: AvailabilityDay;
   }>({});
 
-  const [updateAvailability] = useMutation(UPDATE_AVAILABILITY);
-  const {
-    data: exceptionData,
-    loading: _exceptionLoading,
-    error: _exceptionError,
-  } = useQuery(GET_EXCEPTION_AVAILABILITY);
-
-  const exceptionDates = exceptionData?.exception_availability;
-  console.log("Exception Availability", exceptionData);
+  // const [updateAvailability] = useMutation(UPDATE_AVAILABILITY);
 
   const dispatch = useDispatch();
   const {
@@ -175,18 +163,7 @@ const Availability = () => {
     endTime: string;
     available: boolean; // Track the selected status of the day
   };
-
-  const [showModal, setShowModal] = useState(false);
-  const [selectedDate, setSelectedDate] = useState<Date | undefined>(
-    new Date()
-  );
-
-  // const [selectedSlot, setSelectedSlot] = useState("");
-
-  // const handleChange = (e:React.ChangeEvent<HTMLSelectElement>) => {
-  //   setSelectedSlot(e.target.value);
-  // };
-
+  const [updateMultipleAvailabilities] = useMutation(UPDATE_MULTIPLE_AVAILABILITIES);
   const handleSave = () => {
     toast.loading("Loading..", { id: "loading" });
     const changedDaysArray: ChangedDay[] = weekDays.reduce((acc, day) => {
@@ -220,23 +197,21 @@ const Availability = () => {
     const doctorId = userData ? JSON.parse(userData).doctorId : null;
 
     try {
-      const response = updateAvailability({
+      const updates = changedDaysArray.map(day => ({
+        where: {
+          doctor_id: { _eq: doctorId },
+          available_days: { _eq: day.availableDay }
+        },
+        _set: {
+          start_time: DateTime.fromFormat(day.startTime, "h:mm a").toFormat("HH:mm:ss"),
+          end_time: DateTime.fromFormat(day.endTime, "h:mm a").toFormat("HH:mm:ss"),
+          is_available: day.available,
+        }
+      }));
+  
+      const response =updateMultipleAvailabilities({
         variables: {
-          doctorId: doctorId,
-          availableDay: changedDaysArray[0].availableDay,
-          startTime: String(
-            DateTime.fromFormat(
-              changedDaysArray[0].startTime,
-              "h:mm a"
-            ).toFormat("HH:mm:ss")
-          ),
-          endTime: String(
-            DateTime.fromFormat(changedDaysArray[0].endTime, "h:mm a").toFormat(
-              "HH:mm:ss"
-            )
-          ),
-
-          available: changedDaysArray[0].available,
+          updates,
         },
       });
 
@@ -274,7 +249,7 @@ const Availability = () => {
             </div>
 
             <div className="flex flex-col lg:flex-row border rounded-2xl shadow-md p-6 w-full">
-              <div className="lg:w-1/2 border-r-2 p-4">
+              <div className="lg:w-1/2 lg:border-r-2 border-b-2  p-4">
                 <h2 className="text-xl font-semibold mb-4">Weekly Hours</h2>
                 <div className="space-y-4">
                   {weekDays.map((day) => (
@@ -403,64 +378,11 @@ const Availability = () => {
                   </Button>
                 </div>
               </div>
-
-              <div className="lg:w-1/2 p-4">
-                <h2 className="font-semibold text-xl">Date-Specific Hours</h2>
-                <p className="text-sm text-gray-600 mb-2">
-                  Override your availability / unavailability for specific dates
-                  when your hours differ from your regular weekly hours.
-                </p>
-                <Button
-                  className="bg-white text-gray-600 border border-gray-600 hover:bg-gray-100 rounded-2xl"
-                  onClick={() => setShowModal(true)}
-                >
-                  + Add date-specific hours
-                </Button>
-
-                <div className="mt-4 ">
-                  {Array.isArray(exceptionDates) &&
-                  exceptionDates.length > 0 ? (
-                    exceptionDates.map((item, index) => (
-                      <div
-                        key={index}
-                        className="flex items-center justify-between gap-4 p-3 border border-blue-200 rounded-lg shadow-lg bg-gray-50 mt-2"
-                      >
-                        <p className="text-sm font-medium text-gray-700">
-                          {item.special_date}
-                        </p>
-                        <p className="text-sm text-gray-600">
-                          {item.is_available?(formatTime(item.start_time)):("- -") }
-                        </p>
-                        <p className="text-sm text-gray-600">{item.is_available?(formatTime(item.end_time)):("- -") }</p>
-                        <p
-                          className={`text-sm font-semibold ${
-                            item.is_available
-                              ? "text-green-500"
-                              : "text-red-500"
-                          }`}
-                        >
-                          {item.is_available ? "Available" : "Not Available"}
-                        </p>
-
-                        <Button className="bg-white hover:bg-white">
-                          <Trash2 className="text-red-600"/>
-                        </Button>
-                      </div>
-                    ))
-                  ) : (
-                    <div></div>
-                  )}
-                </div>
+              <div>
+                <ExceptionAvailability />
               </div>
             </div>
           </div>
-
-          <AvailabilityModal
-            showModal={showModal}
-            setShowModal={setShowModal}
-            selectedDate={selectedDate}
-            setSelectedDate={setSelectedDate}
-          />
         </div>
       )}
     </Layout>

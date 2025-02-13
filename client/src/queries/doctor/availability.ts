@@ -12,32 +12,15 @@ export const FETCH_AVAILABILITY = gql`
   }
 `;
 
-export const UPDATE_AVAILABILITY = gql`
-  mutation UPDATE_AVAILABILITY(
-    $doctorId: Int!
-    $availableDay: String
-    $startTime: time
-    $endTime: time
-    $available: Boolean
-  ) {
-    update_doctor_availability(
-      where: {
-        doctor_id: { _eq: $doctorId }
-        available_days: { _eq: $availableDay }
-      }
-      _set: {
-        start_time: $startTime
-        end_time: $endTime
-        is_available: $available
-      }
-    ) {
+export const UPDATE_MULTIPLE_AVAILABILITIES = gql`
+  mutation UPDATE_MULTIPLE_AVAILABILITIES($updates: [doctor_availability_updates!]!) {
+    update_doctor_availability_many(updates: $updates) {
       returning {
         doctor_id
       }
     }
   }
 `;
-
 export const UPDATE_EXCEPTION_AVAILABILITY = gql`
   mutation INSERT_EXCEPTION(
     $doctorId: Int!
@@ -63,8 +46,8 @@ export const UPDATE_EXCEPTION_AVAILABILITY = gql`
 `;
 
 export const GET_EXCEPTION_AVAILABILITY = gql`
-  query GET_EXCEPTION_AVAILABILITY {
-    exception_availability(where: { doctor_id: { _eq: 1 } }) {
+  query GET_EXCEPTION_AVAILABILITY($doctorId:Int!) {
+    exception_availability(where: { doctor_id: { _eq: $doctorId } }) {
       availability_id
       special_date
       start_time

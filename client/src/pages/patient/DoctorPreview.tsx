@@ -41,19 +41,22 @@ const DoctorPreview = () => {
   const [availableTimeSlots, setAvailableTimeSlots] = useState<string[]>([]);
   const [selectedDate, setSelectedDate] = useState(new Date());
   const [selectedTime, setSelectedTime] = useState<string | null>(null);
-  const [exceptionAvailabilities, setExceptionAvailabilities] = useState<any[]>([]);
+  const [exceptionAvailabilities, setExceptionAvailabilities] = useState<any[]>(
+    []
+  );
 
   const [Booked, setBooked] = useState(false);
 
   const formattedDate = new Date(selectedDate);
   formattedDate.setHours(0, 0, 0, 0); // Reset time to 00:00 to avoid time zone adjustments
-  const finalformattedDate = selectedDate?.getFullYear() +
-  '-' +
-  (selectedDate.getMonth() + 1).toString().padStart(2, '0') + 
-  '-' +
-  selectedDate.getDate().toString().padStart(2, '0');
+  const finalformattedDate =
+    selectedDate?.getFullYear() +
+    "-" +
+    (selectedDate.getMonth() + 1).toString().padStart(2, "0") +
+    "-" +
+    selectedDate.getDate().toString().padStart(2, "0");
 
-// console.log(finalformattedDate); 
+  // console.log(finalformattedDate);
   const handleBookingAppointment = () => {
     const addMinutes = (time: string, minutes: number) => {
       const [hours, mins] = time?.split(":")?.map(Number);
@@ -79,11 +82,12 @@ const DoctorPreview = () => {
 
   useEffect(() => {
     const fetchAvailability = async () => {
-      const {availability,exceptionAvailabilities } = await getUserAvailability(data);
+      const { availability, exceptionAvailabilities } =
+        await getUserAvailability(data);
       setAvailableDays(availability);
       setExceptionAvailabilities(exceptionAvailabilities);
-      console.log("Calendar Availability",availability);
-      console.log("Exception Availiobilty",exceptionAvailabilities);
+      console.log("Calendar Availability", availability);
+      console.log("Exception Availiobilty", exceptionAvailabilities);
     };
 
     if (data) {
@@ -124,10 +128,12 @@ const DoctorPreview = () => {
 
   useEffect(() => {
     const formattedDate = DateTime.fromJSDate(selectedDate).toISODate();
-    console.log("Formatted Date",formattedDate);
+    console.log("Formatted Date", formattedDate);
     // Check if the selected date is an exception date
-    const exceptionDay = exceptionAvailabilities.find((e) => e.date === formattedDate);
-  
+    const exceptionDay = exceptionAvailabilities.find(
+      (e) => e.date === formattedDate
+    );
+
     if (exceptionDay) {
       if (exceptionDay.available) {
         // Generate time slots based on exception timing
@@ -145,14 +151,14 @@ const DoctorPreview = () => {
       }
       return;
     }
-  
+
     // Fallback to regular availability if no exception exists
     const selectedDay = availableDays.find(
       (day) =>
         day.day.toLowerCase() ===
         selectedDate.toLocaleString("en-US", { weekday: "long" }).toLowerCase()
     );
-  
+
     if (selectedDay && selectedDay.available) {
       const timeSlots = generateAvailableTimeSlots(
         selectedDay.start_time,
@@ -165,29 +171,30 @@ const DoctorPreview = () => {
       setAvailableTimeSlots(timeSlots);
     }
   }, [selectedDate, availableDays, exceptionAvailabilities]);
-  
 
-  console.log("Selected Date is:",selectedDate);
+  console.log("Selected Date is:", selectedDate);
 
   const disabledDays = (date: Date) => {
     const today = DateTime.local().startOf("day"); // Ensures time is 00:00
-  const formattedDate = DateTime.fromJSDate(date).toISODate(); // Convert to "YYYY-MM-DD"
+    const formattedDate = DateTime.fromJSDate(date).toISODate(); // Convert to "YYYY-MM-DD"
 
-  
     // Check if the date exists in exception availabilities
-    const exceptionDay = exceptionAvailabilities.find((e) => e.date === formattedDate);
-  
+    const exceptionDay = exceptionAvailabilities.find(
+      (e) => e.date === formattedDate
+    );
+
     if (exceptionDay) {
       return !exceptionDay.available; // If exception exists, return its availability
     }
-  
+
     // Check if the date falls under regular weekly availability
-    const dayOfWeek = date.toLocaleString("en-us", { weekday: "long" }).toLowerCase();
+    const dayOfWeek = date
+      .toLocaleString("en-us", { weekday: "long" })
+      .toLowerCase();
     const dayAvailability = availableDays.find((d) => d.day === dayOfWeek);
-  
+
     return DateTime.fromJSDate(date) < today || !dayAvailability?.available;
   };
-  
 
   // console.log(availableDays);
 
