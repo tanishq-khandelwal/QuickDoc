@@ -9,6 +9,7 @@ import { watchBookAppointment } from "./sagas/patient/bookAppointmentSaga";
 import { watchFetchAppointment } from "./sagas/doctor/fetchAppointmentSaga";
 import { watchFetchMyAppointment } from "./sagas/patient/MyAppointmentSaga";
 import { watchUpdateAppointment } from "./sagas/doctor/updateAppointmentSaga";
+import { watchFetchExceptionAvailability } from "./sagas/doctor/exceptionAvailibilitySaga";
 
 export default function* rootSaga() {
     yield all([
@@ -22,6 +23,7 @@ export default function* rootSaga() {
       watchFetchAppointment(),
       watchFetchMyAppointment(),
       watchUpdateAppointment(),
+      watchFetchExceptionAvailability(),
       // Add other watchers here
     ]);
   }

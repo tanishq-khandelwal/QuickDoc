@@ -4,6 +4,7 @@ import { Calendar } from "@/components/ui/calendar";
 import { useMutation } from "@apollo/client";
 import { UPDATE_EXCEPTION_AVAILABILITY } from "@/queries/doctor/availability";
 import toast from "react-hot-toast";
+import { DateTime } from "luxon";
 
 interface AvailabilityModalProps {
   showModal: boolean;
@@ -32,6 +33,7 @@ const AvailabilityModal: React.FC<AvailabilityModalProps> = ({
     }
   }, [selectedDate, setSelectedDate, today]);
 
+  console.log(selectedDate);
   const [updateAvailability, { loading, error }] = useMutation(
     UPDATE_EXCEPTION_AVAILABILITY
   );
@@ -45,15 +47,16 @@ const AvailabilityModal: React.FC<AvailabilityModalProps> = ({
 
     const userData = localStorage.getItem("user");
     const doctorId = userData ? JSON.parse(userData).doctorId : null;
-
+    const formattedDate = DateTime.fromJSDate(selectedDate).toISODate();
     const data = {
       doctorId: doctorId, 
       startTime,
       endTime,
       available: isAvailable,
-      date: selectedDate.toISOString().split("T")[0],
+      date:formattedDate,
     };
 
+   
     console.log("Saving data:", data);
 
     try {
@@ -71,7 +74,7 @@ const AvailabilityModal: React.FC<AvailabilityModalProps> = ({
 
   return (
     <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
-      <div className="bg-white rounded-lg p-6 shadow-lg w-96">
+      <div className="bg-white rounded-lg p-6 shadow-lg lg:w-96 ">
         <h2 className="text-2xl font-semibold text-center text-gray-800 mb-6">
           Select the date and assign availability
         </h2>
