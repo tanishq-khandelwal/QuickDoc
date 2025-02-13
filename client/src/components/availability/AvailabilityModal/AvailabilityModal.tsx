@@ -61,6 +61,7 @@ const AvailabilityModal: React.FC<AvailabilityModalProps> = ({
       console.log("Response:", response);
       toast.dismiss("loading");
       toast.success("Availability Updated Successfully")
+      window.location.reload();
       setShowModal(false);
     } catch (err) {
       toast.dismiss("loading");

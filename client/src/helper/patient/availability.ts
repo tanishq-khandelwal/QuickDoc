@@ -1,8 +1,6 @@
 import { DateTime } from "luxon";
 
 export async function getUserAvailability(data: any) {
-  console.log(data);
-
   const daysOfWeek = [
     "monday",
     "tuesday",
@@ -13,32 +11,41 @@ export async function getUserAvailability(data: any) {
     "sunday",
   ];
 
+  // Extract exception availabilities (special dates)
+  const exceptionAvailabilities = data?.exception_availabilities?.map((day) => ({
+    date: DateTime.fromISO(day?.special_date, { zone: "Asia/Kolkata" }).toISODate(),
+    available: day?.is_available,
+    start_time: day?.start_time,
+    end_time: day?.end_time,
+    time_zone: "Asia/Kolkata",
+  })) || [];
+
+  // Extract regular weekly availabilities
   const availability = daysOfWeek.map((day) => {
     const dayAvailability = data.doctor_availabilities.find(
-      (availability:any) => availability.available_days.toLowerCase() === day
+      (availability: any) => availability.available_days.toLowerCase() === day
     );
 
-    // console.log(dayAvailability);
     return {
       day,
-      available: dayAvailability?dayAvailability.is_available:false,
+      available: dayAvailability ? dayAvailability.is_available : false,
       start_time: dayAvailability ? dayAvailability.start_time : null,
       end_time: dayAvailability ? dayAvailability.end_time : null,
-      time_zone:dayAvailability ?dayAvailability.time_zone:null
+      time_zone: dayAvailability ? dayAvailability.time_zone : null,
     };
   });
 
-  //   console.log(availability);
-  return availability;
+  return { availability, exceptionAvailabilities };
 }
 
+
 export function generateAvailableTimeSlots(
-  startTime: string, // Start time (ISO string)
-  endTime: string, // End time (ISO string)
-  slot_duration = 15, // Slot duration in minutes
-  selectedDate: string, // Selected date as a full Date string (e.g., "Mon Feb 10 2025 00:00:00 GMT+0530")
-  doctorTimeZone: string, // Doctor's timezone (e.g., "Asia/Kolkata")
-  bookings: any[] // List of existing bookings
+  startTime: string,
+  endTime: string,
+  slot_duration = 15,
+  selectedDate: string,
+  doctorTimeZone: string,
+  bookings: any[]
 ) {
   const slots: string[] = [];
 
@@ -46,14 +53,19 @@ export function generateAvailableTimeSlots(
   const patientTimeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
 
   // Convert selectedDate properly to YYYY-MM-DD format
-  const selectedDateTime = DateTime.fromJSDate(new Date(selectedDate), { zone: doctorTimeZone }).toISODate();
+  const selectedDateTime = DateTime.fromJSDate(new Date(selectedDate), {
+    zone: doctorTimeZone,
+  }).toISODate();
 
   // Convert start and end times to doctor's timezone and attach the selected date
-  const doctorStartDateTime = DateTime.fromISO(`${selectedDateTime}T${startTime}`, { zone: doctorTimeZone })
-    .setZone(patientTimeZone);
+  const doctorStartDateTime = DateTime.fromISO(
+    `${selectedDateTime}T${startTime}`,
+    { zone: doctorTimeZone }
+  ).setZone(patientTimeZone);
 
-  const doctorEndDateTime = DateTime.fromISO(`${selectedDateTime}T${endTime}`, { zone: doctorTimeZone })
-    .setZone(patientTimeZone);
+  const doctorEndDateTime = DateTime.fromISO(`${selectedDateTime}T${endTime}`, {
+    zone: doctorTimeZone,
+  }).setZone(patientTimeZone);
 
   // console.log("Doctor's Time Zone:", doctorTimeZone);
   // console.log("System (Patient's) Time Zone:", patientTimeZone);
