@@ -11,7 +11,10 @@ import hidepass from "../assets/hidpass.svg";
 import showpass from "../assets/showpass.svg";
 
 const loginSchema = z.object({
-  email: z.string().email("Enter a valid email address").min(4,"Email should be atleast 4 characters"),
+  email: z
+    .string()
+    .email("Enter a valid email address")
+    .min(4, "Email should be atleast 4 characters"),
   password: z.string().min(4, "Password must be at least 4 characters"),
 });
 
@@ -52,7 +55,7 @@ const Login = () => {
   const onSubmit = (data: LoginFormValues) => {
     const { email, password } = data;
     dispatch(loginRequest({ email, password }));
-    setIsSubmitted(true); 
+    setIsSubmitted(true);
   };
 
   return (
@@ -64,10 +67,14 @@ const Login = () => {
         <form className="space-y-4" onSubmit={handleSubmit(onSubmit)}>
           {/* Email Field */}
           <div>
-            <label className="block text-sm font-medium text-gray-700">
+            <label
+              htmlFor="email"
+              className="block text-sm font-medium text-gray-700"
+            >
               Email
             </label>
             <input
+              id="email"
               type="email"
               {...register("email")}
               className="w-full mt-1 px-4 py-2 border border-gray-300 rounded-lg "
@@ -79,10 +86,14 @@ const Login = () => {
 
           {/* Password Field with Show/Hide Toggle */}
           <div className="relative">
-            <label className="block text-sm font-medium text-gray-700">
+            <label
+              htmlFor="password"
+              className="block text-sm font-medium text-gray-700"
+            >
               Password
             </label>
             <input
+              id="password"
               type={showPassword ? "text" : "password"}
               {...register("password")}
               className="w-full mt-1 px-4 py-2 border border-gray-300 rounded-lg  pr-10"

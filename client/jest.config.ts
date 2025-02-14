@@ -1,3 +1,4 @@
+// jest.config.ts
 import type { Config } from "jest";
 
 const config: Config = {
@@ -6,14 +7,15 @@ const config: Config = {
   transform: {
     "^.+\\.(ts|tsx)$": [
       "ts-jest",
-      {
-        tsconfig: "tsconfig.jest.json",
-      },
+      { tsconfig: "tsconfig.jest.json" },
     ],
+    "\\.svg$": "jest-transform-stub",
   },
   moduleNameMapper: {
-    "^@/(.*)$": "<rootDir>/src/$1", // Map '@/' to 'src/' for Jest
+    "^@/(.*)$": "<rootDir>/src/$1",
+    "\\.(css|less|scss|sass)$": "identity-obj-proxy",
   },
+  setupFilesAfterEnv: ["<rootDir>/jest.setup.ts"],
 };
 
 export default config;
