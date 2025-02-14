@@ -91,18 +91,20 @@ const MyAppointments = () => {
   return (
     <Layout>
       <Navbar />
-      <div className="container mx-auto p-4 mt-20">
-        <div className="flex justify-between">
-          <div>
-            <h1 className="text-2xl font-bold mb-4">My Appointments</h1>
-          </div>
+      <div className="container mx-auto px-4 mt-16 sm:mt-24">
+        {/* Header and Filter */}
+        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+          <h1 className="text-xl sm:text-2xl font-bold">My Appointments</h1>
+
           {/* Status Filter Dropdown */}
-          <div className="mb-4 ">
-            <label className="mr-2 font-semibold">Filter by Status:</label>
+          <div className="flex items-center gap-2">
+            <label className="font-semibold text-sm sm:text-base">
+              Filter by Status:
+            </label>
             <select
               value={selectedStatus}
               onChange={(e) => setSelectedStatus(e.target.value)}
-              className="border px-3 py-2 rounded-md cursor-pointer"
+              className="border px-3 py-2 rounded-md cursor-pointer text-sm sm:text-base"
             >
               <option value="all">All</option>
               <option value="pending">Pending</option>
@@ -113,38 +115,39 @@ const MyAppointments = () => {
           </div>
         </div>
 
-        <div className="flex gap-4 flex-wrap">
+        {/* Appointments List */}
+        <div className="sm:grid-cols-2 lg:grid-cols-3 gap-6 mt-6">
           {filteredAppointments.length > 0 ? (
-            filteredAppointments.map((appointment: any) => (
+            filteredAppointments.map((appointment:any) => (
               <div
                 key={appointment.appointment_id}
-                className="bg-white border shadow-md rounded-lg p-6 flex w-full cursor-pointer hover:shadow-xl"
+                className="bg-white mt-3 border shadow-md rounded-lg p-4 sm:p-6 flex flex-col sm:flex-row items-center sm:items-start hover:shadow-xl transition"
               >
-                <div className="h-24 w-24 px-8 flex items-center bg-gray-400 border-gray-300 border rounded-full">
-                  <User size={62} className="text-white" />
+                {/* Doctor Avatar */}
+                <div className="w-20 h-20 sm:w-24 sm:h-24 flex items-center justify-center bg-gray-400 border border-gray-300 rounded-full">
+                  <User size={56} className="text-white" />
                 </div>
 
-                <div className="flex-1 ml-4">
-                  <h2 className="flex text-lg font-semibold items-center gap-2">
-                    <Clipboard className="h-5 w-5" />
-                    Dr {appointment?.doctor?.user?.name}
+                {/* Appointment Info */}
+                <div className="flex-1 mt-4 sm:mt-0 sm:ml-4 text-center sm:text-left">
+                  <h2 className="flex items-center gap-2 text-lg font-semibold">
+                    <Clipboard className="h-5 w-5" /> Dr{" "}
+                    {appointment?.doctor?.user?.name}
                   </h2>
-
-                  <h2 className="text-gray-600 flex gap-2 items-center">
-                    <Phone className="h-5 w-5" />
+                  <p className="text-gray-600 flex items-center gap-2 text-sm sm:text-base">
+                    <Phone className="h-5 w-5" />{" "}
                     {appointment?.doctor?.user?.phone_number}
-                  </h2>
-                  <p className="flex text-red-600 font-semibold items-center gap-2">
-                    <Calendar className="h-5 w-5" />
-                    Date:{" "}
+                  </p>
+                  <p className="text-red-600 flex items-center gap-2 font-semibold text-sm sm:text-base">
+                    <Calendar className="h-5 w-5" /> Date:{" "}
                     {appointment?.appointment_date
                       ? DateTime.fromISO(
                           appointment.appointment_date
                         ).toLocaleString(DateTime.DATE_MED_WITH_WEEKDAY)
                       : "Invalid Date"}
                   </p>
-                  <p className="flex gap-2 text-blue-700 font-semibold items-center">
-                    <Clock className="h-5 w-5" />
+                  <p className="text-blue-700 flex items-center gap-2 font-semibold text-sm sm:text-base">
+                    <Clock className="h-5 w-5" />{" "}
                     {formatTime(
                       appointment.appointment_date,
                       appointment.start_time,
@@ -159,20 +162,20 @@ const MyAppointments = () => {
                   </p>
                 </div>
 
+                {/* Status Badge */}
                 <div
-                  className={`px-3 py-1 text-white rounded-lg ${getStatusColor(
+                  className={`px-3 py-1 mt-4 sm:mt-0 text-white rounded-lg ${getStatusColor(
                     appointment.status
-                  )} self-start inline-flex gap-2`}
+                  )} text-xs sm:text-sm font-semibold`}
                 >
-                  <p>Status:</p>
-                  <p className="font-sans font-semibold">
-                    {appointment.status.toUpperCase()}
-                  </p>
+                  {appointment.status.toUpperCase()}
                 </div>
               </div>
             ))
           ) : (
-            <p className="text-center w-full">No appointments found</p>
+            <p className="text-center w-full text-gray-500 text-sm sm:text-base">
+              No appointments found
+            </p>
           )}
         </div>
       </div>

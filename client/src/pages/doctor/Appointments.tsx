@@ -61,9 +61,9 @@ const Appointments = () => {
 
   type AppointmentType = {
     appointment_id: number;
-    appointment_date: string; 
+    appointment_date: string;
     patient_id: number;
-    start_time: string; 
+    start_time: string;
     end_time: string;
     patient_time_zone: string;
     status: string;
@@ -73,43 +73,47 @@ const Appointments = () => {
       phone_number: string;
     };
   };
-  
 
   var local = DateTime.local(2017, 5, 15, 9, 10, 23);
   const systemZone = local.zoneName || "";
 
   const formatTime = (date: string, time: string, patientTimeZone: string) => {
-    const localTime = DateTime.fromISO(`${date}T${time}`, { zone: patientTimeZone }).setZone(systemZone);
-    
+    const localTime = DateTime.fromISO(`${date}T${time}`, {
+      zone: patientTimeZone,
+    }).setZone(systemZone);
+
     if (systemZone === "Asia/Calcutta") {
       return localTime.toFormat("hh:mm a 'IST'");
     } else {
-      return localTime.toFormat("hh:mm a ZZZZ"); 
+      return localTime.toFormat("hh:mm a ZZZZ");
     }
-  };  
+  };
 
   const filteredAppointments =
     selectedStatus === "all"
       ? appointments
       : appointments.filter(
-          (appointment:AppointmentType) => appointment.status.toLowerCase() === selectedStatus
+          (appointment: AppointmentType) =>
+            appointment.status.toLowerCase() === selectedStatus
         );
 
   return (
     <Layout>
       <Navbar />
       <div className="container mx-auto p-4 mt-20">
-        <div className="flex justify-between">
+        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
           <div>
             <h1 className="text-2xl font-bold mb-4">Appointments</h1>
           </div>
 
           <div className="mb-4">
-            <label className="mr-2 font-semibold">Filter by Status:</label>
+            <label className="font-semibold text-sm sm:text-base">
+              Filter by Status:
+            </label>
             <select
               value={selectedStatus}
               onChange={(e) => setSelectedStatus(e.target.value)}
-              className="border px-3 py-2 rounded-md cursor-pointer"
+              className="border px-3 py-2 rounded-md cursor-pointer text-sm sm:text-base"
             >
               <option value="all">All</option>
               <option value="pending">Pending</option>
@@ -120,14 +124,14 @@ const Appointments = () => {
           </div>
         </div>
 
-        <div className="flex gap-4 flex-wrap">
+        <div className="sm:grid-cols-2 lg:grid-cols-3 gap-6 ">
           {filteredAppointments.length > 0 ? (
             filteredAppointments.map((appointment: any) => (
               <div
                 key={appointment.appointment_id}
-                className="bg-white border-2 shadow-md rounded-lg p-6 flex w-full cursor-pointer hover:shadow-xl"
+                className="bg-white mt-3 border shadow-md rounded-lg p-4 sm:p-6 flex flex-col sm:flex-row items-center sm:items-start hover:shadow-xl transition"
               >
-                <div className="h-24 w-24 px-8 flex items-center bg-gray-400 border-gray-300 border-1 rounded-full">
+                <div className="w-20 h-20 sm:w-24 sm:h-24 flex items-center justify-center bg-gray-400 border border-gray-300 rounded-full">
                   <User size={62} className="text-white" />
                 </div>
 
@@ -166,9 +170,9 @@ const Appointments = () => {
                   </p>
                 </div>
 
-                <div className="flex flex-col">
+                <div className="flex flex-col sm:mt-4">
                   <div
-                    className={`px-3 py-1 text-white rounded-lg ${getStatusColor(
+                    className={`px-3 py-1 mt-4 sm:mt-0  text-white rounded-lg  ${getStatusColor(
                       appointment.status
                     )} self-start inline-flex gap-2`}
                   >
@@ -178,16 +182,16 @@ const Appointments = () => {
                     </p>
                   </div>
 
-                  {appointment.status.toLowerCase() === "pending" && (
-                    <div className="flex gap-2 mt-auto">
+                  {appointment?.status?.toLowerCase() === "pending" && (
+                    <div className="flex flex-wrap gap-2  sm:mt-4 self-start">
                       <button
-                        className="bg-green-700 text-white px-8 py-2 rounded-full"
+                        className="bg-green-700 text-white px-8 py-2 rounded-full hover:bg-green-800 transition text-sm sm:text-base w-full sm:w-auto"
                         onClick={() => handleAccept(appointment.appointment_id)}
                       >
                         Accept
                       </button>
                       <button
-                        className="bg-red-600 text-white px-8 py-2 rounded-full"
+                        className="bg-red-600 text-white px-8 py-2 rounded-full hover:bg-red-700 transition text-sm sm:text-base w-full sm:w-auto"
                         onClick={() => handleReject(appointment.appointment_id)}
                       >
                         Reject

@@ -210,7 +210,7 @@ const DoctorPreview = () => {
           <div className="text-red-500 text-center mt-8">Error: {error}</div>
         ) : (
           <div>
-            <div className="flex flex-col md:flex-row justify-center bg-white border-2 shadow-md rounded-lg p-6  w-full">
+            <div className="flex flex-col md:flex-row justify-center bg-white border-2 shadow-md rounded-lg p-4 sm:p-6  w-full">
               <div className="w-28 h-28 flex justify-center items-center bg-gray-400 border border-gray-300 rounded-full">
                 <User size={40} className="text-white" />
               </div>
