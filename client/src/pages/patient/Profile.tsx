@@ -6,6 +6,7 @@ import { MyProfile, UpdateProfile } from "@/queries/patient/profile";
 import Layout from "@/Layout";
 import { Navbar } from "@/Navbar";
 import { User, Edit2, Save, X } from "lucide-react";
+import CheckoutButton from "@/stripe/checkoutForm";
 
 const PatientProfile = () => {
   const { id } = useParams();
@@ -155,6 +156,8 @@ const PatientProfile = () => {
                 >
                   <Edit2 className="w-4 h-4" /> Edit Profile
                 </button>
+
+                
               )}
             </div>
           </div>

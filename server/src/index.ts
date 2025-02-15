@@ -3,6 +3,7 @@ import dotenv from "dotenv";
 import morgan from "morgan"
 import cors from "cors";
 import userRoutes from "./routes/user.routes.ts"
+import { createCheckoutSession } from "./controllers/stripe.controller.ts";
 
 dotenv.config();
 
@@ -25,6 +26,7 @@ app.use(
   
 
 app.use('/api/v1/user',userRoutes);
+app.post('/api/create-checkout-session',createCheckoutSession);
 
 app.get('/',(_req,res)=>{
     res.send(' Server Started')

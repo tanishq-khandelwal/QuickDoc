@@ -15,6 +15,7 @@ import { Button } from "@/components/ui/button";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { bookAppointment } from "@/redux/actions/patient/bookAppointmentAction";
 import { DateTime } from "luxon";
+import CheckoutButton from "@/stripe/checkoutForm";
 
 const DoctorPreview = () => {
   const dispatch = useDispatch();
@@ -325,6 +326,9 @@ const DoctorPreview = () => {
                     >
                       Book Appointment
                     </Button>
+
+                    <CheckoutButton onSuccess={handleBookingAppointment} />
+
                   </div>
                 )}
               </div>
