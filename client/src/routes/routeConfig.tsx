@@ -11,6 +11,8 @@ import DoctorPreview from "../pages/patient/DoctorPreview";
 import MyAppointments from "../pages/patient/Appointments";
 import Homepage from "../pages/Homepage";
 import PatientProfile from "../pages/patient/Profile";
+import SuccessPage from "@/stripe/SuccessPage";
+import FailurePage from "@/stripe/FailurePage";
 
 export const publicRoutes = [
   { path: "/", element: <Homepage /> },
@@ -19,6 +21,8 @@ export const publicRoutes = [
   { path: "/signup/patient", element: <SignupPatient /> },
   { path: "/login", element: <Login /> },
   { path: "/events", element: <Events /> },
+  {path:"/success",element:<SuccessPage/>},
+  {path:"/cancel",element:<FailurePage/>}
 ];
 
 export const doctorRoutes = [
