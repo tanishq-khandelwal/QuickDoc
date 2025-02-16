@@ -7,9 +7,10 @@ const stripePromise = loadStripe(
 
 interface CheckoutButtonProps {
   onSuccess: () => void;
+  price:number
 }
 
-export default function CheckoutButton({ onSuccess }: CheckoutButtonProps) {
+export default function CheckoutButton({ onSuccess,price }: CheckoutButtonProps) {
   const [Booked, setBooked] = useState(false);
   const handleCheckout = async () => {
     const stripe = await stripePromise;
@@ -26,7 +27,7 @@ export default function CheckoutButton({ onSuccess }: CheckoutButtonProps) {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
-            price: 500,
+            price: price,
             quantity: 1,
           }),
         }

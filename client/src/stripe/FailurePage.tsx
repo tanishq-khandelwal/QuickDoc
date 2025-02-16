@@ -1,8 +1,22 @@
 import Layout from "@/Layout";
 import { Navbar } from "@/Navbar";
+import { useEffect } from "react";
+import { useDispatch } from "react-redux";
 import { Link } from "react-router-dom";
 
 export default function FailurePage() {
+
+  const dispatch = useDispatch();
+  const appointmentData = JSON.parse(
+    sessionStorage.getItem("appointmentData") || "{}"
+  );
+
+  useEffect(() => {
+    if (appointmentData) {
+      sessionStorage.removeItem("appointmentData");
+    }
+  }, [appointmentData, dispatch]);
+
   return (
     <Layout>
         <Navbar/>

@@ -76,7 +76,7 @@ const DoctorPreview = () => {
       endTime: addMinutes(selectedTime!, data?.slot_duration),
     };
 
-    sessionStorage.setItem('appointmentData', JSON.stringify(appointmentData));
+    sessionStorage.setItem("appointmentData", JSON.stringify(appointmentData));
 
     // console.log(appointmentData);
     setBooked(true);
@@ -329,8 +329,10 @@ const DoctorPreview = () => {
                       Book Appointment
                     </Button> */}
 
-                    <CheckoutButton  onSuccess={handleBookingAppointment} />
-
+                    <CheckoutButton
+                      onSuccess={handleBookingAppointment}
+                      price={data?.consultation_fee}
+                    />
                   </div>
                 )}
               </div>
