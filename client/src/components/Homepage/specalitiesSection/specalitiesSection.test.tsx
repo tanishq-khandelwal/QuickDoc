@@ -3,17 +3,23 @@ import SpecialitiesSection from "./specalitiesSection";
 import "@testing-library/jest-dom";
 
 describe("Specialities Section Component Test", () => {
-  it("Renders section title correctly", () => {
+
+  it('Expect to not log errors in console', () => {
+    const spy = jest.spyOn(global.console, 'error');
     render(<SpecialitiesSection />);
-    
+    expect(spy).not.toHaveBeenCalled();
+  });
+
+
+  it("Renders section title correctly", () => {
+    render(<SpecialitiesSection />);  
     expect(
       screen.getByText("Consult top doctors online for any health concern")
     ).toBeInTheDocument();
   });
 
   it("Renders all speciality cards with correct titles", () => {
-    render(<SpecialitiesSection />);
-    
+    render(<SpecialitiesSection />);  
     const specialities = [
       "Period doubts or Pregnancy",
       "Acne, pimple or skin issues",
@@ -29,8 +35,7 @@ describe("Specialities Section Component Test", () => {
   });
 
   it("Renders images with correct alt text", () => {
-    render(<SpecialitiesSection />);
-    
+    render(<SpecialitiesSection />);    
     expect(screen.getByAltText("Period doubts or Pregnancy")).toBeInTheDocument();
     expect(screen.getByAltText("Acne, pimple or skin issues")).toBeInTheDocument();
     expect(screen.getByAltText("Performance issues in bed")).toBeInTheDocument();
@@ -41,7 +46,6 @@ describe("Specialities Section Component Test", () => {
 
   it("Renders 'CONSULT NOW' text for each speciality", () => {
     render(<SpecialitiesSection />);
-    
     const consultNowButtons = screen.getAllByText("CONSULT NOW");
     expect(consultNowButtons.length).toBe(6);
   });

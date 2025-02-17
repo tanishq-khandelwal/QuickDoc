@@ -30,9 +30,16 @@ const doctors = [
 ];
 
 describe("DoctorsSection Component", () => {
-  test("renders the section headings", () => {
+
+  it('Expect to not log errors in console', () => {
+    const spy = jest.spyOn(global.console, 'error');
     render(<DoctorsSection />);
-    
+    expect(spy).not.toHaveBeenCalled();
+  });
+
+
+  it("renders the section headings", () => {
+    render(<DoctorsSection />);
     expect(
       screen.getByText("Book an appointment for an in-clinic consultation")
     ).toBeInTheDocument();
@@ -41,9 +48,8 @@ describe("DoctorsSection Component", () => {
     ).toBeInTheDocument();
   });
 
-  test("renders all doctors", () => {
+  it("renders all doctors", () => {
     render(<DoctorsSection />);
-
     doctors.forEach((doctor) => {
       expect(screen.getByText(doctor.title)).toBeInTheDocument();
       expect(screen.getByText(doctor.desc)).toBeInTheDocument();
@@ -51,9 +57,8 @@ describe("DoctorsSection Component", () => {
     });
   });
 
-  test("renders images with correct src attributes", () => {
+  it("renders images with correct src attributes", () => {
     render(<DoctorsSection />);
-    
     doctors.forEach((doctor) => {
       const imgElement = screen.getByAltText(doctor.title);
       expect(imgElement).toHaveAttribute("src", doctor.url);

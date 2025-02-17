@@ -130,7 +130,7 @@ const DoctorPreview = () => {
   today.setHours(0, 0, 0, 0);
 
   useEffect(() => {
-    const formattedDate = DateTime.fromJSDate(selectedDate).toISODate();
+    const formattedDate = DateTime.fromJSDate(selectedDate).toISODate() || "";
     console.log("Formatted Date", formattedDate);
     // Check if the selected date is an exception date
     const exceptionDay = exceptionAvailabilities.find(
