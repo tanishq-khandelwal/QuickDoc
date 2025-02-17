@@ -73,14 +73,14 @@ const PatientProfile = () => {
         </div>
       ) : (
         <div className="mt-24 flex justify-center items-center">
-          <div className="bg-white shadow-lg border border-gray-300 rounded-xl p-6 w-[380px]">
+          <div className="bg-white shadow-lg border border-gray-300 rounded-xl p-6 w-full sm:w-[380px]">
             {/* Profile Picture */}
             <div className="flex justify-center mb-6">
-              <div className="border-2 border-[#14BFF1] rounded-full p-3 flex items-center justify-center w-28 h-28 bg-gray-100">
-                <User className="w-20 h-20 text-gray-500" />
+              <div className="border-2 border-[#14BFF1] rounded-full p-3 flex items-center justify-center w-28 h-28 sm:w-32 sm:h-32 bg-gray-100">
+                <User className="w-20 h-20 sm:w-24 sm:h-24 text-gray-500" />
               </div>
             </div>
-
+  
             {/* Profile Details */}
             <div className="text-gray-700 space-y-4">
               <div>
@@ -98,7 +98,7 @@ const PatientProfile = () => {
                   <p className="text-lg font-medium">{updatedName}</p>
                 )}
               </div>
-
+  
               <div>
                 <label className="block text-sm font-medium text-gray-600">
                   Email
@@ -114,7 +114,7 @@ const PatientProfile = () => {
                   <p className="text-lg font-medium">{updatedEmail}</p>
                 )}
               </div>
-
+  
               <div>
                 <label className="block text-sm font-medium text-gray-600">
                   Phone Number
@@ -131,9 +131,9 @@ const PatientProfile = () => {
                 )}
               </div>
             </div>
-
+  
             {/* Buttons */}
-            <div className="flex justify-center gap-4 mt-6">
+            <div className="flex flex-col sm:flex-row justify-center gap-4 mt-6">
               {isEditing ? (
                 <>
                   <button
@@ -156,15 +156,13 @@ const PatientProfile = () => {
                 >
                   <Edit2 className="w-4 h-4" /> Edit Profile
                 </button>
-
-                
               )}
             </div>
           </div>
         </div>
       )}
     </Layout>
-  );
+  );  
 };
 
 export default PatientProfile;

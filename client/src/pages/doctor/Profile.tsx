@@ -98,12 +98,12 @@ const Profile = () => {
       ) : (
         <div className="flex justify-center items-center min-h-screen bg-gradient-to-br from-blue-50 to-white mt-16">
           <div className="w-full max-w-4xl bg-white rounded-lg shadow-lg p-6 border-2 border-gray-200">
-            <h1 className="text-2xl font-bold text-center mb-6">
+            <h1 className="text-2xl sm:text-3xl font-bold text-center mb-6">
               Doctor Profile
             </h1>
-
+  
             {formData ? (
-              <form className="grid grid-cols-2 gap-4">
+              <form className="md:grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
                   <label className="block text-gray-700 font-medium mb-2">
                     Name
@@ -234,6 +234,7 @@ const Profile = () => {
       )}
     </Layout>
   );
+  
 };
 
 export default Profile;

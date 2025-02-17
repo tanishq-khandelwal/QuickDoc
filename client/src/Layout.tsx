@@ -98,7 +98,6 @@ export function AppSidebar() {
   const userData = localStorage.getItem("user");
   const patientId = userData ? JSON.parse(userData).user_id : null;
 
-
   if (role === "patient") {
     sidebarItems = [
       { title: "Home", url: "/", icon: Home },
