@@ -53,15 +53,21 @@ const MyAppointments = () => {
   const systemZone = local.zoneName || "";
 
   const formatTime = (date: string, time: string, patientTimeZone: string) => {
-    const localTime = DateTime.fromISO(`${date}T${time}`, {
+    // Parse the date and time in the patient's timezone
+    const timeInPatientTZ = DateTime.fromISO(`${date}T${time}`, {
       zone: patientTimeZone,
-    }).setZone(systemZone);
+    });
 
-    // Check if the system timezone is India
+    // Convert to UTC
+    const timeInUTC = timeInPatientTZ.toUTC();
+
+    // Display in the system's timezone
+    const localTime = timeInUTC.setZone(systemZone);
+
     if (systemZone === "Asia/Calcutta") {
-      return localTime.toFormat("hh:mm a 'IST'"); // Force IST label
+      return localTime.toFormat("hh:mm a 'IST'");
     } else {
-      return localTime.toFormat("hh:mm a ZZZZ"); // Show the correct timezone abbreviation
+      return localTime.toFormat("hh:mm a ZZZZ");
     }
   };
 
@@ -118,7 +124,7 @@ const MyAppointments = () => {
         {/* Appointments List */}
         <div className="sm:grid-cols-2 lg:grid-cols-3 gap-6 mt-6">
           {filteredAppointments.length > 0 ? (
-            filteredAppointments.map((appointment:any) => (
+            filteredAppointments.map((appointment: any) => (
               <div
                 key={appointment.appointment_id}
                 className="bg-white mt-3 border shadow-md rounded-lg p-4 sm:p-6 flex flex-col sm:flex-row items-center sm:items-start hover:shadow-xl transition"
@@ -152,7 +158,7 @@ const MyAppointments = () => {
                       appointment.appointment_date,
                       appointment.start_time,
                       appointment.patient_time_zone
-                    )}{" "}
+                    ).replace(/\s[A-Z]{2,5}.*/, "")} {" "}
                     -{" "}
                     {formatTime(
                       appointment.appointment_date,

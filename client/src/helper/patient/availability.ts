@@ -88,14 +88,17 @@ export function generateAvailableTimeSlots(
       const bookingStart = DateTime.fromFormat(
         `${booking.appointment_date}T${booking.start_time}`,
         "yyyy-MM-dd'T'HH:mm:ss",
-        { zone: patientTimeZone }
-      );
+        { zone: doctorTimeZone } // Add zone here
+      ).setZone(patientTimeZone);
+      
       const bookingEnd = DateTime.fromFormat(
         `${booking.appointment_date}T${booking.end_time}`,
         "yyyy-MM-dd'T'HH:mm:ss",
-        { zone: patientTimeZone }
-      );
+        { zone: doctorTimeZone } // Add zone here
+      ).setZone(patientTimeZone);
+      
 
+      console.log(bookingStart.toISO(),bookingEnd.toISO());
       return (
         (currentTime >= bookingStart && currentTime < bookingEnd) ||
         (slotEnd > bookingStart && slotEnd <= bookingEnd) ||

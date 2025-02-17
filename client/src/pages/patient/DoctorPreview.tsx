@@ -13,8 +13,9 @@ import {
 } from "@/helper/patient/availability";
 import { Button } from "@/components/ui/button";
 import { useNavigate, useSearchParams } from "react-router-dom";
-import { bookAppointment } from "@/redux/actions/patient/bookAppointmentAction";
+// import { bookAppointment } from "@/redux/actions/patient/bookAppointmentAction";
 import { DateTime } from "luxon";
+import CheckoutButton from "@/stripe/checkoutForm";
 
 const DoctorPreview = () => {
   const dispatch = useDispatch();
@@ -75,9 +76,11 @@ const DoctorPreview = () => {
       endTime: addMinutes(selectedTime!, data?.slot_duration),
     };
 
+    sessionStorage.setItem("appointmentData", JSON.stringify(appointmentData));
+
     // console.log(appointmentData);
     setBooked(true);
-    dispatch(bookAppointment(appointmentData));
+    // dispatch(bookAppointment(appointmentData));
   };
 
   useEffect(() => {
@@ -319,12 +322,17 @@ const DoctorPreview = () => {
                       </div>{" "}
                       at <div className="text-red-600">{selectedTime}</div>
                     </div>
-                    <Button
+                    {/* <Button
                       className="border-2 bg-[#0067E7] text-white shadow-xl hover:bg-[white] hover:text-[#0067E7] hover:border-[#0067E7]"
                       onClick={handleBookingAppointment}
                     >
                       Book Appointment
-                    </Button>
+                    </Button> */}
+
+                    <CheckoutButton
+                      onSuccess={handleBookingAppointment}
+                      price={data?.consultation_fee}
+                    />
                   </div>
                 )}
               </div>

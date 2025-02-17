@@ -125,7 +125,7 @@ const Appointments = () => {
         </div>
 
         <div className="sm:grid-cols-2 lg:grid-cols-3 gap-6 ">
-          {filteredAppointments.length > 0 ? (
+          {!loading && filteredAppointments.length > 0 ? (
             filteredAppointments.map((appointment: any) => (
               <div
                 key={appointment.appointment_id}
@@ -160,8 +160,8 @@ const Appointments = () => {
                       appointment.appointment_date,
                       appointment.start_time,
                       appointment.patient_time_zone
-                    )}{" "}
-                    -
+                    ).replace(/\s[A-Z]{2,5}.*/, "")}{" "}
+                    -{" "}
                     {formatTime(
                       appointment.appointment_date,
                       appointment.end_time,
@@ -202,7 +202,9 @@ const Appointments = () => {
               </div>
             ))
           ) : (
-            <p>No appointments found</p>
+            <p className="text-center w-full text-gray-500 text-sm sm:text-base">
+              No appointments found
+            </p>
           )}
         </div>
       </div>
