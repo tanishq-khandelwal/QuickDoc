@@ -1,18 +1,20 @@
-import Signup from "../pages/doctor/Signup";
-import SignupPatient from "../pages/patient/Signup";
-import Login from "../pages/Login";
-import Events from "../pages/doctor/Events";
-import Availability from "../pages/doctor/Availability";
-import SignupSelection from "../pages/SignupSelection";
-import Profile from "../pages/doctor/Profile";
-import Appointments from "../pages/doctor/Appointments";
-import DoctorList from "../pages/patient/DoctorList";
-import DoctorPreview from "../pages/patient/DoctorPreview";
-import MyAppointments from "../pages/patient/Appointments";
-import Homepage from "../pages/Homepage";
-import PatientProfile from "../pages/patient/Profile";
-import SuccessPage from "@/stripe/SuccessPage";
-import FailurePage from "@/stripe/FailurePage";
+import { lazy } from 'react';
+
+const Signup = lazy(() => import("../pages/doctor/Signup"));
+const SignupPatient = lazy(() => import("../pages/patient/Signup"));
+const Login = lazy(() => import("../pages/Login"));
+const Events = lazy(() => import("../pages/doctor/Events"));
+const Availability = lazy(() => import("../pages/doctor/Availability"));
+const SignupSelection = lazy(() => import("../pages/SignupSelection"));
+const Profile = lazy(() => import("../pages/doctor/Profile"));
+const Appointments = lazy(() => import("../pages/doctor/Appointments"));
+const DoctorList = lazy(() => import("../pages/patient/DoctorList"));
+const DoctorPreview = lazy(() => import("../pages/patient/DoctorPreview"));
+const MyAppointments = lazy(() => import("../pages/patient/Appointments"));
+const Homepage = lazy(() => import("../pages/Homepage"));
+const PatientProfile = lazy(() => import("../pages/patient/Profile"));
+const SuccessPage = lazy(() => import("@/stripe/SuccessPage"));
+const FailurePage = lazy(() => import("@/stripe/FailurePage"));
 
 export const publicRoutes = [
   { path: "/", element: <Homepage /> },
@@ -21,8 +23,8 @@ export const publicRoutes = [
   { path: "/signup/patient", element: <SignupPatient /> },
   { path: "/login", element: <Login /> },
   { path: "/events", element: <Events /> },
-  {path:"/success",element:<SuccessPage/>},
-  {path:"/cancel",element:<FailurePage/>}
+  { path: "/success", element: <SuccessPage /> },
+  { path: "/cancel", element: <FailurePage /> }
 ];
 
 export const doctorRoutes = [

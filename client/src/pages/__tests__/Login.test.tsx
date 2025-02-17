@@ -72,7 +72,7 @@ describe("Login Component", () => {
       <Provider store={store}>
         <MemoryRouter>
           <Login />
-        </MemoryRouter>
+        </MemoryRouter> 
       </Provider>
     );
     await userEvent.type(screen.getByLabelText(/email/i), "test@example.com");
