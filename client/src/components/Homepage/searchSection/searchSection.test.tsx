@@ -3,6 +3,14 @@ import "@testing-library/jest-dom";
 import SearchSection from "./searchSection";
 
 describe("Search Section Component Test",()=>{
+
+    it('Expect to not log errors in console', () => {
+        const spy = jest.spyOn(global.console, 'error');
+        render(<SearchSection />);
+        expect(spy).not.toHaveBeenCalled();
+      });
+
+
     it("Renders search input fields",()=>{
         render(<SearchSection/>);
 
@@ -13,6 +21,5 @@ describe("Search Section Component Test",()=>{
         expect(doctorInput).toBeInTheDocument();
     });
 
-    it()
 
 })

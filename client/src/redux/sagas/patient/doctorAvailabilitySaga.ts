@@ -1,4 +1,4 @@
-import { takeLatest,call,put } from "redux-saga/effects";
+import { takeLatest,call,put, CallEffect, PutEffect } from "redux-saga/effects";
 import client from "../../../apolloClient";
 import { FETCH_DOCTOR_AVAILABILITY } from "@/queries/patient/doctorlist";
 import { FETCH_DOCTOR_AVAILABILTY_FAILURE, FETCH_DOCTOR_AVAILABILTY_REQUEST, FETCH_DOCTOR_AVAILABILTY_SUCCESS } from "@/redux/reducers/patient/doctorAvailabilityReducer";
@@ -8,7 +8,7 @@ interface FetchDoctorAvailabilityAction {
     payload: { doctorId: number };
   }
 
-export function* fetchDoctorAvailability(action: FetchDoctorAvailabilityAction) {
+  export function* fetchDoctorAvailability(action: FetchDoctorAvailabilityAction): Generator<CallEffect<any> | PutEffect<any>, void, any> {
     try {
         const { doctorId } = action.payload;
         // console.log(doctorId);
