@@ -15,15 +15,19 @@ const Appointments = () => {
   const { data, loading, error } = useSelector(
     (state: any) => state.allAppointments
   );
-  const appointments = Array.isArray(data?.data?.appointments)
-    ? data.data.appointments
-    : [];
 
+  const [appointments, setAppointments] = useState<AppointmentType[]>([]);
   const [selectedStatus, setSelectedStatus] = useState("all");
 
   useEffect(() => {
     dispatch(fetchAppointments());
   }, [dispatch]);
+
+  useEffect(() => {
+    if (data?.data?.appointments) {
+      setAppointments(data.data.appointments);
+    }
+  }, [data]);
 
   useEffect(() => {
     if (loading) {
@@ -37,13 +41,25 @@ const Appointments = () => {
   const handleAccept = (appointmentId: number) => {
     dispatch(updateApppointment({ appointmentId, status: "approved" }));
     toast.success("Appointment Accepted");
-    setTimeout(() => window.location.reload(), 500);
+    setAppointments(prevAppointments =>
+      prevAppointments.map(appointment =>
+        appointment.appointment_id === appointmentId
+          ? { ...appointment, status: "approved" }
+          : appointment
+      )
+    );
   };
 
   const handleReject = (appointmentId: number) => {
     dispatch(updateApppointment({ appointmentId, status: "rejected" }));
     toast.error("Appointment Rejected");
-    setTimeout(() => window.location.reload(), 500);
+    setAppointments(prevAppointments =>
+      prevAppointments.map(appointment =>
+        appointment.appointment_id === appointmentId
+          ? { ...appointment, status: "rejected" }
+          : appointment
+      )
+    );
   };
 
   const getStatusColor = (status: string) => {
@@ -203,7 +219,7 @@ const Appointments = () => {
             ))
           ) : (
             <p className="text-center w-full text-gray-500 text-sm sm:text-base">
-              No appointments found
+              
             </p>
           )}
         </div>
