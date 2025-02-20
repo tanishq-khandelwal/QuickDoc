@@ -5,7 +5,7 @@ import {
   ReactNode,
   useEffect,
 } from "react";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import {
   ChevronLast,
   ChevronFirst,
@@ -185,9 +185,15 @@ export function SidebarItem({ icon: Icon, text, url }: SidebarItemProps) {
   if (!context)
     throw new Error("SidebarItem must be used within SidebarProvider");
   const { expanded } = context;
+  const location = useLocation();
+  const isActive = location.pathname === url;
 
   return (
-    <li className="relative flex items-center py-2 px-3 my-1 font-medium rounded-md cursor-pointer transition-colors group hover:bg-indigo-50 text-gray-600">
+    <li
+      className={`relative flex items-center py-2 px-3 my-1 font-medium rounded-md cursor-pointer transition-colors group 
+        ${isActive ? "bg-[#199FD9] text-white" : "hover:bg-indigo-50 text-gray-600"}
+      `}
+    >
       <Link to={url} className="flex items-center w-full">
         <Icon size={20} />
         <span

@@ -13,27 +13,28 @@ import {
   publicRoutes,
   doctorRoutes,
   patientRoutes,
-} from "./routes/routeConfig"; 
+} from "./routes/routeConfig";
+import Loading from "./components/loader/loader";
 
 const router = createBrowserRouter(
   createRoutesFromElements(
     <>
       {/* Public Routes */}
       {publicRoutes.map(({ path, element }) => (
-        <Route key={path} path={path} element={<Suspense fallback={<div>Loading...</div>}>{element}</Suspense>} />
+        <Route key={path} path={path} element={element} />
       ))}
 
       {/* Doctor Routes */}
       <Route element={<ProtectedRoute allowedRoles={["doctor"]} />}>
         {doctorRoutes.map(({ path, element }) => (
-          <Route key={path} path={path} element={<Suspense fallback={<div>Loading...</div>}>{element}</Suspense>} />
+          <Route key={path} path={path} element={element} />
         ))}
       </Route>
 
       {/* Patient Routes */}
       <Route element={<ProtectedRoute allowedRoles={["patient"]} />}>
         {patientRoutes.map(({ path, element }) => (
-          <Route key={path} path={path} element={<Suspense fallback={<div>Loading...</div>}>{element}</Suspense>} />
+          <Route key={path} path={path} element={element} />
         ))}
       </Route>
 
@@ -45,7 +46,11 @@ const router = createBrowserRouter(
 );
 
 function App() {
-  return <RouterProvider router={router} />;
+  return (
+    <Suspense fallback={<Loading/>}>
+      <RouterProvider router={router} />
+    </Suspense>
+  );
 }
 
 export default App;

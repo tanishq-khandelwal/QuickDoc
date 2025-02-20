@@ -11,10 +11,10 @@ interface ProtectedRouteProps {
 const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ allowedRoles }) => {
   const location = useLocation();
   const [role, setRole] = useState<string | null>(null);
-  const [isLoading, setIsLoading] = useState(true); // Add loading state
+  const [isLoading, setIsLoading] = useState(true); 
 
   useEffect(() => {
-    const token = Cookies.get("token"); // Get token from cookies
+    const token = Cookies.get("token");
 
     if (token) {
       try {
@@ -23,25 +23,24 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ allowedRoles }) => {
       } catch (error) {
         console.error("Error decoding token:", error);
         toast.error("Invalid token! Please log in again.");
-        Cookies.remove("token"); // Clear invalid token
+        Cookies.remove("token");
       }
     }
 
     setIsLoading(false);
   }, []);
 
-  // Show a loading screen while checking authentication
+
   if (isLoading) {
     return <div>Loading...</div>;
   }
 
-  // If no valid role, redirect to login
   if (!role) {
     toast.error("Unauthenticated! Please log in to continue...");
     return <Navigate to="/login" state={{ from: location }} replace />;
   }
 
-  // If role is not allowed, redirect to denied page
+
   if (!allowedRoles.includes(role)) {
     return <Navigate to="/denied" state={{ from: location }} replace />;
   }
