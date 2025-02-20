@@ -269,14 +269,14 @@ const DoctorPreview = () => {
 
               <div className="flex justify-around px-4 ">
                 <div className="bg-white rounded-lg p-6  w-96">
-                  <Calendar
+                  <Calendar                     
                     mode="single"
                     className="mb-6 rounded-lg border p-4"
                     selected={selectedDate}
                     onSelect={(date) => {
                       setSelectedDate(date ?? new Date());
                     }}
-                    disabled={disabledDays} // Disable unavailable days
+                    disabled={disabledDays} 
                   />
                 </div>
 
@@ -306,7 +306,7 @@ const DoctorPreview = () => {
                           </div>
                         ) : (
                           <p className="flex items-center justify-center text-center text-red-500">
-                            No time slots available for this day
+                            No time slots available for this day as Doctor is not Available at the given time
                           </p>
                         )}
                       </div>

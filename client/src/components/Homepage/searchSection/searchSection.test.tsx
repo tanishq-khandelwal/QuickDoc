@@ -10,7 +10,6 @@ describe("Search Section Component Test",()=>{
         expect(spy).not.toHaveBeenCalled();
       });
 
-
     it("Renders search input fields",()=>{
         render(<SearchSection/>);
 
