@@ -13,7 +13,6 @@ import {
   publicRoutes,
   doctorRoutes,
   patientRoutes,
-  guestRoutes,
 } from "./routes/routeConfig";
 import Loading from "./components/loader/loader";
 

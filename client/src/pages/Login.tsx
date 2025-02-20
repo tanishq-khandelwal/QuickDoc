@@ -3,7 +3,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { loginRequest } from "../redux/actions/authActions";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { RootState } from "../redux/rootReducer";
 import toast from "react-hot-toast";
@@ -14,7 +14,7 @@ const loginSchema = z.object({
   email: z
     .string()
     .email("Enter a valid email address")
-    .min(4, "Email should be atleast 4 characters"),
+    .min(4, "Email should be at least 4 characters"),
   password: z.string().min(4, "Password must be at least 4 characters"),
 });
 
@@ -26,6 +26,7 @@ const Login = () => {
   const {
     register,
     handleSubmit,
+    setValue,
     formState: { errors },
   } = useForm<LoginFormValues>({
     resolver: zodResolver(loginSchema),
@@ -34,9 +35,9 @@ const Login = () => {
   const { user, loading, error } = useSelector(
     (state: RootState) => state.auth
   );
-
   const [showPassword, setShowPassword] = useState(false);
   const [isSubmitted, setIsSubmitted] = useState(false);
+  const [isGuest, setIsGuest] = useState(false);
 
   useEffect(() => {
     if (user && isSubmitted) {
@@ -51,10 +52,20 @@ const Login = () => {
     }
   }, [user, navigate, loading, error]);
 
+  // Auto-fill guest credentials when checkbox is checked
+  useEffect(() => {
+    if (isGuest) {
+      setValue("email", "guest@gmail.com");
+      setValue("password", "guest");
+    } else {
+      setValue("email", "");
+      setValue("password", "");
+    }
+  }, [isGuest, setValue]);
+
   // Submit handler
   const onSubmit = (data: LoginFormValues) => {
-    const { email, password } = data;
-    dispatch(loginRequest({ email, password }));
+    dispatch(loginRequest({ email: data.email, password: data.password }));
     setIsSubmitted(true);
   };
 
@@ -77,7 +88,8 @@ const Login = () => {
               id="email"
               type="email"
               {...register("email")}
-              className="w-full mt-1 px-4 py-2 border border-gray-300 rounded-lg "
+              className="w-full mt-1 px-4 py-2 border border-gray-300 rounded-lg"
+              disabled={isGuest}
             />
             {errors.email && (
               <p className="text-red-500 text-sm">{errors.email.message}</p>
@@ -96,7 +108,8 @@ const Login = () => {
               id="password"
               type={showPassword ? "text" : "password"}
               {...register("password")}
-              className="w-full mt-1 px-4 py-2 border border-gray-300 rounded-lg  pr-10"
+              className="w-full mt-1 px-4 py-2 border border-gray-300 rounded-lg pr-10"
+              disabled={isGuest}
             />
             <button
               type="button"
@@ -114,12 +127,29 @@ const Login = () => {
             )}
           </div>
 
+          {/* Guest Login Checkbox */}
+          <div className="flex items-center gap-2">
+            <input
+              type="checkbox"
+              id="guestLogin"
+              checked={isGuest}
+              onChange={() => setIsGuest(!isGuest)}
+              className="w-4 h-4 cursor-pointer"
+            />
+            <label
+              htmlFor="guestLogin"
+              className="text-gray-700 text-sm cursor-pointer"
+            >
+              Login as Guest
+            </label>
+          </div>
+
           {/* Signup Link */}
           <div className="flex gap-4">
             <div className="text-gray-600 text-sm">Don't have an account?</div>
-            <a href="/signup" className="text-sm underline text-blue-500">
-              Sign Up
-            </a>
+            <Link to={"/signup"}>
+              <div className="text-sm underline text-blue-500">Sign Up</div>
+            </Link>
           </div>
 
           {/* Login Button */}
