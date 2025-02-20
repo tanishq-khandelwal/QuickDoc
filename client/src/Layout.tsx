@@ -107,6 +107,14 @@ export function AppSidebar() {
     ];
   }
 
+  if (role === "guest") {
+    sidebarItems = [
+      { title: "Home", url: "/", icon: Home },
+      { title: "Doctors", url: "/doctors", icon: Hospital },
+      { title: "Appointments", url: "/appointments/me", icon: Calendar },
+    ];
+  }
+
   const userName: string = localStorage.getItem("user")
     ? JSON.parse(localStorage.getItem("user")!).name
     : "Undefined";

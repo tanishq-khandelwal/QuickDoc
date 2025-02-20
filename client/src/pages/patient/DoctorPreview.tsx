@@ -20,6 +20,8 @@ import CheckoutButton from "@/stripe/checkoutForm";
 const DoctorPreview = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const role = localStorage.getItem("role");
+
   const [searchParams] = useSearchParams();
   const doctorId = Number(searchParams.get("doctorId"));
   const userData = localStorage.getItem("user");
@@ -312,30 +314,44 @@ const DoctorPreview = () => {
                   </div>
                 </div>
               </div>
-              <div className="flex justify-center mt-4">
-                {selectedTime && (
-                  <div className="flex flex-col items-center gap-4">
-                    <div className="flex gap-2 text-lg font-medium mb-2">
-                      Click to Book Appointment for{" "}
-                      <div className="text-red-600">
-                        {selectedDate?.toLocaleDateString()}
-                      </div>{" "}
-                      at <div className="text-red-600">{selectedTime}</div>
-                    </div>
-                    {/* <Button
+
+              {role === "guest" ? (
+                  <div className="flex flex-col items-center justify-center mt-6 p-4 bg-red-100 border border-red-400 text-red-700 rounded-lg shadow-md">
+                  <p className="text-lg font-semibold">🔒 Access Restricted</p>
+                  <p className="text-sm mt-2">Please Sign Up to book an appointment and access more features.</p>
+                  <button 
+                    className="mt-3 px-4 py-2 bg-red-500 hover:bg-red-600 text-white font-medium rounded-md transition duration-300"
+                    onClick={() => navigate("/signup")}
+                  >
+                    Signup Now
+                  </button>
+                </div>
+              ) : (
+                <div className="flex justify-center mt-4">
+                  {selectedTime && (
+                    <div className="flex flex-col items-center gap-4">
+                      <div className="flex gap-2 text-lg font-medium mb-2">
+                        Click to Book Appointment for{" "}
+                        <div className="text-red-600">
+                          {selectedDate?.toLocaleDateString()}
+                        </div>{" "}
+                        at <div className="text-red-600">{selectedTime}</div>
+                      </div>
+                      {/* <Button
                       className="border-2 bg-[#0067E7] text-white shadow-xl hover:bg-[white] hover:text-[#0067E7] hover:border-[#0067E7]"
                       onClick={handleBookingAppointment}
                     >
                       Book Appointment
                     </Button> */}
 
-                    <CheckoutButton
-                      onSuccess={handleBookingAppointment}
-                      price={data?.consultation_fee}
-                    />
-                  </div>
-                )}
-              </div>
+                      <CheckoutButton
+                        onSuccess={handleBookingAppointment}
+                        price={data?.consultation_fee}
+                      />
+                    </div>
+                  )}
+                </div>
+              )}
             </div>
           </div>
         )}

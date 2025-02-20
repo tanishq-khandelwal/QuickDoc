@@ -13,6 +13,7 @@ import {
   publicRoutes,
   doctorRoutes,
   patientRoutes,
+  guestRoutes,
 } from "./routes/routeConfig";
 import Loading from "./components/loader/loader";
 
@@ -24,6 +25,8 @@ const router = createBrowserRouter(
         <Route key={path} path={path} element={element} />
       ))}
 
+
+
       {/* Doctor Routes */}
       <Route element={<ProtectedRoute allowedRoles={["doctor"]} />}>
         {doctorRoutes.map(({ path, element }) => (
@@ -32,11 +35,13 @@ const router = createBrowserRouter(
       </Route>
 
       {/* Patient Routes */}
-      <Route element={<ProtectedRoute allowedRoles={["patient"]} />}>
+      <Route element={<ProtectedRoute allowedRoles={["patient","guest"]} />}>
         {patientRoutes.map(({ path, element }) => (
           <Route key={path} path={path} element={element} />
         ))}
       </Route>
+
+
 
       {/* Fallback Routes */}
       <Route path="*" element={<NotFound />} />

@@ -42,6 +42,7 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ allowedRoles }) => {
 
 
   if (!allowedRoles.includes(role)) {
+    console.log("Protected Role",role)
     return <Navigate to="/denied" state={{ from: location }} replace />;
   }
 

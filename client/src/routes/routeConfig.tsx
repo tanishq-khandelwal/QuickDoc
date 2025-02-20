@@ -39,3 +39,8 @@ export const patientRoutes = [
   { path: "/appointments/me", element: <MyAppointments /> },
   { path: "/patient/profile/:id", element: <PatientProfile /> },
 ];
+
+export const guestRoutes = [
+  { path: "/doctors", element: <DoctorList /> },
+  { path: "/doctorPreview", element: <DoctorPreview /> },
+];
