@@ -2,11 +2,11 @@
 import { combineReducers } from 'redux';
 import authReducer from './reducers/authReducers'; // Import your authReducer or any other reducers here
 import availabiltyReducer from './reducers/doctor/availabilityReducers';
-import doctorlistReducer from './reducers/patient/doctorlistReducers';
-import doctorAvailabilityReducer from './reducers/patient/doctorAvailabilityReducer';
+import doctorlistReducer from '../containers/patient/doctorList/reducers';
+import doctorAvailabilityReducer from '../containers/patient/doctorPreview/reducers';
 import bookAppointmentReducer from './reducers/patient/bookAppointmentReducer';
 import appointmentReducer from './reducers/doctor/fetchAppointmentReducer';
-import MyappointmentReducer from './reducers/patient/MyAppointmentReducer';
+import MyappointmentReducer from '../containers/patient/appointments/reducers';
 import updateAppointmentReducer from './reducers/doctor/updateAppointmentReducer';
 import ExceptionavailabiltyReducer from './reducers/doctor/exceptionAvailabilityReducer';
 

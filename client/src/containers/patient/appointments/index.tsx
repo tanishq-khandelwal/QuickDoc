@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import toast from "react-hot-toast";
-import { fetchMyAppointments } from "@/redux/actions/patient/MyAppointmentAction"; 
+import { fetchMyAppointments } from "./actions"; 
 import StatusFilter from "@/components/patientAppointment/statusFilter";
 import AppointmentList from "@/components/patientAppointment/appointmentList";
 

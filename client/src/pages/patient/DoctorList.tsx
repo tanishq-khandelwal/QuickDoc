@@ -1,9 +1,8 @@
-import React from "react";
 import Layout from "@/Layout";
 import { Navbar } from "@/Navbar";
-import DoctorListContainer from "@/containers/patient/doctors";
+import DoctorListContainer from "@/containers/patient/doctorList";
 
-const DoctorListPage: React.FC = () => {
+const DoctorListPage = () => {
   return (
     <Layout>
       <Navbar />

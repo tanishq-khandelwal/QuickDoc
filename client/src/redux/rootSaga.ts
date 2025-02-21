@@ -3,11 +3,11 @@ import { watchAuthSaga } from "./sagas/loginSaga";
 import { watchFetchAvailability } from "./sagas/doctor/availabilitySaga";
 import { watchLogoutSaga } from "./sagas/logoutSaga";
 import { watchSignupSaga } from "./sagas/patient/signupSaga";
-import { watchFetchDoctors } from "./sagas/patient/doctorlistSaga.";
-import { watchDoctorAvailabilty } from "./sagas/patient/doctorAvailabilitySaga";
+import { watchFetchDoctors } from "../containers/patient/doctorList/saga";
+import { watchDoctorAvailabilty } from "../containers/patient/doctorPreview/sagas";
 import { watchBookAppointment } from "./sagas/patient/bookAppointmentSaga";
 import { watchFetchAppointment } from "./sagas/doctor/fetchAppointmentSaga";
-import { watchFetchMyAppointment } from "./sagas/patient/MyAppointmentSaga";
+import { watchFetchMyAppointment } from "../containers/patient/appointments/saga";
 import { watchUpdateAppointment } from "./sagas/doctor/updateAppointmentSaga";
 import { watchFetchExceptionAvailability } from "./sagas/doctor/exceptionAvailibilitySaga";
 

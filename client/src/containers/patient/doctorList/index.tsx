@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { fetchDoctors } from "@/redux/actions/patient/doctorListAction";
+import { fetchDoctors } from "./actions";
 import { RootState } from "@/redux/rootReducer";
 import toast from "react-hot-toast";
 import DoctorCard from "@/components/doctorList/doctorCard";
