@@ -17,7 +17,6 @@ type LoginResponse= {
   };
 }
 
-// Function to call the actual login API
 const loginAPI = async (credentials: LoginCredentials): Promise<LoginResponse> => {
   try {
     const response = await axios.post('http://localhost:3000/api/v1/user/login', credentials,{
@@ -31,28 +30,25 @@ const loginAPI = async (credentials: LoginCredentials): Promise<LoginResponse> =
   }
 };
 
-// Saga Worker Function
 function* loginSaga(action: { type: string; payload: LoginCredentials }) {
   try {
     const response: LoginResponse = yield call(loginAPI, action.payload);
     // console.log("response is "+response);
-    const {role} = response.data; // Destructure user_id and role from response.data
+    const {role} = response.data;
 
-    // Store the user ID and role in localStorage after a successful login
     if (role) {
-      localStorage.setItem("user",JSON.stringify(response.data)); // Convert user_id to string
-      localStorage.setItem("role", role); // Store the role as string
+      localStorage.setItem("user",JSON.stringify(response.data)); 
+      localStorage.setItem("role", role);
       localStorage.setItem("isLoggedIn","true");
     }
 
-    yield put(loginSuccess(response.data)); // Dispatch success action with the user data
+    yield put(loginSuccess(response.data)); 
   } catch (error: any) {
-    console.error("Login error:", error); // Debugging
-    yield put(loginFailure(error.message || "Login failed")); // Extract error message
+    console.error("Login error:", error); 
+    yield put(loginFailure(error.message || "Login failed")); 
   }
 }
 
-// Watcher Saga
 export function* watchAuthSaga() {
   yield takeLatest(LOGIN_REQUEST, loginSaga);
 }

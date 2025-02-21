@@ -25,6 +25,7 @@ const AvailabilityModal: React.FC<AvailabilityModalProps> = ({
   const [startTime, setStartTime] = useState<string>("09:00");
   const [endTime, setEndTime] = useState<string>("17:00");
   const today = new Date();
+  const role = localStorage.getItem("role");
 
   // Set default date on mount
   useEffect(() => {
@@ -140,7 +141,7 @@ const AvailabilityModal: React.FC<AvailabilityModalProps> = ({
           <Button
             onClick={onSave}
             className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg focus:outline-none"
-            disabled={loading}
+            disabled={loading || role==='guestdoctor'}
           >
             {loading ? "Saving..." : "Confirm"}
           </Button>

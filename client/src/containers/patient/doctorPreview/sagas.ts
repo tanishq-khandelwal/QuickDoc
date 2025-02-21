@@ -1,7 +1,8 @@
 import { takeLatest,call,put, CallEffect, PutEffect } from "redux-saga/effects";
 import client from "../../../apolloClient";
 import { FETCH_DOCTOR_AVAILABILITY } from "@/queries/patient/doctorlist";
-import { FETCH_DOCTOR_AVAILABILTY_FAILURE, FETCH_DOCTOR_AVAILABILTY_REQUEST, FETCH_DOCTOR_AVAILABILTY_SUCCESS } from "@/redux/reducers/patient/doctorAvailabilityReducer";
+import { FETCH_DOCTOR_AVAILABILTY_FAILURE, FETCH_DOCTOR_AVAILABILTY_REQUEST, FETCH_DOCTOR_AVAILABILTY_SUCCESS } from "./constants";
+
 
 interface FetchDoctorAvailabilityAction {
     type: typeof FETCH_DOCTOR_AVAILABILTY_REQUEST;

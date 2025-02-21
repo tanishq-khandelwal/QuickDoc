@@ -1,7 +1,7 @@
 import { takeLatest,call,put } from "redux-saga/effects";
 import client from "../../../apolloClient";
 import { FETCH_DOCTORS } from "@/queries/patient/doctorlist";
-import { FETCH_DOCTORS_FAILURE, FETCH_DOCTORS_SUCCESS } from "@/redux/actions/patient/doctorListAction";
+import { FETCH_DOCTORS_FAILURE, FETCH_DOCTORS_SUCCESS} from './constants'
 import { ApolloQueryResult } from "@apollo/client";
 
 type Doctor = {

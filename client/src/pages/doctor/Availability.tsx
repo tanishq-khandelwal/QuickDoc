@@ -59,6 +59,7 @@ const Availability = () => {
   }>({});
 
   // const [updateAvailability] = useMutation(UPDATE_AVAILABILITY);
+  const role = localStorage.getItem("role");
 
   const dispatch = useDispatch();
   const {
@@ -227,7 +228,7 @@ const Availability = () => {
   return (
     <Layout>
       <Navbar />
-      {reduxLoading ? (
+      {reduxLoading===true ? (
         <div className="mt-14"> </div>
       ) : (
         <div className="min-h-screen flex items-center justify-center px-4 mt-20">
@@ -372,6 +373,7 @@ const Availability = () => {
                 <div className="flex justify-center mt-6">
                   <Button
                     onClick={handleSave}
+                    disabled={role==='guestdoctor'}
                     className="mt-4 bg-white border-2 border-blue-600 text-blue-600 hover:bg-white hover:shadow-lg px-10 py-2 rounded"
                   >
                     Save

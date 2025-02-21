@@ -107,11 +107,19 @@ export function AppSidebar() {
     ];
   }
 
-  if (role === "guest") {
+  if (role === "guestpatient") {
     sidebarItems = [
       { title: "Home", url: "/", icon: Home },
       { title: "Doctors", url: "/doctors", icon: Hospital },
       { title: "Appointments", url: "/appointments/me", icon: Calendar },
+    ];
+  }
+
+  if (role === "guestdoctor") {
+    sidebarItems = [
+      { title: "Home", url: "/", icon: Home },
+      { title: "Availability", url: "/availability", icon: Clock },
+      { title: "Appointments", url: "/appointments", icon: Calendar },
     ];
   }
 

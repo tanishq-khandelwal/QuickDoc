@@ -1,11 +1,8 @@
 import { takeLatest, put, call } from "redux-saga/effects";
 import client from "../../../apolloClient";
 import { GET_APPOINTMENTS } from "@/queries/patient/appointment";
-import {
-  FETCH_MY_APPOINTMENTS_FAILURE,
-  FETCH_MY_APPOINTMENTS_SUCCESS,
-  FETCH_MY_APPOINTMENTS_REQUEST,
-} from "@/redux/reducers/patient/MyAppointmentReducer";
+import { FETCH_MY_APPOINTMENTS_FAILURE, FETCH_MY_APPOINTMENTS_REQUEST, FETCH_MY_APPOINTMENTS_SUCCESS } from "./constants";
+
 
 interface fetchMyAppointmentAction {
   type: typeof FETCH_MY_APPOINTMENTS_REQUEST;
