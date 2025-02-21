@@ -6,7 +6,7 @@ import { signupRequest } from "@/redux/actions/authActions";
 import { useEffect, useState } from "react";
 import { RootState } from "@/redux/rootReducer";
 import toast from "react-hot-toast";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import hidepass from "../../assets/hidpass.svg";
 import showpass from "../../assets/showpass.svg";
 
@@ -139,9 +139,13 @@ export default function SignupPatient() {
             <div className="text-sm text-gray-500">
               Already have an account ?
             </div>
-            <a href="/login" className="text-sm text-blue-500 underline">
+            
+            <Link to='/login?role=patient'>
+            <p className="text-sm text-blue-500 underline">
               Login
-            </a>
+            </p>
+            </Link>
+            
           </div>
           {/* Submit Button */}
           <div className="flex items-center justify-center">

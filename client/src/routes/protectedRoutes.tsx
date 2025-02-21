@@ -37,7 +37,7 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ allowedRoles }) => {
 
   if (!role) {
     toast.error("Unauthenticated! Please log in to continue...");
-    return <Navigate to="/login" state={{ from: location }} replace />;
+    return <Navigate to="/signup" state={{ from: location }} replace />;
   }
 
 

@@ -23,6 +23,7 @@ type Props = {
   getStatusColor: (status: string) => string;
   formatTime: (date: string, time: string, zone: string) => string;
 };
+const role = localStorage.getItem("role");
 
 const AppointmentCard = ({ appointment, onAccept, onReject, getStatusColor, formatTime }: Props) => {
   return (
@@ -60,10 +61,18 @@ const AppointmentCard = ({ appointment, onAccept, onReject, getStatusColor, form
 
         {appointment?.status?.toLowerCase() === "pending" && (
           <div className="flex flex-wrap gap-2 sm:mt-4 self-start">
-            <button className="bg-green-700 text-white px-8 py-2 rounded-full hover:bg-green-800 transition text-sm sm:text-base w-full sm:w-auto" onClick={() => onAccept(appointment.appointment_id)}>
+            <button 
+            disabled={role==='guestdoctor'}
+            className={`bg-green-700 text-white px-8 py-2 rounded-full transition text-sm sm:text-base w-full sm:w-auto ${
+              role === "guestdoctor" ? "opacity-50 cursor-not-allowed" : "hover:bg-green-800"
+            }`}
+            onClick={() => onAccept(appointment.appointment_id)}
+            >
               Accept
             </button>
-            <button className="bg-red-600 text-white px-8 py-2 rounded-full hover:bg-red-700 transition text-sm sm:text-base w-full sm:w-auto" onClick={() => onReject(appointment.appointment_id)}>
+            <button
+            disabled={role==='guestdoctor'}
+            className={`bg-red-600 text-white px-8 py-2 rounded-full  transition text-sm sm:text-base w-full sm:w-auto ${role === "guestdoctor" ? "opacity-50 cursor-not-allowed" : "hover:bg-red-700" }`}onClick={() => onReject(appointment.appointment_id)}>
               Reject
             </button>
           </div>

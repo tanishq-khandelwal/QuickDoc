@@ -73,9 +73,8 @@ const AppointmentBooking = ({
     );
 
     if (exceptionDay) {
-      return !exceptionDay.available; 
+      return !exceptionDay.available;
     }
-
 
     const dayOfWeek = date
       .toLocaleString("en-us", { weekday: "long" })
@@ -148,6 +147,7 @@ const AppointmentBooking = ({
                       <Button
                         key={slot}
                         onClick={() => setSelectedTime(slot)}
+                        disabled={role==='guestpatient'}
                         className={`border-2 ${
                           selectedTime === slot
                             ? "bg-[#0067E7] text-white shadow-xl"
@@ -170,19 +170,8 @@ const AppointmentBooking = ({
         </div>
       </div>
 
-      {role === "guest" ? (
-        <div className="flex flex-col items-center justify-center mt-6 p-4 bg-red-100 border border-red-400 text-red-700 rounded-lg shadow-md">
-          <p className="text-lg font-semibold">🔒 Access Restricted</p>
-          <p className="text-sm mt-2">
-            Please Sign Up to book an appointment and access more features.
-          </p>
-          <button
-            className="mt-3 px-4 py-2 bg-red-500 hover:bg-red-600 text-white font-medium rounded-md transition duration-300"
-            onClick={() => navigate("/signup")}
-          >
-            Signup Now
-          </button>
-        </div>
+      {role === "guestpatient" ? (
+        <div></div>
       ) : (
         <div className="flex justify-center mt-4">
           {selectedTime && (

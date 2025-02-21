@@ -15,7 +15,7 @@ import { SIGNUP_DOCTOR } from "@/queries/doctor/signup";
 import { RootState } from "@/redux/rootReducer";
 import { useMutation } from "@apollo/client";
 import toast from "react-hot-toast";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 // QuickDoc Colors
 const primaryColor = "text-blue-600";
 
@@ -241,9 +241,12 @@ export default function Signup() {
                 <div className="text-sm text-gray-500">
                   Already have an account ?
                 </div>
-                <a href="/login" className="text-sm text-blue-500 underline">
+                <Link to='/login?role=doctor'>
+                <p className="text-sm text-blue-500 underline">
                   Login
-                </a>
+                </p>
+                </Link>
+                
               </div>
               <Button
                 type="submit"

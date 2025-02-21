@@ -27,14 +27,14 @@ const router = createBrowserRouter(
 
 
       {/* Doctor Routes */}
-      <Route element={<ProtectedRoute allowedRoles={["doctor"]} />}>
+      <Route element={<ProtectedRoute allowedRoles={["doctor","guestdoctor"]} />}>
         {doctorRoutes.map(({ path, element }) => (
           <Route key={path} path={path} element={element} />
         ))}
       </Route>
 
       {/* Patient Routes */}
-      <Route element={<ProtectedRoute allowedRoles={["patient","guest"]} />}>
+      <Route element={<ProtectedRoute allowedRoles={["patient","guestpatient"]} />}>
         {patientRoutes.map(({ path, element }) => (
           <Route key={path} path={path} element={element} />
         ))}

@@ -22,7 +22,7 @@ const handleLogout = () => {
   toast.success("Logged out successfully!");
 
   // Redirect to the login page
-  navigate("/login");
+  navigate("/signup");
 };
 
   if(!user) return null;

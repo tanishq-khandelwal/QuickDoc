@@ -3,7 +3,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { loginRequest } from "../redux/actions/authActions";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { RootState } from "../redux/rootReducer";
 import toast from "react-hot-toast";
@@ -23,6 +23,8 @@ type LoginFormValues = z.infer<typeof loginSchema>;
 const Login = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+  const role = searchParams.get("role");
   const {
     register,
     handleSubmit,
@@ -55,8 +57,14 @@ const Login = () => {
   // Auto-fill guest credentials when checkbox is checked
   useEffect(() => {
     if (isGuest) {
-      setValue("email", "guest@gmail.com");
-      setValue("password", "guest");
+      if(role==='patient'){
+        setValue("email", "patient@gmail.com");
+        setValue("password", "guest");
+      }else{
+        setValue("email", "doctor@gmail.com");
+        setValue("password", "guest");
+      }
+      
     } else {
       setValue("email", "");
       setValue("password", "");
@@ -147,9 +155,15 @@ const Login = () => {
           {/* Signup Link */}
           <div className="flex gap-4">
             <div className="text-gray-600 text-sm">Don't have an account?</div>
-            <Link to={"/signup"}>
-              <div className="text-sm underline text-blue-500">Sign Up</div>
-            </Link>
+            {role === "patient" ? (
+              <Link to={"/signup/patient"}>
+                <div className="text-sm underline text-blue-500">Sign Up</div>
+              </Link>
+            ) : (
+              <Link to={"/signup/doctor"}>
+                <div className="text-sm underline text-blue-500">Sign Up</div>
+              </Link>
+            )}
           </div>
 
           {/* Login Button */}
