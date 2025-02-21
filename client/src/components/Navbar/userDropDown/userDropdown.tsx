@@ -1,31 +1,31 @@
-import React, { useState } from "react";
-import {useDispatch } from "react-redux";
+import { useState } from "react";
+import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import avatar from "../../../assets/avatar.svg"
+import avatar from "../../../assets/avatar.svg";
 import toast from "react-hot-toast";
 import { LOGOUT_REQUEST } from "@/redux/actions/authActions";
 
-
-
 const UserDropdown = () => {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
-  const res =  localStorage.getItem("user");
+  const res = localStorage.getItem("user");
   // console.log(res)
-  const user = res ? JSON.parse(res): null; 
+  const user = res ? JSON.parse(res) : null;
   const navigate = useNavigate();
+  const role = localStorage.getItem("role");
+  const userData = localStorage.getItem("user");
+  const patientId = userData ? JSON.parse(userData).user_id : null;
 
+  const dispatch = useDispatch();
 
-const dispatch = useDispatch();
+  const handleLogout = () => {
+    dispatch({ type: LOGOUT_REQUEST });
+    toast.success("Logged out successfully!");
 
-const handleLogout = () => {
-  dispatch({ type: LOGOUT_REQUEST });
-  toast.success("Logged out successfully!");
+    // Redirect to the login page
+    navigate("/signup");
+  };
 
-  // Redirect to the login page
-  navigate("/signup");
-};
-
-  if(!user) return null;
+  if (!user) return null;
 
   return (
     <div className="relative border-2 border-gray-600 rounded-full px-4 py-1 ">
@@ -40,8 +40,9 @@ const handleLogout = () => {
           className="w-7 h-7 rounded-full object-cover "
         />
 
-
-        <span className="text-gray-600 font-medium">{user?.name || "User !"}</span>
+        <span className="text-gray-600 font-medium">
+          {user?.name || "User !"}
+        </span>
       </button>
 
       {/* Dropdown Menu */}
@@ -49,14 +50,25 @@ const handleLogout = () => {
         <div className="absolute right-0 mt-5 w-48 bg-white rounded-lg shadow-lg border border-gray-200 z-30">
           <ul className="py-2">
             <li>
-              <button
-                onClick={() => navigate("/profile")}
-                className="w-full text-left px-4 py-2 hover:bg-gray-100 text-gray-700"
-              >
-                Profile
-              </button>
+              {role === "doctor" ? (
+                <button
+                  onClick={() => navigate("/doctor/profile")}
+                  className="w-full text-left px-4 py-2 hover:bg-gray-100 text-gray-700"
+                >
+                  Profile
+                </button>
+              ) : role === "patient" ? (
+                <button
+                  onClick={() => navigate(`/patient/profile/${patientId}`)}
+                  className="w-full text-left px-4 py-2 hover:bg-gray-100 text-gray-700"
+                >
+                  Profile
+                </button>
+              ) : (
+                <></>
+              )}
             </li>
-        
+
             <li>
               <button
                 onClick={handleLogout}
