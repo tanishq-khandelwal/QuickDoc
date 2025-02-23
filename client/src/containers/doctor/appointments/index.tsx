@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { fetchAppointments, updateApppointment } from "@/redux/actions/doctor/appointmentAction";
+import { fetchAppointments, updateApppointment } from "./actions"
 import toast from "react-hot-toast";
 import { DateTime } from "luxon";
 import AppointmentCard from "@/components/doctorAppointment/appointmentCard";

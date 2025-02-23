@@ -9,19 +9,25 @@ type availabilityResponse = {
   end_time: string;
 };
 
- const userData=localStorage.getItem("user");
- const doctorId=userData?JSON.parse(userData).doctorId:null;
+type FetchAvailabilityAction={
+  type: typeof FETCH_AVAILABILITY_REQUEST;
+  payload: number;
+}
+
+//  const userData=localStorage.getItem("user");
+//  const doctorId=userData?JSON.parse(userData).doctorId:null;
 //  console.log(doctorId)
 
-function* fetchAvailability() {
+function* fetchAvailability(action:FetchAvailabilityAction){
   try {
     const response: availabilityResponse = yield call(client.query, {
       query: FETCH_AVAILABILITY,
-      variables:{doctorId:doctorId}
+      variables:{doctorId: action.payload },
+      fetchPolicy:"network-only"
     });
     
     // Log the response
-    // console.log(response);
+    console.log(response);
     yield put({ type: FETCH_AVAILABILITY_SUCCESS, payload: response});
 
   } catch (error) {

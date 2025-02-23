@@ -59,7 +59,7 @@ const Availability = () => {
   }>({});
 
   // const [updateAvailability] = useMutation(UPDATE_AVAILABILITY);
-  const role = localStorage.getItem("role");
+  const role = localStorage.getItem("role") || "";
 
   const dispatch = useDispatch();
   const {
@@ -68,8 +68,10 @@ const Availability = () => {
     error: reduxError,
   } = useSelector((state: RootState) => state.doctoravailabilty);
 
+  const userData = localStorage.getItem("user");
+  const doctorId = userData ? JSON.parse(userData).doctorId : null;
   useEffect(() => {
-    dispatch(fetchAvailability());
+    dispatch(fetchAvailability(doctorId));
   }, [dispatch]);
 
   useEffect(() => {

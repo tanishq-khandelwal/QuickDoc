@@ -10,7 +10,6 @@ const AppointmentBooking = ({
   data,
   availableDays,
   exceptionAvailabilities,
-  navigate,
 }: any) => {
   const [selectedDate, setSelectedDate] = useState(new Date());
   const [selectedTime, setSelectedTime] = useState<string | null>(null);
@@ -131,7 +130,7 @@ const AppointmentBooking = ({
             onSelect={(date) => {
               setSelectedDate(date ?? new Date());
             }}
-            disabled={disabledDays}
+            disabled={role === "guestpatient" ? { before: new Date(3000, 0, 1) } : disabledDays} 
           />
         </div>
 
