@@ -1,7 +1,8 @@
 import { APPOINTMENT_UPDATE_FAILURE, APPOINTMENT_UPDATE_REQUEST, APPOINTMENT_UPDATE_SUCCESS, FETCH_APPOINTMENTS_FAILURE, FETCH_APPOINTMENTS_REQUEST, FETCH_APPOINTMENTS_SUCCESS } from "./constants";
 
-export const fetchAppointments = () => ({
+export const fetchAppointments = (doctorId:number) => ({
   type: FETCH_APPOINTMENTS_REQUEST,
+  payload:doctorId
 });
 
 export const fetchAppointmentsSuccess = (payload: any) => ({
