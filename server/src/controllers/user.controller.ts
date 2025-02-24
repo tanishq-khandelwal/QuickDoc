@@ -115,8 +115,18 @@ export const LoginUser = async (req: Request, res: Response): Promise<Response> 
     if (!jwtSecret) {
       return res.status(500).json({ message: "JWT Secret not configured." });
     }
+    const tokenPayload = {
+      email: user.email,
+      role: user.role,
+      "https://hasura.io/jwt/claims": {
+        "x-hasura-allowed-roles": ["guest", "patient", "doctor"],
+        "x-hasura-default-role": user.role,
+        "x-hasura-role": user.role,
+        "x-hasura-user-id": user.user_id.toString(),
+      },
+    };
 
-    const token = jwt.sign({ email: user.email, role: user.role }, jwtSecret, { expiresIn: "7d" });
+    const token = jwt.sign(tokenPayload, jwtSecret, { expiresIn: "7d" });
 
     // Step 4: Send the token in a cookie
     res.cookie("token", token, cookieOptions);
