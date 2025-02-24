@@ -37,8 +37,7 @@ function* fetchAppointment(action: FetchAppointmentAction) {
       fetchPolicy: "network-only",
     });
 
-    // Log the response
-    console.log(response);
+    // console.log(response);
     yield put({ type: FETCH_APPOINTMENTS_SUCCESS, payload: response });
   } catch (error) {
     // Handle error
@@ -46,7 +45,6 @@ function* fetchAppointment(action: FetchAppointmentAction) {
   }
 }
 
-// Watch for the FETCH_APPOINTMENT action and call the fetchAppointment saga
 export function* watchFetchAppointment() {
   // console.log("REached saga");
   yield takeLatest(FETCH_APPOINTMENTS_REQUEST, fetchAppointment);

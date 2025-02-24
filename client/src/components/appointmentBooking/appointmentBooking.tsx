@@ -126,7 +126,7 @@ const AppointmentBooking = ({
           <Calendar
             mode="single"
             className="mb-6 rounded-lg border p-4"
-            selected={selectedDate}
+            selected={role === "guestpatient" ? undefined : selectedDate} 
             onSelect={(date) => {
               setSelectedDate(date ?? new Date());
             }}
