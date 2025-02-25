@@ -1,9 +1,7 @@
 import { takeLatest, put, call } from "redux-saga/effects";
 import client from "../../../apolloClient";
 import { UPDATE_APPOINTMENT_STATUS } from "../../../queries/doctor/appointment";
-import {
-  APPOINTMENT_UPDATE_FAILURE,APPOINTMENT_UPDATE_REQUEST,APPOINTMENT_UPDATE_SUCCESS
-} from "@/redux/reducers/doctor/updateAppointmentReducer";
+import { APPOINTMENT_UPDATE_FAILURE, APPOINTMENT_UPDATE_REQUEST, APPOINTMENT_UPDATE_SUCCESS } from "./constants";
 
 type appointmentResponse = {
     appointment_id:number

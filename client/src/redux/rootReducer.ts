@@ -5,9 +5,9 @@ import availabiltyReducer from './reducers/doctor/availabilityReducers';
 import doctorlistReducer from '../containers/patient/doctorList/reducers';
 import doctorAvailabilityReducer from '../containers/patient/doctorPreview/reducers';
 import bookAppointmentReducer from './reducers/patient/bookAppointmentReducer';
-import appointmentReducer from './reducers/doctor/fetchAppointmentReducer';
+import appointmentReducer from '@/containers/doctor/appointments/reducers'
 import MyappointmentReducer from '../containers/patient/appointments/reducers';
-import updateAppointmentReducer from './reducers/doctor/updateAppointmentReducer';
+import updateAppointmentReducer from '@/containers/doctor/appointments/updateAppointmentReducer';
 import ExceptionavailabiltyReducer from './reducers/doctor/exceptionAvailabilityReducer';
 
 const rootReducer = combineReducers({

@@ -6,9 +6,9 @@ import { watchSignupSaga } from "./sagas/patient/signupSaga";
 import { watchFetchDoctors } from "../containers/patient/doctorList/saga";
 import { watchDoctorAvailabilty } from "../containers/patient/doctorPreview/sagas";
 import { watchBookAppointment } from "./sagas/patient/bookAppointmentSaga";
-import { watchFetchAppointment } from "./sagas/doctor/fetchAppointmentSaga";
+import { watchFetchAppointment } from "@/containers/doctor/appointments/saga"
 import { watchFetchMyAppointment } from "../containers/patient/appointments/saga";
-import { watchUpdateAppointment } from "./sagas/doctor/updateAppointmentSaga";
+import { watchUpdateAppointment } from "@/containers/doctor/appointments/updateAppointmentSaga";
 import { watchFetchExceptionAvailability } from "./sagas/doctor/exceptionAvailibilitySaga";
 
 export default function* rootSaga() {

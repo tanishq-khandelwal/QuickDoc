@@ -40,7 +40,7 @@ const AvailabilityModal: React.FC<AvailabilityModalProps> = ({
   );
 
   const onSave = async () => {
-    toast.loading("Loading",{id:"loading"})
+    toast.loading("Loading", { id: "loading" });
     if (!selectedDate || !startTime || !endTime) {
       console.error("Please select a date and time.");
       return;
@@ -50,26 +50,48 @@ const AvailabilityModal: React.FC<AvailabilityModalProps> = ({
     const doctorId = userData ? JSON.parse(userData).doctorId : null;
     const formattedDate = DateTime.fromJSDate(selectedDate).toISODate();
     const data = {
-      doctorId: doctorId, 
+      doctorId: doctorId,
       startTime,
       endTime,
       available: isAvailable,
-      date:formattedDate,
+      date: formattedDate,
     };
 
-   
     console.log("Saving data:", data);
 
     try {
-      const response = await updateAvailability({ variables: data  });
+      const response = await updateAvailability({ variables: data });
       console.log("Response:", response);
       toast.dismiss("loading");
-      toast.success("Availability Updated Successfully")
-      window.location.reload();
+      toast.success("Availability Updated Successfully");
+      let countdown = 5;
+      const toastId = toast.loading(
+        `This page will refresh in ${countdown} sec`,
+        {
+          position: "bottom-right",
+        }
+      );
+
+
+      const interval = setInterval(() => {
+        countdown -= 1;
+        toast.loading(`This page will automatically refresh in ${countdown} sec`, {
+          id: toastId,
+        });
+
+        if (countdown === 0) {
+          clearInterval(interval);
+        }
+      }, 1000);
+
+      setTimeout(() => {
+        history.go(0);
+      }, 5000);
+
       setShowModal(false);
     } catch (err) {
       toast.dismiss("loading");
-      toast.error(`Failed to update Availability,${err}`)
+      toast.error(`Failed to update Availability,${err}`);
     }
   };
 
@@ -141,7 +163,7 @@ const AvailabilityModal: React.FC<AvailabilityModalProps> = ({
           <Button
             onClick={onSave}
             className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg focus:outline-none"
-            disabled={loading || role==='guestdoctor'}
+            disabled={loading || role === "guestdoctor"}
           >
             {loading ? "Saving..." : "Confirm"}
           </Button>

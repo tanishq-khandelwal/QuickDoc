@@ -54,7 +54,6 @@ const Login = () => {
     }
   }, [user, navigate, loading, error]);
 
-  // Auto-fill guest credentials when checkbox is checked
   useEffect(() => {
     if (isGuest) {
       if(role==='patient'){
@@ -152,7 +151,7 @@ const Login = () => {
             </label>
           </div>
 
-          {/* Signup Link */}
+          {/* Signup  */}
           <div className="flex gap-4">
             <div className="text-gray-600 text-sm">Don't have an account?</div>
             {role === "patient" ? (
@@ -166,7 +165,7 @@ const Login = () => {
             )}
           </div>
 
-          {/* Login Button */}
+          {/* Login  */}
           <div className="flex items-center justify-center">
             <button
               type="submit"

@@ -11,3 +11,10 @@ services:
       HASURA_GRAPHQL_ENABLE_CONSOLE: "true"
       HASURA_GRAPHQL_DEV_MODE: "true"
       HASURA_GRAPHQL_ADMIN_SECRET: Tsk_2003
+      HASURA_GRAPHQL_UNAUTHORIZED_ROLE: "guest"
+      HASURA_GRAPHQL_JWT_SECRET: >
+        {
+          "type": "HS256",
+          "key": "3fL9vK7XqTz5pNbY2wR8mJ6cDgQ0sHVC",
+          "claims_namespace": "https://hasura.io/jwt/claims"
+        }

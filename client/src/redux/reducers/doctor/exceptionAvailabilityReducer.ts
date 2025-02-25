@@ -1,6 +1,7 @@
+import { produce } from "immer";
+
 export const FETCH_EXCEPTION_AVAILABILITY = "FETCH_EXCEPTION_AVAILABILITY";
-export const FETCH_EXCEPTION_AVAILABILITY_SUCCESS =
-  "FETCH_EXCEPTION_AVAILABILITY_SUCCESS";
+export const FETCH_EXCEPTION_AVAILABILITY_SUCCESS = "FETCH_EXCEPTION_AVAILABILITY_SUCCESS";
 export const DELETE_EXCEPTION_AVAILABILITY = "DELETE_EXCEPTION_AVAILABILITY";
 
 type ExceptionAvailabilityState = {
@@ -24,24 +25,31 @@ const ExceptionavailabiltyReducer = (
   state = initialStateException,
   action: ExceptionAvailabilityAction
 ): ExceptionAvailabilityState => {
-  switch (action.type) {
-    case FETCH_EXCEPTION_AVAILABILITY:
-      return { ...state, loading: true, error: null };
+  return produce(state, (draft) => {
+    switch (action.type) {
+      case FETCH_EXCEPTION_AVAILABILITY:
+        draft.loading = true;
+        draft.error = null;
+        break;
 
-    case FETCH_EXCEPTION_AVAILABILITY_SUCCESS:
-      return { ...state, data: action.payload, loading: false, error: null };
+      case FETCH_EXCEPTION_AVAILABILITY_SUCCESS:
+        draft.data = action.payload;
+        draft.loading = false;
+        draft.error = null;
+        break;
 
-    case DELETE_EXCEPTION_AVAILABILITY:
-      return {
-        ...state,
-        data: Array.isArray(state.data)
-          ? state.data.filter((item) => item.availability_id !== action.payload)
-          : state.data,
-      };
+      case DELETE_EXCEPTION_AVAILABILITY:
+        if (Array.isArray(draft.data)) {
+          draft.data = draft.data.filter(
+            (item) => item.availability_id !== action.payload
+          );
+        }
+        break;
 
-    default:
-      return state; 
-  }
+      default:
+        return state;
+    }
+  });
 };
 
 export default ExceptionavailabiltyReducer;
