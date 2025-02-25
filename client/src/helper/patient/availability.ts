@@ -98,7 +98,7 @@ export function generateAvailableTimeSlots(
       ).setZone(patientTimeZone);
       
 
-      console.log(bookingStart.toISO(),bookingEnd.toISO());
+      // console.log(bookingStart.toISO(),bookingEnd.toISO());
       return (
         (currentTime >= bookingStart && currentTime < bookingEnd) ||
         (slotEnd > bookingStart && slotEnd <= bookingEnd) ||

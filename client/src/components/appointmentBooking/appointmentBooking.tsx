@@ -85,6 +85,10 @@ const AppointmentBooking = ({
     return DateTime.fromJSDate(date) < today || !dayAvailability?.available;
   };
 
+  const convertTo12HourFormat = (slot: string) => {
+    return DateTime.fromFormat(slot, "HH:mm").toFormat("h:mm a");
+  };
+
   const finalformattedDate =
     selectedDate?.getFullYear() +
     "-" +
@@ -126,11 +130,15 @@ const AppointmentBooking = ({
           <Calendar
             mode="single"
             className="mb-6 rounded-lg border p-4"
-            selected={role === "guestpatient" ? undefined : selectedDate} 
+            selected={role === "guestpatient" ? undefined : selectedDate}
             onSelect={(date) => {
               setSelectedDate(date ?? new Date());
             }}
-            disabled={role === "guestpatient" ? { before: new Date(3000, 0, 1) } : disabledDays} 
+            disabled={
+              role === "guestpatient"
+                ? { before: new Date(3000, 0, 1) }
+                : disabledDays
+            }
           />
         </div>
 
@@ -146,14 +154,14 @@ const AppointmentBooking = ({
                       <Button
                         key={slot}
                         onClick={() => setSelectedTime(slot)}
-                        disabled={role==='guestpatient'}
+                        disabled={role === "guestpatient"}
                         className={`border-2 ${
                           selectedTime === slot
                             ? "bg-[#0067E7] text-white shadow-xl"
                             : "bg-[#F2F8FF] text-[#0067E7] border-[#0169FE]"
                         } hover:bg-[#0067E7] hover:text-white`}
                       >
-                        {slot}
+                        {convertTo12HourFormat(slot)}
                       </Button>
                     ))}
                   </div>
@@ -180,7 +188,21 @@ const AppointmentBooking = ({
                 <div className="text-red-600">
                   {selectedDate?.toLocaleDateString()}
                 </div>{" "}
-                at <div className="text-red-600">{selectedTime}</div>
+                at{" "}
+                <div className="text-red-600">
+                  {convertTo12HourFormat(selectedTime)} (
+                  {Intl.DateTimeFormat().resolvedOptions().timeZone ===
+                  "Asia/Calcutta"
+                    ? "IST"
+                    : new Intl.DateTimeFormat("en-US", {
+                        timeZone:
+                          Intl.DateTimeFormat().resolvedOptions().timeZone,
+                        timeZoneName: "short",
+                      })
+                        .formatToParts(new Date())
+                        .find((part) => part.type === "timeZoneName")?.value}
+                  )
+                </div>
               </div>
 
               <CheckoutButton

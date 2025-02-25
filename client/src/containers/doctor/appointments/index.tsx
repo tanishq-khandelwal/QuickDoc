@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchAppointments, updateApppointment } from "./actions";
+import {map} from "lodash"
 import toast from "react-hot-toast";
 import { DateTime } from "luxon";
 import AppointmentCard from "@/components/doctorAppointment/appointmentCard";
@@ -121,7 +122,7 @@ const AppointmentsContainer = () => {
         />
       </div>
       <div className="sm:grid-cols-2 lg:grid-cols-3 gap-6">
-        {filteredAppointments.map((appointment) => (
+        {map(filteredAppointments,(appointment) => (
           <AppointmentCard
             key={appointment.appointment_id}
             appointment={appointment}
