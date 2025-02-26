@@ -1,7 +1,7 @@
 import { Clipboard, Calendar, Clock, Phone, User, Video } from "lucide-react";
 import { DateTime } from "luxon";
 import { formatTime, generateMeetingLink } from "./helper";
-import { useMemo } from "react";
+import { useMemo, useState, useEffect } from "react";
 import { Appointment } from "@/containers/patient/types";
 
 const getStatusColor = (status: string) => {
@@ -19,6 +19,19 @@ const getStatusColor = (status: string) => {
 
 const AppointmentCard = ({ appointment }: { appointment: Appointment }) => {
   console.log("Appointment", appointment);
+
+  const [hasJoined, setHasJoined] = useState(false);
+
+  useEffect(() => {
+    const joined = localStorage.getItem(`joined_meeting_${appointment.appointment_id}`);
+    setHasJoined(joined === "true");
+  }, [appointment.appointment_id]);
+
+  const handleJoinMeeting = () => {
+    window.open(generateMeetingLink(appointment.appointment_id.toString()), "_blank");
+    localStorage.setItem(`joined_meeting_${appointment.appointment_id}`, "true");
+    setHasJoined(true);
+  };
 
   const appointmentDate = useMemo(() => {
     return appointment?.appointment_date
@@ -77,18 +90,22 @@ const AppointmentCard = ({ appointment }: { appointment: Appointment }) => {
         </div>
 
         <div>
-          {appointment.status.toLowerCase() === "approved" && (
-            <a
-              href={generateMeetingLink(appointment.appointment_id.toString())}
-              target="_blank"
-              rel="noopener noreferrer"
+          {appointment.status.toLowerCase() === "approved" && !hasJoined && (
+            <button
+              onClick={handleJoinMeeting}
               className="flex gap-2 bg-gray-600 text-white px-4 py-2 sm:mt-0 rounded-lg text-sm sm:text-base font-semibold hover:bg-blue-700 transition"
             >
               <div>
                 <Video />
               </div>
               Join Meeting
-            </a>
+            </button>
+          )}
+
+          {hasJoined && (
+            <span className="text-gray-500 text-sm sm:text-base">
+              Meeting already joined.
+            </span>
           )}
         </div>
       </div>
