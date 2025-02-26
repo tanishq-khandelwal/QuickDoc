@@ -1,11 +1,10 @@
 import React from "react";
+import { SearchBarProps } from "./types";
 
-interface SearchBarProps {
-  searchQuery: string;
-  setSearchQuery: (query: string) => void;
-}
-
-const SearchBar: React.FC<SearchBarProps> = ({ searchQuery, setSearchQuery }) => {
+const SearchBar: React.FC<SearchBarProps> = ({
+  searchQuery,
+  setSearchQuery,
+}) => {
   return (
     <div className="mb-6 flex justify-center">
       <input

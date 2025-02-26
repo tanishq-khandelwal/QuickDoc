@@ -2,7 +2,7 @@ import { Clipboard, Calendar, Clock, Phone, User, Video } from "lucide-react";
 import { DateTime } from "luxon";
 import { formatTime, generateMeetingLink } from "./helper";
 import { useMemo, useState, useEffect } from "react";
-import { Appointment } from "@/containers/patient/types";
+import { Appointment } from "./types";
 
 const getStatusColor = (status: string) => {
   switch (status.toLowerCase()) {

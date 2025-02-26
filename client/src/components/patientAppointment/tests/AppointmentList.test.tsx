@@ -1,6 +1,6 @@
 import { render, screen } from "@testing-library/react";
 import AppointmentList from "../appointmentList";
-import { Appointment } from "@/containers/patient/types";
+import { Appointment } from "../types";
 
 // Mock the AppointmentCard component
 jest.mock("../appointmentCard", () => ({

@@ -1,9 +1,10 @@
+import { AppointmentType } from "@/containers/doctor/appointments/saga";
 import {
   FETCH_MY_APPOINTMENTS_FAILURE,
   FETCH_MY_APPOINTMENTS_REQUEST,
   FETCH_MY_APPOINTMENTS_SUCCESS,
 } from "./constants";
-import { AppointmentType } from "./saga";
+
 
 interface AppointmentState {
   data: AppointmentType | null;

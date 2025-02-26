@@ -1,27 +1,4 @@
-import React from "react";
-
-interface AvailabilityDay {
-  selected: boolean;
-  startTime: string;
-  endTime: string;
-  openDropdown: string | null;
-}
-
-interface AvailabilityComponentProps {
-  weekDays: { id: number; title: string }[];
-  availability: { [key: number]: AvailabilityDay };
-  timeSlots: string[];
-  toggleDropdown: (id: number, field: string | null) => void;
-  handleTimeChange: (
-    dayId: number,
-    field: "startTime" | "endTime",
-    value: string
-  ) => void;
-  errors: { [key: number]: string };
-  setAvailability: React.Dispatch<
-    React.SetStateAction<{ [key: number]: AvailabilityDay }>
-  >;
-}
+import { AvailabilityComponentProps } from "../types";
 
 const AvailabilityComponent = ({
   weekDays,

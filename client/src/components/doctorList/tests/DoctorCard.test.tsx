@@ -21,6 +21,9 @@ describe("DoctorCard Component", () => {
     experience_years: 8,
     city: "Pune",
     clinic_address: "Pune",
+    created_at:"2025-02-21 08:56:54.079351",
+    slot_duration:15,
+    consultation_fee:500
   };
 
   beforeEach(() => {

@@ -1,17 +1,11 @@
-import { Dispatch, SetStateAction, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
 import { useMutation } from "@apollo/client";
 import { UPDATE_EXCEPTION_AVAILABILITY } from "@/queries/doctor/availability";
 import toast from "react-hot-toast";
 import { DateTime } from "luxon";
-
-interface AvailabilityModalProps {
-  showModal: boolean;
-  setShowModal: Dispatch<SetStateAction<boolean>>;
-  selectedDate: Date | undefined;
-  setSelectedDate: Dispatch<SetStateAction<Date | undefined>>;
-}
+import { AvailabilityModalProps } from "../types";
 
 const AvailabilityModal: React.FC<AvailabilityModalProps> = ({
   showModal,
@@ -72,12 +66,14 @@ const AvailabilityModal: React.FC<AvailabilityModalProps> = ({
         }
       );
 
-
       const interval = setInterval(() => {
         countdown -= 1;
-        toast.loading(`This page will automatically refresh in ${countdown} sec`, {
-          id: toastId,
-        });
+        toast.loading(
+          `This page will automatically refresh in ${countdown} sec`,
+          {
+            id: toastId,
+          }
+        );
 
         if (countdown === 0) {
           clearInterval(interval);

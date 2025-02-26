@@ -5,7 +5,7 @@ import { DateTime } from "luxon";
 import CheckoutButton from "@/stripe/checkoutForm";
 import { generateAvailableTimeSlots } from "@/helper/patient/availability";
 import { useSearchParams } from "react-router-dom";
-import { AppointmentBookingProps, AvailabilityDay, ExceptionAvailability } from "@/containers/patient/types";
+import { AppointmentBookingProps, AvailabilityDay, ExceptionAvailability } from "./types";
 
 
 const AppointmentBooking = ({

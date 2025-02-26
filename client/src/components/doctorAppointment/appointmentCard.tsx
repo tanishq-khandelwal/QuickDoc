@@ -2,29 +2,7 @@ import { Calendar, Clock, Mail, Phone, User, Video } from "lucide-react";
 import { DateTime } from "luxon";
 import { useMemo } from "react";
 import { generateMeetingLink } from "../patientAppointment/helper";
-
-type AppointmentType = {
-  appointment_id: number;
-  appointment_date: string;
-  patient_id: number;
-  start_time: string;
-  end_time: string;
-  patient_time_zone: string;
-  status: string;
-  user: {
-    name: string;
-    email: string;
-    phone_number: string;
-  };
-};
-
-type Props = {
-  appointment: AppointmentType;
-  onAccept: (id: number) => void;
-  onReject: (id: number) => void;
-  getStatusColor: (status: string) => string;
-  formatTime: (date: string, time: string, zone: string) => string;
-};
+import { appointmentCardProps } from "./types";
 
 const role = localStorage.getItem("role");
 
@@ -34,7 +12,7 @@ const AppointmentCard = ({
   onReject,
   getStatusColor,
   formatTime,
-}: Props) => {
+}: appointmentCardProps) => {
   const appointmentDate = useMemo(() => {
     return appointment?.appointment_date
       ? DateTime.fromISO(appointment.appointment_date).toLocaleString(

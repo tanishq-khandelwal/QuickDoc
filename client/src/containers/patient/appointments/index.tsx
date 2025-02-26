@@ -4,7 +4,7 @@ import toast from "react-hot-toast";
 import { fetchMyAppointments } from "./actions";
 import StatusFilter from "@/components/patientAppointment/statusFilter";
 import AppointmentList from "@/components/patientAppointment/appointmentList";
-import { Appointment, MyAppointmentsState } from "../types";
+import { Appointment, MyAppointmentsState } from "./types";
 
 
 const MyAppointmentsContainer = () => {

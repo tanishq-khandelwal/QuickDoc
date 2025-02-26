@@ -1,6 +1,6 @@
 import { map } from "lodash";
 import AppointmentCard from "./appointmentCard";
-import { AppointmentListProps } from "@/containers/patient/types";
+import { AppointmentListProps } from "./types";
 
 
 const AppointmentList = ({ appointments }: AppointmentListProps) => {

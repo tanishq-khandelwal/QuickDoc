@@ -1,4 +1,4 @@
-import { Doctor } from "../types";
+import { Doctor } from "./types";
 import {
   FETCH_DOCTORS_FAILURE,
   FETCH_DOCTORS_REQUEST,
