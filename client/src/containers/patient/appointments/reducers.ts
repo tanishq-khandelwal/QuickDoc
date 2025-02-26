@@ -13,7 +13,7 @@ interface AppointmentState {
 
 interface AppointmentAction {
   type: string;
-  payload?: AppointmentType | null;
+  payload?: AppointmentType | null | string;
 }
 
 const initialState: AppointmentState = {
