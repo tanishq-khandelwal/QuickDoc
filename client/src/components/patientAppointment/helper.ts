@@ -1,5 +1,10 @@
 import { DateTime } from "luxon";
 
+export const generateMeetingLink = (appointmentId: string) => {
+  return `https://meet.jit.si/doctor_appointment_${appointmentId}`;
+};
+
+
 export const formatTime = (date: string, time: string, patientTimeZone: string) => {
     const local = DateTime.local();
     const systemZone = local.zoneName || "";

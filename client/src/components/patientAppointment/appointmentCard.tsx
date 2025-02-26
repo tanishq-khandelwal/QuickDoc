@@ -1,6 +1,6 @@
-import { Clipboard, Calendar, Clock, Phone, User } from "lucide-react";
+import { Clipboard, Calendar, Clock, Phone, User, Video } from "lucide-react";
 import { DateTime } from "luxon";
-import { formatTime } from "./helper";
+import { formatTime, generateMeetingLink } from "./helper";
 import { useMemo } from "react";
 import { Appointment } from "@/containers/patient/types";
 
@@ -34,11 +34,7 @@ const AppointmentCard = ({ appointment }: { appointment: Appointment }) => {
       appointment.start_time,
       appointment.patient_time_zone
     ).replace(/\s[A-Z]{2,5}.*/, "");
-  }, [
-    appointment.appointment_date,
-    appointment.start_time,
-    appointment.patient_time_zone,
-  ]);
+  }, [appointment]);
 
   const formattedEndTime = useMemo(() => {
     return formatTime(
@@ -46,11 +42,7 @@ const AppointmentCard = ({ appointment }: { appointment: Appointment }) => {
       appointment.end_time,
       appointment.patient_time_zone
     );
-  }, [
-    appointment.appointment_date,
-    appointment.end_time,
-    appointment.patient_time_zone,
-  ]);
+  }, [appointment]);
 
   return (
     <div className="bg-white mt-3 border shadow-md rounded-lg p-4 sm:p-6 flex flex-col sm:flex-row items-center sm:items-start hover:shadow-xl transition">
@@ -75,12 +67,30 @@ const AppointmentCard = ({ appointment }: { appointment: Appointment }) => {
         </p>
       </div>
 
-      <div
-        className={`px-3 py-1 mt-4 sm:mt-0 text-white rounded-lg ${getStatusColor(
-          appointment.status
-        )} text-xs sm:text-sm font-semibold`}
-      >
-        {appointment.status.toUpperCase()}
+      <div className="flex flex-col gap-2">
+        <div
+          className={`px-3 py-1 mt-4 sm:mt-0 text-white text-center rounded-lg ${getStatusColor(
+            appointment.status
+          )} text-xs sm:text-sm font-semibold`}
+        >
+          {appointment.status.toUpperCase()}
+        </div>
+
+        <div>
+          {appointment.status.toLowerCase() === "approved" && (
+            <a
+              href={generateMeetingLink(appointment.appointment_id.toString())}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex gap-2 bg-gray-600 text-white px-4 py-2 sm:mt-0 rounded-lg text-sm sm:text-base font-semibold hover:bg-blue-700 transition"
+            >
+              <div>
+                <Video />
+              </div>
+              Join Meeting
+            </a>
+          )}
+        </div>
       </div>
     </div>
   );

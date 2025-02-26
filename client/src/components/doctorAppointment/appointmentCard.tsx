@@ -1,6 +1,7 @@
-import { Calendar, Clock, Mail, Phone, User } from "lucide-react";
+import { Calendar, Clock, Mail, Phone, User, Video } from "lucide-react";
 import { DateTime } from "luxon";
 import { useMemo } from "react";
+import { generateMeetingLink } from "../patientAppointment/helper";
 
 type AppointmentType = {
   appointment_id: number;
@@ -34,7 +35,6 @@ const AppointmentCard = ({
   getStatusColor,
   formatTime,
 }: Props) => {
-
   const appointmentDate = useMemo(() => {
     return appointment?.appointment_date
       ? DateTime.fromISO(appointment.appointment_date).toLocaleString(
@@ -42,7 +42,6 @@ const AppointmentCard = ({
         )
       : "Invalid Date";
   }, [appointment?.appointment_date]);
-
 
   const formattedStartTime = useMemo(() => {
     return formatTime(
@@ -92,15 +91,36 @@ const AppointmentCard = ({
       </div>
 
       <div className="flex flex-col sm:mt-4">
-        <div
-          className={`px-3 py-1 mt-4 sm:mt-0 text-white rounded-lg ${getStatusColor(
-            appointment.status
-          )} self-start inline-flex gap-2`}
-        >
-          <p>Status:</p>
-          <p className="font-sans font-semibold">
-            {appointment.status.toUpperCase()}
-          </p>
+        <div>
+          <div
+            className={`px-3 py-1 mt-4 sm:mt-0 text-white rounded-lg ${getStatusColor(
+              appointment.status
+            )} self-start inline-flex gap-2`}
+          >
+            <p>Status:</p>
+            <p className="font-sans font-semibold">
+              {appointment.status.toUpperCase()}
+            </p>
+          </div>
+          <div>
+            {appointment?.status?.toLowerCase() === "approved" && (
+              <div className="mt-4">
+                <a
+                  href={generateMeetingLink(
+                    appointment.appointment_id.toString()
+                  )}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex gap-2 bg-gray-600 text-white px-4 py-2 sm:mt-0 rounded-lg text-sm sm:text-base font-semibold hover:bg-blue-700 transition"
+                >
+                  <div>
+                    <Video />
+                  </div>
+                  Join Meeting
+                </a>
+              </div>
+            )}
+          </div>
         </div>
 
         {appointment?.status?.toLowerCase() === "pending" && (

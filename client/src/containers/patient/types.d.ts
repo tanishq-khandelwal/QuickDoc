@@ -49,6 +49,7 @@ export interface AppointmentBookingProps {
 
 export interface Appointment {
   __typename: string;
+  appointment_id:number
   appointment_date: string;
   start_time: string;
   end_time: string;
