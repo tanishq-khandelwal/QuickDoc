@@ -7,7 +7,7 @@ export interface fetchMyAppointmentAction {
   type: typeof FETCH_MY_APPOINTMENTS_REQUEST;
   payload: { userId: number };
 }
-type AppointmentType = {
+export interface AppointmentType {
   appointment_id: number;
   appointment_date: string;
   patient_id: number;

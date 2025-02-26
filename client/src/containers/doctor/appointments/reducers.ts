@@ -1,15 +1,27 @@
 import { FETCH_APPOINTMENTS_FAILURE, FETCH_APPOINTMENTS_REQUEST, FETCH_APPOINTMENTS_SUCCESS } from "./constants";
+import { AppointmentType } from "./saga";
 
 type AppointmentState = {
-  data: any;
+  data: AppointmentType | null;
   loading: boolean;
   error: string | null;
 };
 
-type AppointmentAction = {
-  type: string;
-  payload?: any;
+
+type FetchAppointmentsRequestAction = { type: typeof FETCH_APPOINTMENTS_REQUEST };
+type FetchAppointmentsSuccessAction = { 
+  type: typeof FETCH_APPOINTMENTS_SUCCESS; 
+  payload: AppointmentType; 
 };
+type FetchAppointmentsFailureAction = { 
+  type: typeof FETCH_APPOINTMENTS_FAILURE; 
+  payload: string; 
+};
+
+type AppointmentAction = 
+  | FetchAppointmentsRequestAction
+  | FetchAppointmentsSuccessAction
+  | FetchAppointmentsFailureAction;
 
 const initialState: AppointmentState = {
   data: null,

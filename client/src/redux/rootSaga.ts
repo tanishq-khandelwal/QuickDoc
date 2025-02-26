@@ -1,6 +1,6 @@
 import { all } from "redux-saga/effects";
 import { watchAuthSaga } from "./sagas/loginSaga";
-import { watchFetchAvailability } from "./sagas/doctor/availabilitySaga";
+import { watchFetchAvailability } from "@/containers/doctor/availability/saga";
 import { watchLogoutSaga } from "./sagas/logoutSaga";
 import { watchSignupSaga } from "./sagas/patient/signupSaga";
 import { watchFetchDoctors } from "../containers/patient/doctorList/saga";

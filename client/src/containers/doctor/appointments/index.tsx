@@ -3,9 +3,9 @@ import { useDispatch, useSelector } from "react-redux";
 import { fetchAppointments, updateApppointment } from "./actions";
 import {map} from "lodash"
 import toast from "react-hot-toast";
-import { DateTime } from "luxon";
 import AppointmentCard from "@/components/doctorAppointment/appointmentCard";
 import StatusFilter from "@/components/patientAppointment/statusFilter";
+import { formatTime } from "@/components/patientAppointment/helper";
 
 type AppointmentType = {
   appointment_id: number;
@@ -30,21 +30,6 @@ const AppointmentsContainer = () => {
 
   const [appointments, setAppointments] = useState<AppointmentType[]>([]);
   const [selectedStatus, setSelectedStatus] = useState("all");
-
-  const formatTime = (date: string, time: string, patientTimeZone: string) => {
-    const local = DateTime.local();
-    const systemZone = local.zoneName || "";
-
-    const timeInPatientTZ = DateTime.fromISO(`${date}T${time}`, {
-      zone: patientTimeZone,
-    });
-    const timeInUTC = timeInPatientTZ.toUTC();
-    const localTime = timeInUTC.setZone(systemZone);
-
-    return systemZone === "Asia/Calcutta"
-      ? localTime.toFormat("hh:mm a 'IST'")
-      : localTime.toFormat("hh:mm a ZZZZ");
-  };
 
   const userData = localStorage.getItem("user");
   const doctorId = userData ? JSON.parse(userData).doctorId : null;

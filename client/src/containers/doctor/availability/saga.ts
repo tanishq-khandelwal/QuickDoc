@@ -1,12 +1,14 @@
 import { takeLatest, call, put } from "redux-saga/effects";
 import client from "../../../apolloClient";
 import { FETCH_AVAILABILITY } from "../../../queries/doctor/availability";
-import { FETCH_AVAILABILITY_REQUEST, FETCH_AVAILABILITY_SUCCESS } from "@/redux/actions/doctor/availabilityAction";
+import { FETCH_AVAILABILITY_REQUEST, FETCH_AVAILABILITY_SUCCESS } from "./constants";
 
-type availabilityResponse = {
+
+export type availabilityResponse = {
   available_days: string;
   start_time: string;
   end_time: string;
+  is_available:boolean
 };
 
 type FetchAvailabilityAction={

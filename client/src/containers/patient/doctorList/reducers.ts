@@ -1,21 +1,41 @@
-import { FETCH_DOCTORS_FAILURE, FETCH_DOCTORS_REQUEST, FETCH_DOCTORS_SUCCESS } from "./constants";
+import { Doctor } from "../types";
+import {
+  FETCH_DOCTORS_FAILURE,
+  FETCH_DOCTORS_REQUEST,
+  FETCH_DOCTORS_SUCCESS,
+} from "./constants";
 
-type DoctorListAction = {
-  type: string;
-  payload?: any;
-};
+interface FetchDoctorsRequestAction {
+  type: typeof FETCH_DOCTORS_REQUEST;
+}
 
-type DoctorListState = {
-  doctors: any[];
+interface FetchDoctorsSuccessAction {
+  type: typeof FETCH_DOCTORS_SUCCESS;
+  payload: Doctor[];
+}
+
+interface FetchDoctorsFailureAction {
+  type: typeof FETCH_DOCTORS_FAILURE;
+  payload: string;
+}
+
+type DoctorListAction =
+  | FetchDoctorsRequestAction
+  | FetchDoctorsSuccessAction
+  | FetchDoctorsFailureAction;
+
+interface DoctorListState {
+  doctors: Doctor[];
   loading: boolean;
   error: string | null;
-};
+}
 
 const initialState: DoctorListState = {
   doctors: [],
   loading: false,
   error: null,
 };
+
 const doctorlistReducer = (
   state = initialState,
   action: DoctorListAction

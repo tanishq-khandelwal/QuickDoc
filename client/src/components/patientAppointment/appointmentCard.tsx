@@ -1,5 +1,8 @@
 import { Clipboard, Calendar, Clock, Phone, User } from "lucide-react";
 import { DateTime } from "luxon";
+import { formatTime } from "./helper";
+import { useMemo } from "react";
+import { Appointment } from "@/containers/patient/types";
 
 const getStatusColor = (status: string) => {
   switch (status.toLowerCase()) {
@@ -14,18 +17,41 @@ const getStatusColor = (status: string) => {
   }
 };
 
-const formatTime = (date: string, time: string, patientTimeZone: string) => {
-  const local = DateTime.local();
-  const systemZone = local.zoneName || "";
+const AppointmentCard = ({ appointment }: { appointment: Appointment }) => {
+  console.log("Appointment", appointment);
 
-  const timeInPatientTZ = DateTime.fromISO(`${date}T${time}`, { zone: patientTimeZone });
-  const timeInUTC = timeInPatientTZ.toUTC();
-  const localTime = timeInUTC.setZone(systemZone);
+  const appointmentDate = useMemo(() => {
+    return appointment?.appointment_date
+      ? DateTime.fromISO(appointment.appointment_date).toLocaleString(
+          DateTime.DATE_MED_WITH_WEEKDAY
+        )
+      : "Invalid Date";
+  }, [appointment?.appointment_date]);
 
-  return systemZone === "Asia/Calcutta" ? localTime.toFormat("hh:mm a 'IST'") : localTime.toFormat("hh:mm a ZZZZ");
-};
+  const formattedStartTime = useMemo(() => {
+    return formatTime(
+      appointment.appointment_date,
+      appointment.start_time,
+      appointment.patient_time_zone
+    ).replace(/\s[A-Z]{2,5}.*/, "");
+  }, [
+    appointment.appointment_date,
+    appointment.start_time,
+    appointment.patient_time_zone,
+  ]);
 
-const AppointmentCard = ({ appointment }: { appointment: any }) => {
+  const formattedEndTime = useMemo(() => {
+    return formatTime(
+      appointment.appointment_date,
+      appointment.end_time,
+      appointment.patient_time_zone
+    );
+  }, [
+    appointment.appointment_date,
+    appointment.end_time,
+    appointment.patient_time_zone,
+  ]);
+
   return (
     <div className="bg-white mt-3 border shadow-md rounded-lg p-4 sm:p-6 flex flex-col sm:flex-row items-center sm:items-start hover:shadow-xl transition">
       <div className="w-20 h-20 sm:w-24 sm:h-24 flex items-center justify-center bg-gray-400 border border-gray-300 rounded-full">
@@ -37,22 +63,23 @@ const AppointmentCard = ({ appointment }: { appointment: any }) => {
           <Clipboard className="h-5 w-5" /> Dr {appointment?.doctor?.user?.name}
         </h2>
         <p className="text-gray-600 flex items-center gap-2 text-sm sm:text-base">
-          <Phone className="h-5 w-5" /> {appointment?.doctor?.user?.phone_number}
+          <Phone className="h-5 w-5" />{" "}
+          {appointment?.doctor?.user?.phone_number}
         </p>
         <p className="text-red-600 flex items-center gap-2 font-semibold text-sm sm:text-base">
-          <Calendar className="h-5 w-5" /> Date:{" "}
-          {appointment?.appointment_date
-            ? DateTime.fromISO(appointment.appointment_date).toLocaleString(DateTime.DATE_MED_WITH_WEEKDAY)
-            : "Invalid Date"}
+          <Calendar className="h-5 w-5" /> Date: {appointmentDate}
         </p>
         <p className="text-blue-700 flex items-center gap-2 font-semibold text-sm sm:text-base">
           <Clock className="h-5 w-5" />
-          {formatTime(appointment.appointment_date, appointment.start_time, appointment.patient_time_zone).replace(/\s[A-Z]{2,5}.*/, "")}{" "} -{" "}
-          {formatTime(appointment.appointment_date, appointment.end_time, appointment.patient_time_zone)}
+          {formattedStartTime} - {formattedEndTime}
         </p>
       </div>
 
-      <div className={`px-3 py-1 mt-4 sm:mt-0 text-white rounded-lg ${getStatusColor(appointment.status)} text-xs sm:text-sm font-semibold`}>
+      <div
+        className={`px-3 py-1 mt-4 sm:mt-0 text-white rounded-lg ${getStatusColor(
+          appointment.status
+        )} text-xs sm:text-sm font-semibold`}
+      >
         {appointment.status.toUpperCase()}
       </div>
     </div>

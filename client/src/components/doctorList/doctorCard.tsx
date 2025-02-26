@@ -1,17 +1,9 @@
 import React from "react";
 import { User } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import { DoctorCardProps } from "@/containers/patient/types";
 
-interface DoctorCardProps {
-  doctor: {
-    doctor_id: number;
-    user: { name: string };
-    specialization: string;
-    experience_years: number;
-    city: string;
-    clinic_address: string;
-  };
-}
+
 
 const DoctorCard: React.FC<DoctorCardProps> = ({ doctor }) => {
   const navigate = useNavigate();

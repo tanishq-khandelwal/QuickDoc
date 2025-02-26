@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { useNavigate, useSearchParams } from "react-router-dom";
+import { useSearchParams } from "react-router-dom";
 import { RootState } from "@/redux/rootReducer";
 import { getUserAvailability } from "@/helper/patient/availability";
 import DoctorProfile from "@/components/doctorProfile/doctorProfile";
@@ -9,7 +9,6 @@ import { fetchDoctorAvailabilty } from "./actions";
 
 const DoctorPreviewContainer = () => {
   const dispatch = useDispatch();
-  const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const doctorId = Number(searchParams.get("doctorId"));
 
@@ -46,7 +45,7 @@ const DoctorPreviewContainer = () => {
       ) : (
         <>
           <DoctorProfile data={data} />
-          <AppointmentBooking data={data} availableDays={availableDays} exceptionAvailabilities={exceptionAvailabilities} navigate={navigate} />
+          <AppointmentBooking data={data} availableDays={availableDays} exceptionAvailabilities={exceptionAvailabilities}  />
         </>
       )}
     </div>

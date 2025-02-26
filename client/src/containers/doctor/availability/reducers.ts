@@ -1,17 +1,20 @@
-export const FETCH_AVAILABILITY_REQUEST = "FETCH_AVAILABILITY_REQUEST";
-export const FETCH_AVAILABILITY_SUCCESS = "FETCH_AVAILABILITY_SUCCESS";
-export const FETCH_AVAILABILITY_FAILURE = "FETCH_AVAILABILITY_FAILURE";
+import {
+  FETCH_AVAILABILITY_FAILURE,
+  FETCH_AVAILABILITY_REQUEST,
+  FETCH_AVAILABILITY_SUCCESS,
+} from "./constants";
+import { availabilityResponse } from "./saga";
 
 type AvailabiltyState = {
-  data: any;
+  data: availabilityResponse | null;
   loading: boolean;
   error: string | null;
 };
 
-type AvailabiltyAction = {
-  type: string;
-  payload?: any;
-};
+type AvailabiltyAction =
+  | { type: typeof FETCH_AVAILABILITY_REQUEST }
+  | { type: typeof FETCH_AVAILABILITY_SUCCESS; payload: availabilityResponse }
+  | { type: typeof FETCH_AVAILABILITY_FAILURE; payload: string };
 
 const initialState: AvailabiltyState = {
   data: null,

@@ -1,7 +1,7 @@
 // rootReducer.ts
 import { combineReducers } from 'redux';
 import authReducer from './reducers/authReducers'; // Import your authReducer or any other reducers here
-import availabiltyReducer from './reducers/doctor/availabilityReducers';
+import availabiltyReducer from '@/containers/doctor/availability/reducers';
 import doctorlistReducer from '../containers/patient/doctorList/reducers';
 import doctorAvailabilityReducer from '../containers/patient/doctorPreview/reducers';
 import bookAppointmentReducer from './reducers/patient/bookAppointmentReducer';
