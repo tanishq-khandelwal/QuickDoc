@@ -8,7 +8,9 @@ const ProfileComponent: React.FC<ProfileComponentProps> = ({
   handleSave,
 }) => {
   if (!formData) {
-    return <p className="text-center text-gray-500">No doctor profile found.</p>;
+    return (
+      <p className="text-center text-gray-500">No doctor profile found.</p>
+    );
   }
 
   return (
@@ -30,7 +32,9 @@ const ProfileComponent: React.FC<ProfileComponentProps> = ({
             />
           </div>
           <div>
-            <label className="block text-gray-700 font-medium mb-2">Email</label>
+            <label className="block text-gray-700 font-medium mb-2">
+              Email
+            </label>
             <input
               type="email"
               name="email"

@@ -40,7 +40,7 @@ export const FETCH_DOCTOR_AVAILABILITY = gql`
         is_available
         time_zone
       }
-      appointments(where: { status: { _neq: "rejected" } })  {
+      appointments(where: { status: { _neq: "rejected" } }) {
         appointment_date
         end_time
         start_time

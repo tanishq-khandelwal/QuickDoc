@@ -6,13 +6,13 @@ import { appointmentCardProps } from "./types";
 
 const role = localStorage.getItem("role");
 
-const AppointmentCard = ({
+const AppointmentCard: React.FC<appointmentCardProps> = ({
   appointment,
   onAccept,
   onReject,
   getStatusColor,
   formatTime,
-}: appointmentCardProps) => {
+}) => {
   const appointmentDate = useMemo(() => {
     return appointment?.appointment_date
       ? DateTime.fromISO(appointment.appointment_date).toLocaleString(
