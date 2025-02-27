@@ -1,4 +1,4 @@
-import MyappointmentReducer from "../reducers"; // Adjust the path if needed
+import MyappointmentReducer from "../reducers"; 
 import {
   FETCH_MY_APPOINTMENTS_REQUEST,
   FETCH_MY_APPOINTMENTS_SUCCESS,
@@ -24,7 +24,22 @@ describe("MyappointmentReducer", () => {
   });
 
   it("should handle FETCH_MY_APPOINTMENTS_SUCCESS", () => {
-    const mockData = [{ id: 1, appointment: "Test Appointment" }];
+    const mockData = {
+      appointment_id: 1,
+      appointment_date: "2025-02-26T10:00:00Z",
+      patient_id: 123,
+      start_time: "10:00 AM",
+      end_time: "10:30 AM",
+      patient_time_zone: "UTC",
+      status: "approved",
+        user: {
+          name: "Dr. Smith",
+          email:"tsk@gmail.com",
+          phone_number: "123-456-7890",
+        },
+      
+    };
+
     const action = { type: FETCH_MY_APPOINTMENTS_SUCCESS, payload: mockData };
     const expectedState = { ...initialState, data: mockData, loading: false, error: null };
 

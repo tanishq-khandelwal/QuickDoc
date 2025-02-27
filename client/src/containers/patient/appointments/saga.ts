@@ -2,25 +2,9 @@ import { takeLatest, put, call } from "redux-saga/effects";
 import client from "@/apolloClient";
 import { GET_APPOINTMENTS } from "@/queries/patient/appointment";
 import { FETCH_MY_APPOINTMENTS_FAILURE, FETCH_MY_APPOINTMENTS_REQUEST, FETCH_MY_APPOINTMENTS_SUCCESS } from "./constants";
+import { AppointmentType } from "@/containers/doctor/appointments/saga";
+import { fetchMyAppointmentAction } from "./types";
 
-export interface fetchMyAppointmentAction {
-  type: typeof FETCH_MY_APPOINTMENTS_REQUEST;
-  payload: { userId: number };
-}
-type AppointmentType = {
-  appointment_id: number;
-  appointment_date: string;
-  patient_id: number;
-  start_time: string;
-  end_time: string;
-  patient_time_zone: string;
-  status: string;
-  user: {
-    name: string;
-    email: string;
-    phone_number: string;
-  };
-};
 
 export function* fetchMyAppointment(action: fetchMyAppointmentAction) {
   // console.log("Reached saga");

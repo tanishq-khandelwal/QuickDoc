@@ -24,3 +24,25 @@ export const CREATE_USER = gql`
     }
   }
 `;
+
+
+export const GET_APPOINTMENTS_DETAILS=gql`
+query get_patient_doctor ($id:Int!){
+  appointments(where: {appointment_id: {_eq:$id }}) {
+    doctor {
+      user {
+        name
+        email
+      }
+    }
+    user {
+      name
+      email
+    }
+    appointment_date
+    start_time
+    end_time
+  }
+}
+
+`

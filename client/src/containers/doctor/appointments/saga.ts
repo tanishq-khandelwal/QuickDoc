@@ -4,7 +4,7 @@ import { GET_ALL_APPOINTMENTS } from "../../../queries/doctor/appointment";
 import { FETCH_APPOINTMENTS_REQUEST, FETCH_APPOINTMENTS_SUCCESS } from "./constants";
 
 
-type AppointmentType = {
+export type AppointmentType = {
   appointment_id: number;
   appointment_date: string;
   patient_id: number;

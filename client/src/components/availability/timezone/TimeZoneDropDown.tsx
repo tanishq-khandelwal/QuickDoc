@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { DateTime } from "luxon"; // Ensure you import DateTime from luxon
+import { DateTime } from "luxon"; 
 
 const timezones = [
   { label: "UTC", value: "UTC" },
@@ -7,7 +7,6 @@ const timezones = [
   { label: "Europe/London", value: "Europe/London" },
   { label: "Asia/Calcutta", value: "Asia/Calcutta" },
   { label: "Australia/Sydney", value: "Australia/Sydney" },
-  // Add more timezones here as needed
 ];
 
 const TimezoneDropdown = () => {

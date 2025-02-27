@@ -5,13 +5,15 @@ import { DateTime } from "luxon";
 import CheckoutButton from "@/stripe/checkoutForm";
 import { generateAvailableTimeSlots } from "@/helper/patient/availability";
 import { useSearchParams } from "react-router-dom";
+import { AppointmentBookingProps, AvailabilityDay, ExceptionAvailability } from "./types";
+
 
 const AppointmentBooking = ({
   data,
   availableDays,
   exceptionAvailabilities,
-}: any) => {
-  const [selectedDate, setSelectedDate] = useState(new Date());
+}: AppointmentBookingProps) => {
+  const [selectedDate, setSelectedDate] = useState<Date>(new Date());
   const [selectedTime, setSelectedTime] = useState<string | null>(null);
   const [availableTimeSlots, setAvailableTimeSlots] = useState<string[]>([]);
   const role = localStorage.getItem("role");
@@ -21,7 +23,7 @@ const AppointmentBooking = ({
   useEffect(() => {
     const formattedDate = DateTime.fromJSDate(selectedDate).toISODate() || "";
     const exceptionDay = exceptionAvailabilities.find(
-      (e: any) => e.date === formattedDate
+      (e: ExceptionAvailability) => e.date === formattedDate
     );
 
     if (exceptionDay) {
@@ -43,7 +45,7 @@ const AppointmentBooking = ({
     }
 
     const selectedDay = availableDays.find(
-      (day: any) =>
+      (day: AvailabilityDay) =>
         day.day.toLowerCase() ===
         selectedDate.toLocaleString("en-US", { weekday: "long" }).toLowerCase()
     );
@@ -60,15 +62,15 @@ const AppointmentBooking = ({
         )
       );
     }
-  }, [selectedDate, availableDays, exceptionAvailabilities]);
+  }, [selectedDate, availableDays, exceptionAvailabilities, data]);
 
-  const disabledDays = (date: Date) => {
+  const disabledDays = (date: Date): boolean => {
     const today = DateTime.local().startOf("day"); // Ensures time is 00:00
     const formattedDate = DateTime.fromJSDate(date).toISODate(); // Convert to "YYYY-MM-DD"
 
     // Check if the date exists in exception availabilities
     const exceptionDay = exceptionAvailabilities.find(
-      (e: { date: string }) => e.date === formattedDate
+      (e: ExceptionAvailability) => e.date === formattedDate
     );
 
     if (exceptionDay) {
@@ -79,13 +81,13 @@ const AppointmentBooking = ({
       .toLocaleString("en-us", { weekday: "long" })
       .toLowerCase();
     const dayAvailability = availableDays.find(
-      (d: { day: string; available: boolean }) => d.day === dayOfWeek
+      (d: AvailabilityDay) => d.day === dayOfWeek
     );
 
     return DateTime.fromJSDate(date) < today || !dayAvailability?.available;
   };
 
-  const convertTo12HourFormat = (slot: string) => {
+  const convertTo12HourFormat = (slot: string): string => {
     return DateTime.fromFormat(slot, "HH:mm").toFormat("h:mm a");
   };
 
@@ -97,7 +99,7 @@ const AppointmentBooking = ({
     selectedDate.getDate().toString().padStart(2, "0");
 
   const handleBookingAppointment = () => {
-    const addMinutes = (time: string, minutes: number) => {
+    const addMinutes = (time: string, minutes: number): string => {
       const [hours, mins] = time.split(":").map(Number);
       const date = new Date();
       date.setHours(hours);
@@ -144,7 +146,6 @@ const AppointmentBooking = ({
 
         <div>
           <h3 className="text-lg font-semibold mb-2">Available Time Slots</h3>
-          {/* add hide scroll bar code */}
           <div className="h-full w-full py-2 px-5 overflow-y-auto max-h-[40vh] scrollbar-hide lg:overflow-visible">
             {selectedDate && (
               <div className="mb-4">

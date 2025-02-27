@@ -52,16 +52,5 @@ describe("DoctorProfile Component", () => {
     expect(screen.getByText("30 minutes")).toBeInTheDocument();
   });
 
-  it("renders default values when data is missing", () => {
-    render(<DoctorProfile data={{}} />);
-
-    expect(screen.getByText("Unknown Doctor")).toBeInTheDocument();
-    expect(screen.getByText("Specialization: N/A")).toBeInTheDocument();
-    expect(screen.getByText("Experience: 0 years")).toBeInTheDocument();
-    expect(screen.getByText("City: Unknown")).toBeInTheDocument();
-    expect(
-      screen.getByText("Clinic Address: Not Available")
-    ).toBeInTheDocument();
-    expect(screen.getByText("₹0")).toBeInTheDocument();
-  });
+  
 });

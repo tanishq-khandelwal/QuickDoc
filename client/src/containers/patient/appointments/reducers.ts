@@ -1,15 +1,21 @@
-import { FETCH_MY_APPOINTMENTS_FAILURE, FETCH_MY_APPOINTMENTS_REQUEST, FETCH_MY_APPOINTMENTS_SUCCESS } from "./constants";
+import { AppointmentType } from "@/containers/doctor/appointments/saga";
+import {
+  FETCH_MY_APPOINTMENTS_FAILURE,
+  FETCH_MY_APPOINTMENTS_REQUEST,
+  FETCH_MY_APPOINTMENTS_SUCCESS,
+} from "./constants";
 
-type AppointmentState = {
-  data: any;
+
+interface AppointmentState {
+  data: AppointmentType | null;
   loading: boolean;
   error: string | null;
-};
+}
 
-type AppointmentAction = {
+interface AppointmentAction {
   type: string;
-  payload?: any;
-};
+  payload?: AppointmentType | null | string;
+}
 
 const initialState: AppointmentState = {
   data: null,
@@ -26,10 +32,20 @@ const MyappointmentReducer = (
       return { ...state, loading: true, error: null };
 
     case FETCH_MY_APPOINTMENTS_SUCCESS:
-      return { ...state, data: action.payload, loading: false, error: null };
+      return {
+        ...state,
+        data: action.payload as AppointmentType,
+        loading: false,
+        error: null,
+      };
 
     case FETCH_MY_APPOINTMENTS_FAILURE:
-      return { ...state, loading: false, error: action.payload };
+      return {
+        ...state,
+        loading: false,
+        error:
+          typeof action.payload === "string" ? action.payload : "Unknown error",
+      };
 
     default:
       return state;

@@ -1,9 +1,11 @@
 import { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import toast from "react-hot-toast";
-import { fetchMyAppointments } from "./actions"; 
+import { fetchMyAppointments } from "./actions";
 import StatusFilter from "@/components/patientAppointment/statusFilter";
 import AppointmentList from "@/components/patientAppointment/appointmentList";
+import { Appointment, MyAppointmentsState } from "./types";
+
 
 const MyAppointmentsContainer = () => {
   const dispatch = useDispatch();
@@ -12,11 +14,12 @@ const MyAppointmentsContainer = () => {
 
   useEffect(() => {
     dispatch(fetchMyAppointments(userId));
-  }, [dispatch]);
+  }, [dispatch, userId]);
 
-  const { data, loading, error } = useSelector((state: any) => state.myAppointments);
+  // Use the MyAppointmentsState interface for type safety
+  const { data, loading, error } = useSelector((state: { myAppointments: MyAppointmentsState }) => state.myAppointments);
   const appointments = Array.isArray(data?.data?.appointments) ? data.data.appointments : [];
-  
+
   const [selectedStatus, setSelectedStatus] = useState("all");
 
   useEffect(() => {
@@ -31,7 +34,7 @@ const MyAppointmentsContainer = () => {
   const filteredAppointments =
     selectedStatus === "all"
       ? appointments
-      : appointments.filter((appointment:any) => appointment.status.toLowerCase() === selectedStatus);
+      : appointments.filter((appointment: Appointment) => appointment.status.toLowerCase() === selectedStatus);
 
   return (
     <div className="container mx-auto px-4 mt-16 sm:mt-24">

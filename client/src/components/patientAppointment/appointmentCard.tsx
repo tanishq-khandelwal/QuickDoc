@@ -1,5 +1,8 @@
-import { Clipboard, Calendar, Clock, Phone, User } from "lucide-react";
+import { Clipboard, Calendar, Clock, Phone, User, Video } from "lucide-react";
 import { DateTime } from "luxon";
+import { formatTime, generateMeetingLink } from "./helper";
+import { useMemo, useState, useEffect } from "react";
+import { Appointment } from "./types";
 
 const getStatusColor = (status: string) => {
   switch (status.toLowerCase()) {
@@ -14,18 +17,46 @@ const getStatusColor = (status: string) => {
   }
 };
 
-const formatTime = (date: string, time: string, patientTimeZone: string) => {
-  const local = DateTime.local();
-  const systemZone = local.zoneName || "";
+const AppointmentCard = ({ appointment }: { appointment: Appointment }) => {
+  console.log("Appointment", appointment);
 
-  const timeInPatientTZ = DateTime.fromISO(`${date}T${time}`, { zone: patientTimeZone });
-  const timeInUTC = timeInPatientTZ.toUTC();
-  const localTime = timeInUTC.setZone(systemZone);
+  const [hasJoined, setHasJoined] = useState(false);
 
-  return systemZone === "Asia/Calcutta" ? localTime.toFormat("hh:mm a 'IST'") : localTime.toFormat("hh:mm a ZZZZ");
-};
+  useEffect(() => {
+    const joined = localStorage.getItem(`joined_meeting_${appointment.appointment_id}`);
+    setHasJoined(joined === "true");
+  }, [appointment.appointment_id]);
 
-const AppointmentCard = ({ appointment }: { appointment: any }) => {
+  const handleJoinMeeting = () => {
+    window.open(generateMeetingLink(appointment.appointment_id.toString()), "_blank");
+    localStorage.setItem(`joined_meeting_${appointment.appointment_id}`, "true");
+    setHasJoined(true);
+  };
+
+  const appointmentDate = useMemo(() => {
+    return appointment?.appointment_date
+      ? DateTime.fromISO(appointment.appointment_date).toLocaleString(
+          DateTime.DATE_MED_WITH_WEEKDAY
+        )
+      : "Invalid Date";
+  }, [appointment?.appointment_date]);
+
+  const formattedStartTime = useMemo(() => {
+    return formatTime(
+      appointment.appointment_date,
+      appointment.start_time,
+      appointment.patient_time_zone
+    ).replace(/\s[A-Z]{2,5}.*/, "");
+  }, [appointment]);
+
+  const formattedEndTime = useMemo(() => {
+    return formatTime(
+      appointment.appointment_date,
+      appointment.end_time,
+      appointment.patient_time_zone
+    );
+  }, [appointment]);
+
   return (
     <div className="bg-white mt-3 border shadow-md rounded-lg p-4 sm:p-6 flex flex-col sm:flex-row items-center sm:items-start hover:shadow-xl transition">
       <div className="w-20 h-20 sm:w-24 sm:h-24 flex items-center justify-center bg-gray-400 border border-gray-300 rounded-full">
@@ -37,23 +68,46 @@ const AppointmentCard = ({ appointment }: { appointment: any }) => {
           <Clipboard className="h-5 w-5" /> Dr {appointment?.doctor?.user?.name}
         </h2>
         <p className="text-gray-600 flex items-center gap-2 text-sm sm:text-base">
-          <Phone className="h-5 w-5" /> {appointment?.doctor?.user?.phone_number}
+          <Phone className="h-5 w-5" />{" "}
+          {appointment?.doctor?.user?.phone_number}
         </p>
         <p className="text-red-600 flex items-center gap-2 font-semibold text-sm sm:text-base">
-          <Calendar className="h-5 w-5" /> Date:{" "}
-          {appointment?.appointment_date
-            ? DateTime.fromISO(appointment.appointment_date).toLocaleString(DateTime.DATE_MED_WITH_WEEKDAY)
-            : "Invalid Date"}
+          <Calendar className="h-5 w-5" /> Date: {appointmentDate}
         </p>
         <p className="text-blue-700 flex items-center gap-2 font-semibold text-sm sm:text-base">
           <Clock className="h-5 w-5" />
-          {formatTime(appointment.appointment_date, appointment.start_time, appointment.patient_time_zone).replace(/\s[A-Z]{2,5}.*/, "")}{" "} -{" "}
-          {formatTime(appointment.appointment_date, appointment.end_time, appointment.patient_time_zone)}
+          {formattedStartTime} - {formattedEndTime}
         </p>
       </div>
 
-      <div className={`px-3 py-1 mt-4 sm:mt-0 text-white rounded-lg ${getStatusColor(appointment.status)} text-xs sm:text-sm font-semibold`}>
-        {appointment.status.toUpperCase()}
+      <div className="flex flex-col gap-2">
+        <div
+          className={`px-3 py-1 mt-4 sm:mt-0 text-white text-center rounded-lg ${getStatusColor(
+            appointment.status
+          )} text-xs sm:text-sm font-semibold`}
+        >
+          {appointment.status.toUpperCase()}
+        </div>
+
+        <div>
+          {appointment.status.toLowerCase() === "approved" && !hasJoined && (
+            <button
+              onClick={handleJoinMeeting}
+              className="flex gap-2 bg-gray-600 text-white px-4 py-2 sm:mt-0 rounded-lg text-sm sm:text-base font-semibold hover:bg-blue-700 transition"
+            >
+              <div>
+                <Video />
+              </div>
+              Join Meeting
+            </button>
+          )}
+
+          {hasJoined && (
+            <span className="text-gray-500 text-sm sm:text-base">
+              Meeting already joined.
+            </span>
+          )}
+        </div>
       </div>
     </div>
   );

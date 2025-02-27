@@ -4,6 +4,7 @@ import morgan from "morgan"
 import cors from "cors";
 import userRoutes from "./routes/user.routes.ts"
 import { createCheckoutSession } from "./controllers/stripe.controller.ts";
+import emailRoutes from "./routes/email.routes.ts";
 
 dotenv.config();
 
@@ -27,6 +28,7 @@ app.use(
 
 app.use('/api/v1/user',userRoutes);
 app.post('/api/create-checkout-session',createCheckoutSession);
+app.use("/api/v1/send", emailRoutes);
 
 app.get('/',(_req,res)=>{
     res.send(' Server Started')

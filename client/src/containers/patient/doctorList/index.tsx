@@ -14,7 +14,7 @@ const DoctorListContainer: React.FC = () => {
 
   useEffect(() => {
     dispatch(fetchDoctors());
-  }, [dispatch]);
+  }, []);
 
   useEffect(() => {
     if (loading) {

@@ -1,6 +1,6 @@
 import { runSaga } from "redux-saga";
 import client from "@/apolloClient";
-import { fetchMyAppointment, fetchMyAppointmentAction } from "../saga";
+import { fetchMyAppointment} from "../saga";
 import { GET_APPOINTMENTS } from "@/queries/patient/appointment";
 import {
   FETCH_MY_APPOINTMENTS_FAILURE,
@@ -8,6 +8,7 @@ import {
   FETCH_MY_APPOINTMENTS_SUCCESS,
 } from "../constants";
 import { ApolloQueryResult } from "@apollo/client";
+import { fetchMyAppointmentAction } from "../types";
 
 jest.mock("@/apolloClient");
 
