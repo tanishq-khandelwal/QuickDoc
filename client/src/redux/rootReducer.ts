@@ -8,7 +8,7 @@ import bookAppointmentReducer from './reducers/patient/bookAppointmentReducer';
 import appointmentReducer from '@/containers/doctor/appointments/reducers'
 import MyappointmentReducer from '../containers/patient/appointments/reducers';
 import updateAppointmentReducer from '@/containers/doctor/appointments/updateAppointmentReducer';
-import ExceptionavailabiltyReducer from './reducers/doctor/exceptionAvailabilityReducer';
+import ExceptionavailabiltyReducer from '@/containers/doctor/exceptionAvailability/reducers';
 
 const rootReducer = combineReducers({
   auth: authReducer,

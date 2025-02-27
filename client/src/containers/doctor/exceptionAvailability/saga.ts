@@ -1,11 +1,11 @@
 import { call, put, takeLatest } from "redux-saga/effects";
+
+import { GET_EXCEPTION_AVAILABILITY } from "../../../queries/doctor/availability";
+import client from "../../../apolloClient";
 import {
   FETCH_EXCEPTION_AVAILABILITY,
   FETCH_EXCEPTION_AVAILABILITY_SUCCESS,
-} from "../../reducers/doctor/exceptionAvailabilityReducer";
-import { GET_EXCEPTION_AVAILABILITY } from "../../../queries/doctor/availability";
-import client from "../../../apolloClient";
-
+} from "./constant";
 
 interface FetchExceptionAvailabilityAction {
   type: typeof FETCH_EXCEPTION_AVAILABILITY;
@@ -14,7 +14,7 @@ interface FetchExceptionAvailabilityAction {
 
 interface ExceptionAvailabilityResponse {
   data: {
-    exception_availability: any; 
+    exception_availability: any;
   };
 }
 
@@ -42,7 +42,6 @@ function* fetchExceptionAvailabilitySaga(
     });
   }
 }
-
 
 // Watcher Saga
 export function* watchFetchExceptionAvailability() {

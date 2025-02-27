@@ -9,7 +9,7 @@ import { watchBookAppointment } from "./sagas/patient/bookAppointmentSaga";
 import { watchFetchAppointment } from "@/containers/doctor/appointments/saga"
 import { watchFetchMyAppointment } from "../containers/patient/appointments/saga";
 import { watchUpdateAppointment } from "@/containers/doctor/appointments/updateAppointmentSaga";
-import { watchFetchExceptionAvailability } from "./sagas/doctor/exceptionAvailibilitySaga";
+import { watchFetchExceptionAvailability } from "@/containers/doctor/exceptionAvailability/saga";
 
 export default function* rootSaga() {
     yield all([

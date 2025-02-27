@@ -3,11 +3,11 @@ import { useMutation } from "@apollo/client";
 import { UPDATE_MULTIPLE_AVAILABILITIES } from "@/queries/doctor/availability";
 import { DateTime } from "luxon";
 import AvailabilityComponent from "@/components/availability/AvailabilityComponent/availabilityComponenet";
-import ExceptionAvailability from "@/components/availability/ExceptionAvailability/ExceptionAvailability";
 import { Button } from "@/components/ui/button";
 import toast from "react-hot-toast";
 import TimezoneDropdown from "@/components/availability/timezone/TimeZoneDropDown";
 import { timeSlots, weekDays } from "./constants";
+import ExceptionAvailabilityContainer from "../exceptionAvailability";
 
 
 interface AvailabilityDay {
@@ -222,7 +222,7 @@ const AvailabilityContainer = ({
                 </div>
               </div>
               <div>
-                <ExceptionAvailability />
+                <ExceptionAvailabilityContainer/>
               </div>
             </div>
           </div>

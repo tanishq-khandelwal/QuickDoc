@@ -48,7 +48,7 @@ const AvailabilityComponent = ({
                 {availability[day.id]?.openDropdown === "startTime" && (
                   <div className="absolute mt-1 w-28 bg-white border border-gray-300 shadow-lg rounded-md max-h-40 overflow-y-auto z-10">
                     <ul className="space-y-1">
-                      {timeSlots.map((time, index) => (
+                      {timeSlots?.map((time, index) => (
                         <li
                           key={index}
                           className="dropdown-item px-2 py-1 text-sm cursor-pointer hover:bg-gray-100"
