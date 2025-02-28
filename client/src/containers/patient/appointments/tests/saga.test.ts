@@ -1,6 +1,5 @@
 import { runSaga } from "redux-saga";
-import client from "@/apolloClient";
-import { fetchMyAppointment} from "../saga";
+import { fetchMyAppointment } from "../saga";
 import { GET_APPOINTMENTS } from "@/queries/patient/appointment";
 import {
   FETCH_MY_APPOINTMENTS_FAILURE,
@@ -10,13 +9,28 @@ import {
 import { ApolloQueryResult } from "@apollo/client";
 import { fetchMyAppointmentAction } from "../types";
 
-jest.mock("@/apolloClient");
+// Properly define mockClient inside the mock function
+jest.mock('@/apolloClient', () => {
+  const mockClient = {
+    query: jest.fn(),
+  };
+  return {
+    __esModule: true,
+    default: mockClient,
+  };
+});
+
+import client from "@/apolloClient"; // Import after mocking
 
 describe("fetchMyAppointment Saga", () => {
   const mockAction: fetchMyAppointmentAction = {
     type: FETCH_MY_APPOINTMENTS_REQUEST,
     payload: { userId: 1 },
   };
+
+  afterEach(() => {
+    jest.clearAllMocks();
+  });
 
   it("should fetch appointments successfully", async () => {
     const mockResponse: ApolloQueryResult<any> = {
@@ -43,7 +57,7 @@ describe("fetchMyAppointment Saga", () => {
       errors: undefined,
     };
 
-    jest.spyOn(client, "query").mockResolvedValue(mockResponse);
+    (client.query as jest.Mock).mockResolvedValue(mockResponse);
 
     const dispatched: any[] = [];
     await runSaga(
@@ -68,7 +82,7 @@ describe("fetchMyAppointment Saga", () => {
   it("should handle errors properly", async () => {
     const mockError = new Error("Failed to fetch appointments");
 
-    jest.spyOn(client, "query").mockRejectedValue(mockError);
+    (client.query as jest.Mock).mockRejectedValue(mockError);
 
     const dispatched: any[] = [];
     await runSaga(
