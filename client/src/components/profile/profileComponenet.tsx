@@ -8,8 +8,14 @@ const ProfileComponent: React.FC<ProfileComponentProps> = ({
   handleSave,
 }) => {
   if (!formData) {
-    return <p className="text-center text-gray-500">No doctor profile found.</p>;
+    return (
+      <p className="text-center text-gray-500">No doctor profile found.</p>
+    );
   }
+
+  const isFormValid =
+    Object.values(formData).every((value) => value !== "" && value !== null) &&
+    Object.values(formData.user).every((value) => value !== "" && value !== null);
 
   return (
     <div className="flex justify-center items-center min-h-screen bg-gradient-to-br from-blue-50 to-white mt-16">
@@ -30,7 +36,9 @@ const ProfileComponent: React.FC<ProfileComponentProps> = ({
             />
           </div>
           <div>
-            <label className="block text-gray-700 font-medium mb-2">Email</label>
+            <label className="block text-gray-700 font-medium mb-2">
+              Email
+            </label>
             <input
               type="email"
               name="email"
@@ -60,6 +68,7 @@ const ProfileComponent: React.FC<ProfileComponentProps> = ({
               name="experience_years"
               value={formData.experience_years}
               onChange={handleChange}
+              required
               className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring focus:ring-blue-200"
             />
           </div>
@@ -72,6 +81,7 @@ const ProfileComponent: React.FC<ProfileComponentProps> = ({
               name="specialization"
               value={formData.specialization}
               onChange={handleChange}
+              required
               className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring focus:ring-blue-200"
             />
           </div>
@@ -84,6 +94,7 @@ const ProfileComponent: React.FC<ProfileComponentProps> = ({
               name="slot_duration"
               value={formData.slot_duration}
               onChange={handleChange}
+              required
               className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring focus:ring-blue-200"
             />
           </div>
@@ -96,6 +107,7 @@ const ProfileComponent: React.FC<ProfileComponentProps> = ({
               name="consultation_fee"
               value={formData.consultation_fee}
               onChange={handleChange}
+              required
               className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring focus:ring-blue-200"
             />
           </div>
@@ -106,6 +118,7 @@ const ProfileComponent: React.FC<ProfileComponentProps> = ({
               name="city"
               value={formData.city}
               onChange={handleChange}
+              required
               className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring focus:ring-blue-200"
             />
           </div>
@@ -117,6 +130,7 @@ const ProfileComponent: React.FC<ProfileComponentProps> = ({
               name="clinic_address"
               value={formData.clinic_address}
               onChange={handleChange}
+              required
               className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring focus:ring-blue-200"
             ></textarea>
           </div>
@@ -124,9 +138,9 @@ const ProfileComponent: React.FC<ProfileComponentProps> = ({
             <button
               type="button"
               onClick={handleSave}
-              disabled={!isEdited}
+              disabled={!isEdited || !isFormValid}
               className={`px-6 py-2 font-medium rounded-lg focus:outline-none focus:ring focus:ring-blue-200 ${
-                isEdited
+                isEdited && isFormValid
                   ? "bg-blue-600 text-white hover:bg-blue-700"
                   : "bg-gray-400 text-gray-200 cursor-not-allowed"
               }`}

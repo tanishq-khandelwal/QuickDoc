@@ -6,13 +6,13 @@ import { appointmentCardProps } from "./types";
 
 const role = localStorage.getItem("role");
 
-const AppointmentCard = ({
+const AppointmentCard: React.FC<appointmentCardProps> = ({
   appointment,
   onAccept,
   onReject,
   getStatusColor,
   formatTime,
-}: appointmentCardProps) => {
+}) => {
   const appointmentDate = useMemo(() => {
     return appointment?.appointment_date
       ? DateTime.fromISO(appointment.appointment_date).toLocaleString(
@@ -27,11 +27,7 @@ const AppointmentCard = ({
       appointment.start_time,
       appointment.patient_time_zone
     ).replace(/\s[A-Z]{2,5}.*/, "");
-  }, [
-    appointment.appointment_date,
-    appointment.start_time,
-    appointment.patient_time_zone,
-  ]);
+  }, [appointment]);
 
   const formattedEndTime = useMemo(() => {
     return formatTime(
@@ -39,11 +35,7 @@ const AppointmentCard = ({
       appointment.end_time,
       appointment.patient_time_zone
     );
-  }, [
-    appointment.appointment_date,
-    appointment.end_time,
-    appointment.patient_time_zone,
-  ]);
+  }, [appointment]);
 
   return (
     <div className="bg-white mt-3 border shadow-md rounded-lg p-4 sm:p-6 flex flex-col sm:flex-row items-center sm:items-start hover:shadow-xl transition">

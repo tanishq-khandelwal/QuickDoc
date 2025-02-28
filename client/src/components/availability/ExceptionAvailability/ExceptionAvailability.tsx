@@ -4,8 +4,9 @@ import { DateTime } from "luxon";
 import { map } from "lodash";
 import AvailabilityModal from "../AvailabilityModal/AvailabilityModal";
 import { ExceptionAvailabilityProps } from "./types";
+import React from "react";
 
-const ExceptionAvailability = ({
+const ExceptionAvailability: React.FC<ExceptionAvailabilityProps> = ({
   exceptionDates,
   showModal,
   setShowModal,
@@ -14,7 +15,7 @@ const ExceptionAvailability = ({
   handleDelete,
   disabled,
   setDisable,
-}: ExceptionAvailabilityProps) => {
+}) => {
   const formatTime = (time: string) => {
     return DateTime.fromISO(time).toFormat("hh:mm a");
   };
@@ -70,6 +71,7 @@ const ExceptionAvailability = ({
                 setDisable(true);
               }}
               disabled={disabled}
+              data-testid="delete-button"
             >
               <Trash2 className="text-red-600" />
             </Button>

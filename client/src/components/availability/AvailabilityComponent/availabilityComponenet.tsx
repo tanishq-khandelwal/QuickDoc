@@ -1,6 +1,7 @@
+import React from "react";
 import { AvailabilityComponentProps } from "../types";
 
-const AvailabilityComponent = ({
+const AvailabilityComponent: React.FC<AvailabilityComponentProps> = ({
   weekDays,
   availability,
   timeSlots,
@@ -8,7 +9,7 @@ const AvailabilityComponent = ({
   handleTimeChange,
   errors,
   setAvailability,
-}: AvailabilityComponentProps) => {
+}) => {
   return (
     <div className="space-y-4">
       {weekDays.map((day) => (

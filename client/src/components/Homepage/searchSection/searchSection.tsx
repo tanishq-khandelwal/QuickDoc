@@ -11,7 +11,6 @@ const SearchSection = () => {
         async (position) => {
           const { latitude, longitude } = position.coords;
 
-          // Fetch location details using Reverse Geocoding
           try {
             const response = await fetch(
               `https://nominatim.openstreetmap.org/reverse?lat=${latitude}&lon=${longitude}&format=json`

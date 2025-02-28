@@ -15,7 +15,7 @@ const ExceptionAvailabilityContainer = () => {
 
   useEffect(() => {
     dispatch(fetchException(doctorId));
-  }, [dispatch]);
+  }, []);
 
   const [deleteException] = useMutation(DELETE_EXCEPTION_AVAILABILITY);
 

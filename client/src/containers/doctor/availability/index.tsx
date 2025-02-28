@@ -9,7 +9,6 @@ import TimezoneDropdown from "@/components/availability/timezone/TimeZoneDropDow
 import { timeSlots, weekDays } from "./constants";
 import ExceptionAvailabilityContainer from "../exceptionAvailability";
 
-
 interface AvailabilityDay {
   selected: boolean;
   startTime: string;
@@ -222,7 +221,7 @@ const AvailabilityContainer = ({
                 </div>
               </div>
               <div>
-                <ExceptionAvailabilityContainer/>
+                <ExceptionAvailabilityContainer />
               </div>
             </div>
           </div>
