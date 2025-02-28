@@ -1,6 +1,6 @@
 import { render, screen, fireEvent } from "@testing-library/react";
 import "@testing-library/jest-dom";
-import TimezoneDropdown from "./TimeZoneDropDown";
+import TimezoneDropdown from "../TimeZoneDropDown";
 
 describe.only("TimezoneDropdown Component", () => {
   it("renders dropdown with default value", () => {

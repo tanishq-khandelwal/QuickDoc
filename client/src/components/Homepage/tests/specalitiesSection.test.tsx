@@ -1,5 +1,5 @@
 import { render, screen } from "@testing-library/react";
-import SpecialitiesSection from "./specalitiesSection";
+import SpecialitiesSection from "../specalitiesSection/specalitiesSection";
 import "@testing-library/jest-dom";
 
 describe("Specialities Section Component Test", () => {

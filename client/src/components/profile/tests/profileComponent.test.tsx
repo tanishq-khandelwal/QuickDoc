@@ -1,5 +1,5 @@
 import { render, screen, fireEvent } from "@testing-library/react";
-import ProfileComponent from "./profileComponenet";
+import ProfileComponent from "../profileComponenet";
 import userEvent from "@testing-library/user-event";
 
 const mockHandleChange = jest.fn();

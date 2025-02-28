@@ -1,6 +1,6 @@
 import { render, screen } from "@testing-library/react";
 import "@testing-library/jest-dom";
-import DoctorsSection from "./doctorSection";
+import DoctorsSection from "../doctorSection/doctorSection";
 
 const doctors = [
   {
