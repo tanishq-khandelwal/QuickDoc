@@ -10,7 +10,7 @@ const getTokenFromCookies = () => {
 
 // HTTP Link for GraphQL endpoint
 const httpLink = new HttpLink({
-  uri: 'http://localhost:8080/v1/graphql',
+  uri: import.meta.env.VITE_GRAPHQL_URI,
   credentials: 'include', // Ensures cookies are sent with requests
 });
 

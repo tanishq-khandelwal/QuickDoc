@@ -1,7 +1,10 @@
 import Stripe from 'stripe';
 import { Request, Response } from 'express';
+import dotenv from 'dotenv';
+dotenv.config();
 
-const stripe = new Stripe('sk_test_51QsOX0IghhaywlDi29LLOCyblQkke7trSw54GzaspIJ9OZJbr0p5aGajnQPa61wxBWIjqmJYuyhnar591yH6THZI00ogbbUZR0');
+
+const stripe = new Stripe(process.env.STRIPE_SECRET_KEY) || "";
 
 
 export const createCheckoutSession = async (req: Request, res: Response) => {
