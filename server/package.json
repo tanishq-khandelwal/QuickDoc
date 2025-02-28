@@ -38,6 +38,6 @@
     "@types/morgan": "^1.9.9",
     "@types/nodemailer": "^6.4.17",
     "ts-node": "^10.9.2",
-    "tsx": "^4.19.2"
+    "tsx": "^4.19.3"
   }
 }
