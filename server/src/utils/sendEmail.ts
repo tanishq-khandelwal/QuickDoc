@@ -1,10 +1,9 @@
 import nodemailer from "nodemailer";
 import { configDotenv } from "dotenv";
-import fs from "fs";
 
 configDotenv();
 
-const sendEmail = async (email: string, subject: string, message: string, attachmentPath?: string) => {
+const sendEmail = async (email: string, subject: string, message: string, icsBuffer?: Buffer) => {
   try {
     let transporter = nodemailer.createTransport({
       host: process.env.SMTP_HOST,
@@ -23,13 +22,14 @@ const sendEmail = async (email: string, subject: string, message: string, attach
       html: message,
     };
 
-    if (attachmentPath && fs.existsSync(attachmentPath)) {
+    // Attach ICS file as buffer
+    if (icsBuffer) {
       mailOptions.attachments = [
         {
           filename: "appointment.ics",
-          path: attachmentPath,
-          contentType: "text/calendar",
-          contentDisposition: "attachment", 
+          content: icsBuffer,
+          contentType: "text/calendar;charset=UTF-8; method=REQUEST",
+          contentDisposition: "attachment",
         },
       ];
     }

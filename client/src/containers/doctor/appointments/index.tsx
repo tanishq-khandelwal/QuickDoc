@@ -36,7 +36,7 @@ const AppointmentsContainer = () => {
 
   useEffect(() => {
     dispatch(fetchAppointments(doctorId));
-  }, [dispatch]);
+  }, []);
 
   useEffect(() => {
     if (data?.data?.appointments) {

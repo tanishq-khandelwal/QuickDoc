@@ -16,7 +16,7 @@ const DoctorPreviewContainer = () => {
     if (doctorId) {
       dispatch(fetchDoctorAvailabilty(doctorId));
     }
-  }, [dispatch, doctorId]);
+  }, [doctorId]);
 
   const { doctorAvailability, loading, error } = useSelector(
     (state: RootState) => state.availability

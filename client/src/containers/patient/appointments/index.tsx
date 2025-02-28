@@ -14,7 +14,7 @@ const MyAppointmentsContainer = () => {
 
   useEffect(() => {
     dispatch(fetchMyAppointments(userId));
-  }, [dispatch, userId]);
+  }, [userId]);
 
   // Use the MyAppointmentsState interface for type safety
   const { data, loading, error } = useSelector((state: { myAppointments: MyAppointmentsState }) => state.myAppointments);

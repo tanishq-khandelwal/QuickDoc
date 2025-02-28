@@ -45,6 +45,10 @@ const ProfileContainer = () => {
   ) => {
     if (formData) {
       const { name, value } = e.target;
+      const trimmedValue = value.trim();
+
+  if (trimmedValue === "") return;
+
       setFormData((prev) => (prev ? { ...prev, [name]: value } : null));
       setIsEdited(true);
     }

@@ -71,6 +71,7 @@ const ExceptionAvailability: React.FC<ExceptionAvailabilityProps> = ({
                 setDisable(true);
               }}
               disabled={disabled}
+              data-testid="delete-button"
             >
               <Trash2 className="text-red-600" />
             </Button>

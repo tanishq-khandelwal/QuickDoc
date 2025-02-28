@@ -28,6 +28,28 @@ const PatientProfileContainer = () => {
     }
   }, [loading, error]);
 
+  const handleNameChange = (value: string) => {
+    const trimmedValue = value.trim();
+    if (trimmedValue !== "") {
+      setUpdatedName(trimmedValue);
+    }
+  };
+  
+  const handleEmailChange = (value: string) => {
+    const trimmedValue = value.trim();
+    if (trimmedValue !== "") {
+      setUpdatedEmail(trimmedValue);
+    }
+  };
+  
+  const handlePhoneChange = (value: string) => {
+    const trimmedValue = value.trim();
+    if (trimmedValue !== "") {
+      setUpdatedPhone(trimmedValue);
+    }
+  };
+  
+
   useEffect(() => {
     if (data?.users?.length) {
       setUpdatedName(data.users[0].name || "N/A");
@@ -67,9 +89,9 @@ const PatientProfileContainer = () => {
       updatedName={updatedName}
       updatedEmail={updatedEmail}
       updatedPhone={updatedPhone}
-      onNameChange={setUpdatedName}
-      onEmailChange={setUpdatedEmail}
-      onPhoneChange={setUpdatedPhone}
+      onNameChange={handleNameChange}
+      onEmailChange={handleEmailChange}
+      onPhoneChange={handlePhoneChange}
       onEdit={() => setIsEditing(true)}
       onSave={handleSave}
       onCancel={() => setIsEditing(false)}
