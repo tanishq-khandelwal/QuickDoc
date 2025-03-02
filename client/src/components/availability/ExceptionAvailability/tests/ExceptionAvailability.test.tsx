@@ -1,5 +1,5 @@
 import { render, screen, fireEvent } from "@testing-library/react";
-import ExceptionAvailability from "../ExceptionAvailability";
+import ExceptionAvailability from "..";
 import { DateTime } from "luxon";
 import userEvent from "@testing-library/user-event";
 

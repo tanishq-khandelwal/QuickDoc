@@ -1,10 +1,10 @@
 import Layout from "@/Layout";
 import { Navbar } from "@/Navbar";
 import Footer from "../components/footer/Footer";
-import SearchSection from "@/components/Homepage/searchSection/searchSection";
-import ServicesSection from "@/components/Homepage/servicesSection/servicesSection";
-import SpecialitiesSection from "@/components/Homepage/specalitiesSection/specalitiesSection";
-import DoctorsSection from "@/components/Homepage/doctorSection/doctorSection";
+import SearchSection from "@/components/Homepage/searchSection";
+import ServicesSection from "@/components/Homepage/servicesSection";
+import SpecialitiesSection from "@/components/Homepage/specalitiesSection";
+import DoctorsSection from "@/components/Homepage/doctorSection";
 
 const Homepage = () => {
   return (

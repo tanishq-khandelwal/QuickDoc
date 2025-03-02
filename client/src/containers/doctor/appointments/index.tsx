@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { fetchAppointments, updateApppointment } from "./actions";
 import {map} from "lodash"
 import toast from "react-hot-toast";
-import AppointmentCard from "@/components/doctorAppointment/appointmentCard";
+import AppointmentCard from "@/components/doctorAppointment";
 import StatusFilter from "@/components/patientAppointment/statusFilter";
 import { formatTime } from "@/components/patientAppointment/helper";
 
@@ -77,6 +77,18 @@ const AppointmentsContainer = () => {
     );
   };
 
+  const handleComplete = (appointmentId: number) => {
+    dispatch(updateApppointment({ appointmentId, status: "completed" }));
+    toast.success("Appointment Completed");
+    setAppointments((prevAppointments) =>
+      prevAppointments.map((appointment) =>
+        appointment.appointment_id === appointmentId
+          ? { ...appointment, status: "completed" }
+          : appointment
+      )
+    );
+  };
+
   const getStatusColor = (status: string) => {
     switch (status.toLowerCase()) {
       case "pending":
@@ -113,6 +125,7 @@ const AppointmentsContainer = () => {
             appointment={appointment}
             onAccept={handleAccept}
             onReject={handleReject}
+            onComplete={handleComplete}
             getStatusColor={getStatusColor}
             formatTime={formatTime}
           />

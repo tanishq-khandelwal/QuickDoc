@@ -1,5 +1,5 @@
 import { render, screen } from "@testing-library/react";
-import AvailabilityComponent from "../availabilityComponenet";
+import AvailabilityComponent from "..";
 
 describe("AvailabilityComponent", () => {
   const defaultProps = {

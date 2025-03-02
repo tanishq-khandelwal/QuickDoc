@@ -4,7 +4,7 @@ import { useSearchParams } from "react-router-dom";
 import { RootState } from "@/redux/rootReducer";
 import { getUserAvailability } from "@/helper/patient/availability";
 import DoctorProfile from "@/components/doctorProfile/doctorProfile";
-import AppointmentBooking from "@/components/appointmentBooking/appointmentBooking";
+import AppointmentBooking from "@/components/appointmentBooking";
 import { fetchDoctorAvailabilty } from "./actions";
 
 const DoctorPreviewContainer = () => {

@@ -1,4 +1,4 @@
-import { Calendar, Clock, Mail, Phone, User, Video } from "lucide-react";
+import { Calendar, Clock, Mail, Phone, User, Video, CheckCircle } from "lucide-react";
 import { DateTime } from "luxon";
 import { useMemo } from "react";
 import { generateMeetingLink } from "../patientAppointment/helper";
@@ -10,6 +10,7 @@ const AppointmentCard: React.FC<appointmentCardProps> = ({
   appointment,
   onAccept,
   onReject,
+  onComplete,
   getStatusColor,
   formatTime,
 }) => {
@@ -74,20 +75,30 @@ const AppointmentCard: React.FC<appointmentCardProps> = ({
           </div>
           <div>
             {appointment?.status?.toLowerCase() === "approved" && (
-              <div className="mt-4">
+              <div className="mt-4 flex flex-col gap-2">
                 <a
                   href={generateMeetingLink(
                     appointment.appointment_id.toString()
                   )}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="flex gap-2 bg-gray-600 text-white px-4 py-2 sm:mt-0 rounded-lg text-sm sm:text-base font-semibold hover:bg-blue-700 transition"
+                  className="flex gap-2 bg-gray-600 text-white px-4 py-2 rounded-lg text-sm sm:text-base font-semibold hover:bg-blue-700 transition items-center justify-center"
                 >
-                  <div>
-                    <Video />
-                  </div>
+                  <Video className="h-5 w-5" />
                   Join Meeting
                 </a>
+                <button
+                  disabled={role === "guestdoctor"}
+                  className={`flex gap-2 bg-green-600 text-white px-4 py-2 rounded-lg text-sm sm:text-base font-semibold transition items-center justify-center ${
+                    role === "guestdoctor"
+                      ? "opacity-50 cursor-not-allowed"
+                      : "hover:bg-green-700"
+                  }`}
+                  onClick={() => onComplete(appointment.appointment_id)}
+                >
+                  <CheckCircle className="h-5 w-5" />
+                  Mark as Complete
+                </button>
               </div>
             )}
           </div>

@@ -66,8 +66,8 @@ export default function SignupPatient() {
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
           {/* Name Field */}
           <div>
-            <label className="block text-sm font-medium text-gray-700">
-              Name
+            <label className="flex gap-2 text-sm font-medium text-gray-700">
+              Name <div className="text-red-500">*</div>
             </label>
             <input
               type="text"
@@ -81,8 +81,8 @@ export default function SignupPatient() {
 
           {/* Email Field */}
           <div>
-            <label className="block text-sm font-medium text-gray-700">
-              Email
+            <label className="flex gap-2 text-sm font-medium text-gray-700">
+              Email  <div className="text-red-500">*</div>
             </label>
             <input
               type="email"
@@ -96,8 +96,8 @@ export default function SignupPatient() {
 
           {/* Phone Number Field */}
           <div>
-            <label className="block text-sm font-medium text-gray-700">
-              Phone Number
+            <label className="flex gap-2 text-sm font-medium text-gray-700">
+              Phone Number  <div className="text-red-500">*</div>
             </label>
             <input
               type="text"
@@ -111,8 +111,8 @@ export default function SignupPatient() {
 
           {/* Password Field */}
            <div className="relative">
-            <label className="block text-sm font-medium text-gray-700">
-              Password
+            <label className="flex gap-2 text-sm font-medium text-gray-700">
+              Password  <div className="text-red-500">*</div>
             </label>
             <input
               type={showPassword ? "text" : "password"}

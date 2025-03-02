@@ -17,6 +17,7 @@ export interface appointmentCardProps  {
   appointment: AppointmentType;
   onAccept: (id: number) => void;
   onReject: (id: number) => void;
+  onComplete: (id: number) => void;
   getStatusColor: (status: string) => string;
   formatTime: (date: string, time: string, zone: string) => string;
 };
