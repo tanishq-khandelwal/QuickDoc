@@ -5,7 +5,6 @@ import ProfileComponent from "@/components/profile/profileComponenet";
 import { GET_DOCTOR_PROFILE, UPDATE_PROFILE } from "@/queries/doctor/profile";
 import { Doctor } from "@/components/profile/types";
 
-
 const ProfileContainer = () => {
   const userData = localStorage.getItem("user");
   const doctorId = userData ? JSON.parse(userData).doctorId : null;
@@ -47,13 +46,26 @@ const ProfileContainer = () => {
       const { name, value } = e.target;
       const trimmedValue = value.trim();
 
-  if (trimmedValue === "") return;
+      if (trimmedValue === "") return;
 
-      setFormData((prev) => (prev ? { ...prev, [name]: value } : null));
+      if (name === "experience_years" || name === "slot_duration") {
+        const numericValue = parseInt(trimmedValue, 10);
+        if (numericValue < 1) {
+          setFormData((prev) => (prev ? { ...prev, [name]: 1 } : null));
+        } else {
+          setFormData((prev) =>
+            prev ? { ...prev, [name]: numericValue } : null
+          );
+        }
+      } else {
+        setFormData((prev) =>
+          prev ? { ...prev, [name]: trimmedValue } : null
+        );
+      }
+
       setIsEdited(true);
     }
   };
-
   const handleSave = async () => {
     toast.loading("Updating Profile", { id: "loading" });
 

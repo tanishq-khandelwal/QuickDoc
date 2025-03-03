@@ -2,7 +2,7 @@ import { Button } from "@/components/ui/button";
 import { Trash2 } from "lucide-react";
 import { DateTime } from "luxon";
 import { map } from "lodash";
-import AvailabilityModal from "../AvailabilityModal/AvailabilityModal";
+import AvailabilityModal from "../AvailabilityModal";
 import { ExceptionAvailabilityProps } from "./types";
 import React from "react";
 
@@ -48,7 +48,7 @@ const ExceptionAvailability: React.FC<ExceptionAvailabilityProps> = ({
             className="flex items-center justify-between gap-4 p-3 border border-blue-200 rounded-lg shadow-lg bg-gray-50 mt-2"
           >
             <p className="text-sm font-medium text-gray-700">
-              {item.special_date}
+             {DateTime.fromISO(item.special_date).toFormat("dd-MM-yy")}
             </p>
             <p className="text-sm text-gray-600">
               {item.is_available ? formatTime(item.start_time) : "- -"}

@@ -2,10 +2,12 @@ import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
 import { useMutation } from "@apollo/client";
-import { UPDATE_EXCEPTION_AVAILABILITY } from "@/queries/doctor/availability";
+import { UPDATE_EXCEPTION_AVAILABILITY } from "@/queries/doctor/availability"; // Import FETCH_AVAILABILITY
 import toast from "react-hot-toast";
 import { DateTime } from "luxon";
 import { AvailabilityModalProps } from "../types";
+import { fetchException } from "@/containers/doctor/exceptionAvailability/actions";
+import { useDispatch } from "react-redux";
 
 const AvailabilityModal: React.FC<AvailabilityModalProps> = ({
   showModal,
@@ -20,6 +22,7 @@ const AvailabilityModal: React.FC<AvailabilityModalProps> = ({
   const [endTime, setEndTime] = useState<string>("17:00");
   const today = new Date();
   const role = localStorage.getItem("role");
+  const dispatch = useDispatch();
 
   // Set default date on mount
   useEffect(() => {
@@ -28,7 +31,6 @@ const AvailabilityModal: React.FC<AvailabilityModalProps> = ({
     }
   }, [selectedDate, setSelectedDate, today]);
 
-  console.log(selectedDate);
   const [updateAvailability, { loading, error }] = useMutation(
     UPDATE_EXCEPTION_AVAILABILITY
   );
@@ -58,36 +60,12 @@ const AvailabilityModal: React.FC<AvailabilityModalProps> = ({
       console.log("Response:", response);
       toast.dismiss("loading");
       toast.success("Availability Updated Successfully");
-      let countdown = 5;
-      const toastId = toast.loading(
-        `This page will refresh in ${countdown} sec`,
-        {
-          position: "bottom-right",
-        }
-      );
 
-      const interval = setInterval(() => {
-        countdown -= 1;
-        toast.loading(
-          `This page will automatically refresh in ${countdown} sec`,
-          {
-            id: toastId,
-          }
-        );
-
-        if (countdown === 0) {
-          clearInterval(interval);
-        }
-      }, 1000);
-
-      setTimeout(() => {
-        history.go(0);
-      }, 5000);
-
-      setShowModal(false);
+      setShowModal(false); // Close the modal after successful update
+      dispatch(fetchException(doctorId));
     } catch (err) {
       toast.dismiss("loading");
-      toast.error(`Failed to update Availability,${err}`);
+      toast.error(`Failed to update Availability: ${err}`);
     }
   };
 

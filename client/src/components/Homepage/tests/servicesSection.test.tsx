@@ -1,6 +1,6 @@
 import { screen, render } from "@testing-library/react";
 import "@testing-library/jest-dom";
-import ServicesSection from "./servicesSection";
+import ServicesSection from "../servicesSection";
 
 describe("Service Section Component Test", () => {
 

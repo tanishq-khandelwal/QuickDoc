@@ -1,5 +1,5 @@
 import { render, screen } from "@testing-library/react";
-import PatientProfile from "./patientProfile";
+import PatientProfile from "../patientProfile";
 import userEvent from "@testing-library/user-event";
 
 jest.mock("lucide-react", () => ({

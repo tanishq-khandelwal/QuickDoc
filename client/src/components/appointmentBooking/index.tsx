@@ -1,27 +1,30 @@
 import { useEffect, useState } from "react";
 import { Calendar } from "@/components/ui/calendar";
-import { Button } from "@/components/ui/button";
 import { DateTime } from "luxon";
-import CheckoutButton from "@/stripe/checkoutForm";
-import { generateAvailableTimeSlots } from "@/helper/patient/availability";
 import { useSearchParams } from "react-router-dom";
+import { generateAvailableTimeSlots } from "@/helper/patient/availability";
+
 import {
   AppointmentBookingProps,
   AvailabilityDay,
   ExceptionAvailability,
 } from "./types";
+import TimeSlotPicker from "./timeSlotPicker";
+import ConfirmationModal from "./confirmationModal";
+import { Button } from "../ui/button";
 
-const AppointmentBooking = ({
+const AppointmentBooking: React.FC<AppointmentBookingProps> = ({
   data,
   availableDays,
   exceptionAvailabilities,
-}: AppointmentBookingProps) => {
+}) => {
   const [selectedDate, setSelectedDate] = useState<Date>(new Date());
   const [selectedTime, setSelectedTime] = useState<string | null>(null);
   const [availableTimeSlots, setAvailableTimeSlots] = useState<string[]>([]);
   const role = localStorage.getItem("role");
   const [searchParams] = useSearchParams();
   const doctorId = Number(searchParams.get("doctorId"));
+  const [showConfirmModal, setShowConfirmModal] = useState(false);
 
   useEffect(() => {
     const formattedDate = DateTime.fromJSDate(selectedDate).toISODate() || "";
@@ -68,10 +71,9 @@ const AppointmentBooking = ({
   }, [selectedDate, availableDays, exceptionAvailabilities, data]);
 
   const disabledDays = (date: Date): boolean => {
-    const today = DateTime.local().startOf("day"); // Ensures time is 00:00
-    const formattedDate = DateTime.fromJSDate(date).toISODate(); // Convert to "YYYY-MM-DD"
+    const today = DateTime.local().startOf("day");
+    const formattedDate = DateTime.fromJSDate(date).toISODate();
 
-    // Check if the date exists in exception availabilities
     const exceptionDay = exceptionAvailabilities.find(
       (e: ExceptionAvailability) => e.date === formattedDate
     );
@@ -90,17 +92,6 @@ const AppointmentBooking = ({
     return DateTime.fromJSDate(date) < today || !dayAvailability?.available;
   };
 
-  const convertTo12HourFormat = (slot: string): string => {
-    return DateTime.fromFormat(slot, "HH:mm").toFormat("h:mm a");
-  };
-
-  const finalformattedDate =
-    selectedDate?.getFullYear() +
-    "-" +
-    (selectedDate.getMonth() + 1).toString().padStart(2, "0") +
-    "-" +
-    selectedDate.getDate().toString().padStart(2, "0");
-
   const handleBookingAppointment = () => {
     const addMinutes = (time: string, minutes: number): string => {
       const [hours, mins] = time.split(":").map(Number);
@@ -109,6 +100,13 @@ const AppointmentBooking = ({
       date.setMinutes(mins + minutes);
       return date.toTimeString().split(" ")[0].slice(0, 5);
     };
+
+    const finalformattedDate =
+      selectedDate?.getFullYear() +
+      "-" +
+      (selectedDate.getMonth() + 1).toString().padStart(2, "0") +
+      "-" +
+      selectedDate.getDate().toString().padStart(2, "0");
 
     const appointmentData = {
       doctorId: doctorId,
@@ -119,8 +117,7 @@ const AppointmentBooking = ({
     };
 
     sessionStorage.setItem("appointmentData", JSON.stringify(appointmentData));
-    // toast.success("Appointment booked successfully!");
-    // navigate("/");
+    setShowConfirmModal(false);
   };
 
   return (
@@ -147,76 +144,58 @@ const AppointmentBooking = ({
           />
         </div>
 
-        <div>
-          <h3 className="text-lg font-semibold mb-2">Available Time Slots</h3>
-          <div className="h-full w-full py-2 px-5 overflow-y-auto max-h-[40vh] scrollbar-hide lg:overflow-visible">
-            {selectedDate && (
-              <div className="mb-4">
-                {availableTimeSlots?.length > 0 ? (
-                  <div className="grid grid-cols-2 lg:grid-cols-6 gap-2">
-                    {availableTimeSlots.map((slot) => (
-                      <Button
-                        key={slot}
-                        onClick={() => setSelectedTime(slot)}
-                        disabled={role === "guestpatient"}
-                        className={`border-2 ${
-                          selectedTime === slot
-                            ? "bg-[#0067E7] text-white shadow-xl"
-                            : "bg-[#F2F8FF] text-[#0067E7] border-[#0169FE]"
-                        } hover:bg-[#0067E7] hover:text-white`}
-                      >
-                        {convertTo12HourFormat(slot)}
-                      </Button>
-                    ))}
-                  </div>
-                ) : (
-                  <p className="flex items-center justify-center text-center text-red-500">
-                    No time slots available for this day as Doctor is not
-                    Available at the given time
-                  </p>
-                )}
-              </div>
-            )}
-          </div>
-        </div>
+        <TimeSlotPicker
+          availableTimeSlots={availableTimeSlots}
+          selectedTime={selectedTime}
+          setSelectedTime={setSelectedTime}
+          role={role}
+        />
       </div>
 
-      {role === "guestpatient" ? (
-        <div></div>
-      ) : (
+      {role !== "guestpatient" && selectedTime && (
         <div className="flex justify-center mt-4">
-          {selectedTime && (
-            <div className="flex flex-col items-center gap-4">
-              <div className="flex gap-2 text-lg font-medium mb-2">
-                Click to Book Appointment for{" "}
-                <div className="text-red-600">
-                  {selectedDate?.toLocaleDateString()}
-                </div>{" "}
-                at{" "}
-                <div className="text-red-600">
-                  {convertTo12HourFormat(selectedTime)} (
-                  {Intl.DateTimeFormat().resolvedOptions().timeZone ===
-                  "Asia/Calcutta"
-                    ? "IST"
-                    : new Intl.DateTimeFormat("en-US", {
-                        timeZone:
-                          Intl.DateTimeFormat().resolvedOptions().timeZone,
-                        timeZoneName: "short",
-                      })
-                        .formatToParts(new Date())
-                        .find((part) => part.type === "timeZoneName")?.value}
-                  )
-                </div>
+          <div className="flex flex-col items-center gap-4">
+            <div className="flex gap-2 text-lg font-medium mb-2">
+              Click to Book Appointment for{" "}
+              <div className="text-red-600">
+                {selectedDate?.toLocaleDateString()}
+              </div>{" "}
+              at{" "}
+              <div className="text-red-600">
+                {DateTime.fromFormat(selectedTime, "HH:mm").toFormat("h:mm a")}{" "}
+                (
+                {Intl.DateTimeFormat().resolvedOptions().timeZone ===
+                "Asia/Calcutta"
+                  ? "IST"
+                  : new Intl.DateTimeFormat("en-US", {
+                      timeZone:
+                        Intl.DateTimeFormat().resolvedOptions().timeZone,
+                      timeZoneName: "short",
+                    })
+                      .formatToParts(new Date())
+                      .find((part) => part.type === "timeZoneName")?.value}
+                )
               </div>
-
-              <CheckoutButton
-                onSuccess={handleBookingAppointment}
-                price={data?.consultation_fee}
-              />
             </div>
-          )}
+
+            <Button
+              className="bg-[#0067E7] text-white hover:bg-blue-700"
+              onClick={() => setShowConfirmModal(true)}
+            >
+              Book Appointment
+            </Button>
+          </div>
         </div>
       )}
+
+      <ConfirmationModal
+        showConfirmModal={showConfirmModal}
+        setShowConfirmModal={setShowConfirmModal}
+        selectedDate={selectedDate}
+        selectedTime={selectedTime}
+        consultationFee={data?.consultation_fee}
+        handleBookingAppointment={handleBookingAppointment}
+      />
     </div>
   );
 };

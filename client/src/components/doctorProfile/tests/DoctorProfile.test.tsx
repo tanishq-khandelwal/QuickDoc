@@ -1,5 +1,5 @@
 import { render, screen } from "@testing-library/react";
-import DoctorProfile from "./doctorProfile";
+import DoctorProfile from "../doctorProfile";
 
 jest.mock("lucide-react", () => ({
   User: jest.fn(() => <svg data-testid="user-icon" />),

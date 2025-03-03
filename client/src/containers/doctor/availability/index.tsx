@@ -1,33 +1,23 @@
-import { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { useMutation } from "@apollo/client";
 import { UPDATE_MULTIPLE_AVAILABILITIES } from "@/queries/doctor/availability";
 import { DateTime } from "luxon";
-import AvailabilityComponent from "@/components/availability/AvailabilityComponent/availabilityComponenet";
-import { Button } from "@/components/ui/button";
 import toast from "react-hot-toast";
-import TimezoneDropdown from "@/components/availability/timezone/TimeZoneDropDown";
-import { timeSlots, weekDays } from "./constants";
-import ExceptionAvailabilityContainer from "../exceptionAvailability";
+import { weekDays, timeSlots } from "./constants";
+import { fetchAvailability } from "./actions";
+import { useDispatch } from "react-redux";
 
-interface AvailabilityDay {
-  selected: boolean;
-  startTime: string;
-  endTime: string;
-  openDropdown: string | null;
-}
+import { AvailabilityContainerProps, AvailabilityDay } from "./types";
+import AvailabilityPresentation from "@/components/availability/AvailabilityPresentation";
 
-interface AvailabilityContainerProps {
-  data: any;
-  reduxLoading: boolean;
-  doctorId: string | null;
-}
-
-const AvailabilityContainer = ({
+const AvailabilityContainer: React.FC<AvailabilityContainerProps> = ({
   data,
   reduxLoading,
   doctorId,
-}: AvailabilityContainerProps) => {
-  const [_modifiedDays, setModifiedDays] = useState(new Set<number>());
+}) => {
+  const [modifiedDays, setModifiedDays] = useState<Set<number>>(
+    new Set<number>()
+  );
   const [availability, setAvailability] = useState<{
     [key: number]: AvailabilityDay;
   }>({});
@@ -35,8 +25,11 @@ const AvailabilityContainer = ({
     [key: number]: AvailabilityDay;
   }>({});
   const [errors, setErrors] = useState<{ [key: number]: string }>({});
+  const [disabled, setDisable] = useState<boolean>(false);
   const role = localStorage.getItem("role") || "";
+  const dispatch = useDispatch();
 
+  // Initialize availability data from API response
   useEffect(() => {
     if (data?.data?.doctor_availability) {
       const appointmentData = data.data.doctor_availability;
@@ -60,11 +53,11 @@ const AvailabilityContainer = ({
     }
   }, [data]);
 
-  const formatTime = (time: string) => {
+  const formatTime = (time: string): string => {
     return DateTime.fromISO(time).toFormat("hh:mm a");
   };
 
-  const toggleDropdown = (id: number, field: string | null) => {
+  const toggleDropdown = (id: number, field: string | null): void => {
     setAvailability((prev) => ({
       ...prev,
       [id]: {
@@ -78,7 +71,7 @@ const AvailabilityContainer = ({
     dayId: number,
     field: "startTime" | "endTime",
     value: string
-  ) => {
+  ): void => {
     setAvailability((prev) => {
       const updatedAvailability = {
         ...prev,
@@ -114,32 +107,38 @@ const AvailabilityContainer = ({
     UPDATE_MULTIPLE_AVAILABILITIES
   );
 
-  const handleSave = () => {
+  const handleSave = async (): Promise<void> => {
+    setDisable(true);
     toast.loading("Loading..", { id: "loading" });
-    const changedDaysArray = weekDays.reduce((acc, day) => {
-      const initialDay = initialAvailability[day.id];
-      const modifiedDay = availability[day.id];
 
-      const isTimeChanged =
-        initialDay.startTime !== modifiedDay.startTime ||
-        initialDay.endTime !== modifiedDay.endTime;
-      const isSelectedChanged = initialDay.selected !== modifiedDay.selected;
+    const changedDaysArray = weekDays.reduce(
+      (acc, day) => {
+        const initialDay = initialAvailability[day.id];
+        const modifiedDay = availability[day.id];
 
-      if (isTimeChanged || isSelectedChanged) {
-        acc.push({
-          availableDay: day.title,
-          startTime: modifiedDay.startTime,
-          endTime: modifiedDay.endTime,
-          available: modifiedDay.selected,
-        });
-      }
+        const isTimeChanged =
+          initialDay.startTime !== modifiedDay.startTime ||
+          initialDay.endTime !== modifiedDay.endTime;
+        const isSelectedChanged = initialDay.selected !== modifiedDay.selected;
 
-      return acc;
-    }, [] as { availableDay: string; startTime: string; endTime: string; available: boolean }[]);
+        if (isTimeChanged || isSelectedChanged) {
+          acc.push({
+            availableDay: day.title,
+            startTime: modifiedDay.startTime,
+            endTime: modifiedDay.endTime,
+            available: modifiedDay.selected,
+          });
+        }
 
-    if (changedDaysArray.length > 0) {
-      console.log("Changed Days and Timings:", changedDaysArray);
-    }
+        return acc;
+      },
+      [] as Array<{
+        availableDay: string;
+        startTime: string;
+        endTime: string;
+        available: boolean;
+      }>
+    );
 
     setModifiedDays(new Set());
 
@@ -160,74 +159,37 @@ const AvailabilityContainer = ({
         },
       }));
 
-      const response = updateMultipleAvailabilities({
+      const response = await updateMultipleAvailabilities({
         variables: {
           updates,
         },
       });
-
       console.log(response);
+
       toast.dismiss("loading");
       toast.success("Availability Updated");
+      setDisable(false);
+      dispatch(fetchAvailability(doctorId));
     } catch (error) {
-      toast.error(`Failed to update availability ${error}`);
+      toast.dismiss("loading");
+      toast.error(`Failed to update availability: ${error}`);
       console.error(error);
     }
   };
 
   return (
-    <>
-      {reduxLoading ? (
-        <div className="mt-14"></div>
-      ) : (
-        <div className="min-h-screen flex items-center justify-center px-4 mt-20">
-          <div className="w-full max-w-7xl bg-white shadow-lg rounded-2xl p-6">
-            <h1 className="text-center font-bold text-2xl mb-6">
-              Availability
-            </h1>
-            <div className="mb-10 text-gray-500 font-sans">
-              Set your weekly availability for your patients
-            </div>
-
-            <div className="flex mb-2 gap-4 items-center">
-              <span className="text-xl text-black font-semibold">
-                Time Zone :
-              </span>
-              <div>
-                <TimezoneDropdown />
-              </div>
-            </div>
-
-            <div className="flex flex-col lg:flex-row border rounded-2xl shadow-md p-6 w-full">
-              <div className="lg:w-1/2 lg:border-r-2 border-b-2 p-4">
-                <AvailabilityComponent
-                  weekDays={weekDays}
-                  availability={availability}
-                  timeSlots={timeSlots}
-                  toggleDropdown={toggleDropdown}
-                  handleTimeChange={handleTimeChange}
-                  errors={errors}
-                  setAvailability={setAvailability}
-                />
-
-                <div className="flex justify-center mt-6">
-                  <Button
-                    onClick={handleSave}
-                    disabled={role === "guestdoctor"}
-                    className="mt-4 bg-white border-2 border-blue-600 text-blue-600 hover:bg-white hover:shadow-lg px-10 py-2 rounded"
-                  >
-                    Save
-                  </Button>
-                </div>
-              </div>
-              <div>
-                <ExceptionAvailabilityContainer />
-              </div>
-            </div>
-          </div>
-        </div>
-      )}
-    </>
+    <AvailabilityPresentation
+      reduxLoading={reduxLoading}
+      weekDays={weekDays}
+      timeSlots={timeSlots}
+      availability={availability}
+      setAvailability={setAvailability}
+      toggleDropdown={toggleDropdown}
+      handleTimeChange={handleTimeChange}
+      errors={errors}
+      handleSave={handleSave}
+      disabled={disabled || role === "guestdoctor"}
+    />
   );
 };
 

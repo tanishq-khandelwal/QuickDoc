@@ -1,7 +1,7 @@
 import { Link } from "react-router-dom";
 import { useContext } from "react";
 import { SidebarContext } from "./Layout"; // Ensure correct import
-import UserDropdown from "./components/Navbar/userDropDown/userDropdown";
+import UserDropdown from "./components/Navbar/userDropDown";
 
 export function Navbar() {
   const context = useContext(SidebarContext);

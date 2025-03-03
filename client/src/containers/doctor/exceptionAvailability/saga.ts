@@ -26,6 +26,7 @@ function* fetchExceptionAvailabilitySaga(
     const response: ExceptionAvailabilityResponse = yield call(client.query, {
       query: GET_EXCEPTION_AVAILABILITY,
       variables: { doctorId: action.payload },
+      fetchPolicy:"network-only"
     });
     yield put({
       type: FETCH_EXCEPTION_AVAILABILITY_SUCCESS,

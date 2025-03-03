@@ -65,10 +65,12 @@ function* updateAppointment(action: appointmentAction) {
     if (status.toLowerCase() === "rejected") {
       yield call(rejectAppointmentAPI, appointmentId);
       console.log("Reject API Triggered for Appointment:", appointmentId);
+    }else{
+      yield call(sendEmailAPI, appointmentId);
+      console.log("Email API Triggered for Appointment:", appointmentId);
     }
 
-    yield call(sendEmailAPI, appointmentId);
-    console.log("Email API Triggered for Appointment:", appointmentId);
+   
 
     yield put({ type: APPOINTMENT_UPDATE_SUCCESS, payload: response });
   } catch (error) {
