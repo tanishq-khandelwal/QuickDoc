@@ -1,23 +1,26 @@
 import { render, screen, fireEvent } from "@testing-library/react";
-import ExceptionAvailability from "..";
+import ExceptionAvailability from "../index";
 import { DateTime } from "luxon";
-import userEvent from "@testing-library/user-event";
+
+const mockExceptionDates = [
+  {
+    special_date: "2023-10-01",
+    start_time: "09:00:00",
+    end_time: "17:00:00",
+    is_available: true,
+    availability_id: 1,
+  },
+  {
+    special_date: "2023-10-02",
+    start_time: "10:00:00",
+    end_time: "18:00:00",
+    is_available: false,
+    availability_id: 2,
+  },
+];
 
 const mockProps = {
-  exceptionDates: [
-    {
-      special_date: "2025-02-28",
-      start_time: "2025-02-28T09:00:00.000Z",
-      end_time: "2025-02-28T17:00:00.000Z",
-      is_available: true,
-      availability_id: 1,
-    },
-    {
-      special_date: "2025-03-01",
-      is_available: false,
-      availability_id: 2,
-    },
-  ],
+  exceptionDates: mockExceptionDates,
   showModal: false,
   setShowModal: jest.fn(),
   selectedDate: undefined,
@@ -27,15 +30,14 @@ const mockProps = {
   setDisable: jest.fn(),
 };
 
-
 jest.mock("lucide-react", () => ({
-    Trash2: () => <svg data-testid="trash-icon" />,
-  }));
+  Trash2: jest.fn(() => <div>Trash2</div>),
+}));
 
-  
-describe("ExceptionAvailability Component", () => {
-  test("renders the component correctly", () => {
+describe("ExceptionAvailability", () => {
+  it("renders the component correctly", () => {
     render(<ExceptionAvailability {...mockProps} />);
+
     expect(screen.getByText("Date-Specific Hours")).toBeInTheDocument();
     expect(
       screen.getByText(
@@ -45,29 +47,64 @@ describe("ExceptionAvailability Component", () => {
     expect(screen.getByText("+ Add date-specific hours")).toBeInTheDocument();
   });
 
-  test("displays exception dates correctly", () => {
+  it("renders the list of exception dates correctly", () => {
     render(<ExceptionAvailability {...mockProps} />);
-    expect(screen.getByText("2025-02-28")).toBeInTheDocument();
-    expect(screen.getByText(DateTime.fromISO("2025-02-28T09:00:00.000Z").toFormat("hh:mm a"))).toBeInTheDocument();
-    expect(screen.getByText(DateTime.fromISO("2025-02-28T17:00:00.000Z").toFormat("hh:mm a"))).toBeInTheDocument();
-    expect(screen.getByText("Available")).toBeInTheDocument();
-    expect(screen.getByText("2025-03-01")).toBeInTheDocument();
-    expect(screen.getByText("Not Available")).toBeInTheDocument();
+
+    mockExceptionDates.forEach((item) => {
+      expect(
+        screen.getByText(
+          DateTime.fromISO(item.special_date).toFormat("dd-MM-yy")
+        )
+      ).toBeInTheDocument();
+      if (item.is_available) {
+        expect(screen.getByText("09:00 AM")).toBeInTheDocument();
+        expect(screen.getByText("05:00 PM")).toBeInTheDocument();
+      } else {
+        const dashElements = screen.getAllByText("- -");
+        expect(dashElements.length).toBe(2);
+      }
+      expect(
+        screen.getByText(item.is_available ? "Available" : "Not Available")
+      ).toBeInTheDocument();
+      expect(screen.getAllByTestId("delete-button").length).toBe(
+        mockExceptionDates.length
+      );
+    });
   });
 
-  test("calls setShowModal when add button is clicked", () => {
+  it("formats the time correctly", () => {
     render(<ExceptionAvailability {...mockProps} />);
-    const addButton = screen.getByText("+ Add date-specific hours");
-    fireEvent.click(addButton);
+
+    const formattedTime = DateTime.fromISO("09:00:00").toFormat("hh:mm a");
+    expect(formattedTime).toBe("09:00 AM");
+  });
+
+  it("opens the AvailabilityModal when the 'Add date-specific hours' button is clicked", () => {
+    render(<ExceptionAvailability {...mockProps} />);
+
+    fireEvent.click(screen.getByText("+ Add date-specific hours"));
     expect(mockProps.setShowModal).toHaveBeenCalledWith(true);
   });
 
-  test("calls handleDelete and setDisable when delete button is clicked", async() => {
-    const user=userEvent.setup();
+  it("calls handleDelete and setDisable when the delete button is clicked", () => {
     render(<ExceptionAvailability {...mockProps} />);
+
     const deleteButtons = screen.getAllByTestId("delete-button");
-    await user.click(deleteButtons[0]);
-    expect(mockProps.handleDelete).toHaveBeenCalledWith(1);
+    fireEvent.click(deleteButtons[0]);
+
+    expect(mockProps.handleDelete).toHaveBeenCalledWith(
+      mockExceptionDates[0].availability_id
+    );
     expect(mockProps.setDisable).toHaveBeenCalledWith(true);
+  });
+
+  it("disables the delete button when the disabled prop is true", () => {
+    const disabledProps = { ...mockProps, disabled: true };
+    render(<ExceptionAvailability {...disabledProps} />);
+
+    const deleteButtons = screen.getAllByTestId("delete-button");
+    deleteButtons.forEach((button) => {
+      expect(button).toBeDisabled();
+    });
   });
 });

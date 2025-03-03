@@ -23,11 +23,15 @@ type SignupFormValues = z.infer<typeof signupSchema>;
 export default function SignupPatient() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  
+
   const [isSubmitted, setIsSubmitted] = useState(false); // Track submission state
   const [showPassword, setShowPassword] = useState(false);
 
-  const { register, handleSubmit, formState: { errors } } = useForm<SignupFormValues>({
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<SignupFormValues>({
     resolver: zodResolver(signupSchema),
   });
 
@@ -35,7 +39,7 @@ export default function SignupPatient() {
 
   const onSubmit = (data: SignupFormValues) => {
     dispatch(signupRequest(data));
-    setIsSubmitted(true);  // Mark the form as submitted
+    setIsSubmitted(true); // Mark the form as submitted
   };
 
   useEffect(() => {
@@ -53,7 +57,7 @@ export default function SignupPatient() {
     if (!loading && !error && isSubmitted) {
       toast.success("Signup Successful");
       navigate("/login"); // Navigate to login page after success
-      setIsSubmitted(false);  // Reset the submission state
+      setIsSubmitted(false); // Reset the submission state
     }
   }, [loading, error, isSubmitted, navigate]);
 
@@ -82,7 +86,7 @@ export default function SignupPatient() {
           {/* Email Field */}
           <div>
             <label className="flex gap-2 text-sm font-medium text-gray-700">
-              Email  <div className="text-red-500">*</div>
+              Email <div className="text-red-500">*</div>
             </label>
             <input
               type="email"
@@ -97,7 +101,7 @@ export default function SignupPatient() {
           {/* Phone Number Field */}
           <div>
             <label className="flex gap-2 text-sm font-medium text-gray-700">
-              Phone Number  <div className="text-red-500">*</div>
+              Phone Number <div className="text-red-500">*</div>
             </label>
             <input
               type="text"
@@ -105,14 +109,16 @@ export default function SignupPatient() {
               className="w-full mt-1 px-4 py-2 border border-gray-300 rounded-lg "
             />
             {errors.phone_number && (
-              <p className="text-red-500 text-sm">{errors.phone_number.message}</p>
+              <p className="text-red-500 text-sm">
+                {errors.phone_number.message}
+              </p>
             )}
           </div>
 
           {/* Password Field */}
-           <div className="relative">
+          <div className="relative">
             <label className="flex gap-2 text-sm font-medium text-gray-700">
-              Password  <div className="text-red-500">*</div>
+              Password <div className="text-red-500">*</div>
             </label>
             <input
               type={showPassword ? "text" : "password"}
@@ -139,13 +145,10 @@ export default function SignupPatient() {
             <div className="text-sm text-gray-500">
               Already have an account ?
             </div>
-            
-            <Link to='/login?role=patient'>
-            <p className="text-sm text-blue-500 underline">
-              Login
-            </p>
+
+            <Link to="/login?role=patient">
+              <p className="text-sm text-blue-500 underline">Login</p>
             </Link>
-            
           </div>
           {/* Submit Button */}
           <div className="flex items-center justify-center">

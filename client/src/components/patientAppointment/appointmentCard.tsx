@@ -102,7 +102,7 @@ const AppointmentCard = ({ appointment }: { appointment: Appointment }) => {
             </button>
           )}
 
-          {hasJoined && (
+          {appointment.status.toLowerCase() === "approved" && hasJoined && (
             <span className="text-gray-500 text-sm sm:text-base">
               Meeting already joined.
             </span>

@@ -29,7 +29,6 @@ const AvailabilityContainer: React.FC<AvailabilityContainerProps> = ({
   const role = localStorage.getItem("role") || "";
   const dispatch = useDispatch();
 
-  // Initialize availability data from API response
   useEffect(() => {
     if (data?.data?.doctor_availability) {
       const appointmentData = data.data.doctor_availability;

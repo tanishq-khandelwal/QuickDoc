@@ -3,7 +3,6 @@ import { Calendar } from "@/components/ui/calendar";
 import { DateTime } from "luxon";
 import { useSearchParams } from "react-router-dom";
 import { generateAvailableTimeSlots } from "@/helper/patient/availability";
-
 import {
   AppointmentBookingProps,
   AvailabilityDay,
@@ -127,7 +126,8 @@ const AppointmentBooking: React.FC<AppointmentBookingProps> = ({
         Select the date and time slot to book an appointment
       </span>
 
-      <div className="flex justify-around px-4 ">
+      <div className="flex flex-col sm:flex-row justify-around px-4">
+
         <div className="bg-white rounded-lg p-6  w-96">
           <Calendar
             mode="single"
@@ -143,13 +143,14 @@ const AppointmentBooking: React.FC<AppointmentBookingProps> = ({
             }
           />
         </div>
-
-        <TimeSlotPicker
-          availableTimeSlots={availableTimeSlots}
-          selectedTime={selectedTime}
-          setSelectedTime={setSelectedTime}
-          role={role}
-        />
+        <div>
+          <TimeSlotPicker
+            availableTimeSlots={availableTimeSlots}
+            selectedTime={selectedTime}
+            setSelectedTime={setSelectedTime}
+            role={role}
+          />
+        </div>
       </div>
 
       {role !== "guestpatient" && selectedTime && (

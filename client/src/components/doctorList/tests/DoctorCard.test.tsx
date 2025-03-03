@@ -77,14 +77,14 @@ describe("DoctorCard Component", () => {
     expect(mockNavigate).toHaveBeenCalledWith("/doctorPreview?doctorId=1");
   });
 
-  it("renders a disabled 'Contact Clinic' button", () => {
-    render(
-      <MemoryRouter>
-        <DoctorCard doctor={mockDoctor} />
-      </MemoryRouter>
-    );
+  // it("renders a disabled 'Contact Clinic' button", () => {
+  //   render(
+  //     <MemoryRouter>
+  //       <DoctorCard doctor={mockDoctor} />
+  //     </MemoryRouter>
+  //   );
 
-    const contactButton = screen.getByText("Contact Clinic");
-    expect(contactButton).toBeDisabled();
-  });
+  //   const contactButton = screen.getByText("Contact Clinic");
+  //   expect(contactButton).toBeDisabled();
+  // });
 });

@@ -45,12 +45,12 @@ const DoctorCard: React.FC<DoctorCardProps> = ({ doctor }) => {
         >
           Book Appointment
         </button>
-        <button
+        {/* <button
           disabled={true}
           className="px-4 py-2 bg-white text-blue-800 border-gray-400 border-2 rounded-md hover:bg-gray-100 transition text-sm sm:text-base hover:cursor-not-allowed"
         >
           Contact Clinic
-        </button>
+        </button> */}
       </div>
     </div>
   );
