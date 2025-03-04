@@ -16,7 +16,7 @@ import {
   User,
   Hospital,
 } from "lucide-react";
-
+import logo from "@/assets/QuickDoc-custom-logo.svg";
 // Sidebar Context Type
 interface SidebarContextType {
   expanded: boolean;
@@ -137,7 +137,7 @@ export function AppSidebar() {
         {/* Sidebar Header */}
         <div className="p-4 flex justify-between items-center">
           <img
-            src="https://img.logoipsum.com/243.svg"
+            src={logo}
             className={`transition-all duration-300 ${
               expanded ? "w-32" : "w-0 opacity-0"
             }`}
@@ -207,7 +207,11 @@ export function SidebarItem({ icon: Icon, text, url }: SidebarItemProps) {
   return (
     <li
       className={`relative flex items-center py-2 px-3 my-1 font-medium rounded-md cursor-pointer transition-colors group 
-        ${isActive ? "bg-[#199FD9] text-white" : "hover:bg-indigo-50 text-gray-600"}
+        ${
+          isActive
+            ? "bg-[#199FD9] text-white"
+            : "hover:bg-indigo-50 text-gray-600"
+        }
       `}
     >
       <Link to={url} className="flex items-center w-full">
