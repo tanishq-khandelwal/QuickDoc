@@ -16,7 +16,6 @@ const MyAppointmentsContainer = () => {
     dispatch(fetchMyAppointments(userId));
   }, [userId]);
 
-  // Use the MyAppointmentsState interface for type safety
   const { data, loading, error } = useSelector((state: { myAppointments: MyAppointmentsState }) => state.myAppointments);
   const appointments = Array.isArray(data?.data?.appointments) ? data.data.appointments : [];
 

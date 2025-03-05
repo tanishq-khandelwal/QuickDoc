@@ -1,30 +1,36 @@
-import { FETCH_APPOINTMENTS_FAILURE, FETCH_APPOINTMENTS_REQUEST, FETCH_APPOINTMENTS_SUCCESS } from "./constants";
+import {
+  FETCH_APPOINTMENTS_FAILURE,
+  FETCH_APPOINTMENTS_REQUEST,
+  FETCH_APPOINTMENTS_SUCCESS,
+} from "./constants";
 import { AppointmentType } from "./saga";
 
 type AppointmentState = {
-  data: AppointmentType | null;
+  data: { appointments: AppointmentType[] } | null; // Ensure it's an object with appointments array
   loading: boolean;
   error: string | null;
 };
 
-
-type FetchAppointmentsRequestAction = { type: typeof FETCH_APPOINTMENTS_REQUEST };
+type FetchAppointmentsRequestAction = {
+  type: typeof FETCH_APPOINTMENTS_REQUEST;
+};
 type FetchAppointmentsSuccessAction = { 
   type: typeof FETCH_APPOINTMENTS_SUCCESS; 
-  payload: AppointmentType; 
-};
-type FetchAppointmentsFailureAction = { 
-  type: typeof FETCH_APPOINTMENTS_FAILURE; 
-  payload: string; 
+  payload: AppointmentType[];  // Fix: Expect an array instead of a single object
 };
 
-type AppointmentAction = 
+type FetchAppointmentsFailureAction = {
+  type: typeof FETCH_APPOINTMENTS_FAILURE;
+  payload: string;
+};
+
+type AppointmentAction =
   | FetchAppointmentsRequestAction
   | FetchAppointmentsSuccessAction
   | FetchAppointmentsFailureAction;
 
 const initialState: AppointmentState = {
-  data: null,
+  data: { appointments: [] },
   loading: false,
   error: null,
 };
@@ -38,7 +44,12 @@ const appointmentReducer = (
       return { ...state, loading: true, error: null };
 
     case FETCH_APPOINTMENTS_SUCCESS:
-      return { ...state, data: action.payload, loading: false, error: null };
+      return {
+        ...state,
+        data: { appointments: action.payload },
+        loading: false,
+        error: null,
+      };
 
     case FETCH_APPOINTMENTS_FAILURE:
       return { ...state, loading: false, error: action.payload };

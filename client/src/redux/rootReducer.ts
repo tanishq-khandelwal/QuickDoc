@@ -22,6 +22,5 @@ const rootReducer = combineReducers({
   exceptionAvailability:ExceptionavailabiltyReducer,
 });
 
-export type RootState = ReturnType<typeof rootReducer>; // This infers the state shape
-
+export type RootState = ReturnType<typeof rootReducer>; 
 export default rootReducer;

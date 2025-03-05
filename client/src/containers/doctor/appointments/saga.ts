@@ -1,8 +1,10 @@
 import { takeLatest, put, call } from "redux-saga/effects";
 import client from "../../../apolloClient";
 import { GET_ALL_APPOINTMENTS } from "../../../queries/doctor/appointment";
-import { FETCH_APPOINTMENTS_REQUEST, FETCH_APPOINTMENTS_SUCCESS } from "./constants";
-
+import {
+  FETCH_APPOINTMENTS_REQUEST,
+  FETCH_APPOINTMENTS_SUCCESS,
+} from "./constants";
 
 export type AppointmentType = {
   appointment_id: number;
@@ -29,14 +31,20 @@ const doctorId = userData ? JSON.parse(userData).doctorId : null;
 console.log(doctorId);
 function* fetchAppointment(action: FetchAppointmentAction) {
   try {
-    const response: AppointmentType = yield call(client.query, {
-      query: GET_ALL_APPOINTMENTS,
-      variables: { doctorId: action.payload },
-      fetchPolicy: "network-only",
-    });
+    const response: { data: { appointments: AppointmentType[] } } = yield call(
+      client.query,
+      {
+        query: GET_ALL_APPOINTMENTS,
+        variables: { doctorId: action.payload },
+        fetchPolicy: "network-only",
+      }
+    );
 
     // console.log(response);
-    yield put({ type: FETCH_APPOINTMENTS_SUCCESS, payload: response });
+    yield put({
+      type: FETCH_APPOINTMENTS_SUCCESS,
+      payload: response?.data?.appointments,
+    });
   } catch (error) {
     // Handle error
     console.error("Error fetching appointment:", error);

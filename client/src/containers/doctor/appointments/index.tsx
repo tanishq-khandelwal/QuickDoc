@@ -1,11 +1,12 @@
 import { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchAppointments, updateApppointment } from "./actions";
-import {map} from "lodash"
+import { map } from "lodash";
 import toast from "react-hot-toast";
 import AppointmentCard from "@/components/doctorAppointment";
 import StatusFilter from "@/components/patientAppointment/statusFilter";
 import { formatTime } from "@/components/patientAppointment/helper";
+import { RootState } from "@/redux/rootReducer";
 
 type AppointmentType = {
   appointment_id: number;
@@ -25,8 +26,10 @@ type AppointmentType = {
 const AppointmentsContainer = () => {
   const dispatch = useDispatch();
   const { data, loading, error } = useSelector(
-    (state: any) => state.allAppointments
+    (state: RootState) => state.allAppointments
   );
+
+  console.log(data);
 
   const [appointments, setAppointments] = useState<AppointmentType[]>([]);
   const [selectedStatus, setSelectedStatus] = useState("all");
@@ -39,8 +42,10 @@ const AppointmentsContainer = () => {
   }, []);
 
   useEffect(() => {
-    if (data?.data?.appointments) {
-      setAppointments(data.data.appointments);
+    if (data?.appointments) {
+      setAppointments(data?.appointments);
+    } else {
+      setAppointments([]);
     }
   }, [data]);
 
@@ -119,7 +124,7 @@ const AppointmentsContainer = () => {
         />
       </div>
       <div className="sm:grid-cols-2 lg:grid-cols-3 gap-6">
-        {map(filteredAppointments,(appointment) => (
+        {map(filteredAppointments, (appointment) => (
           <AppointmentCard
             key={appointment.appointment_id}
             appointment={appointment}
