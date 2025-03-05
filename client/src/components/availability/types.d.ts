@@ -28,7 +28,6 @@ export interface AvailabilityModalProps {
   setSelectedDate: Dispatch<SetStateAction<Date | undefined>>;
 }
 
-
 export interface AvailabilityPresentationProps {
   reduxLoading: boolean;
   weekDays: WeekDay[];
@@ -36,11 +35,17 @@ export interface AvailabilityPresentationProps {
   availability: {
     [key: number]: AvailabilityDay;
   };
-  setAvailability: React.Dispatch<React.SetStateAction<{
-    [key: number]: AvailabilityDay;
-  }>>;
+  setAvailability: React.Dispatch<
+    React.SetStateAction<{
+      [key: number]: AvailabilityDay;
+    }>
+  >;
   toggleDropdown: (id: number, field: string | null) => void;
-  handleTimeChange: (dayId: number, field: "startTime" | "endTime", value: string) => void;
+  handleTimeChange: (
+    dayId: number,
+    field: "startTime" | "endTime",
+    value: string
+  ) => void;
   errors: { [key: number]: string };
   handleSave: () => Promise<void>;
   disabled: boolean;

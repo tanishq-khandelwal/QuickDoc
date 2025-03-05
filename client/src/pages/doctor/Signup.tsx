@@ -116,6 +116,11 @@ export default function Signup() {
           city,
           consultation_fee,
         },
+        context: {
+          headers: {
+            "x-hasura-admin-secret": "Tsk_2003",
+          },
+        },
       });
 
       console.log(response?.data?.insert_doctors?.returning);

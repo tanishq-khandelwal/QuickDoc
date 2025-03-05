@@ -6,7 +6,6 @@ import StatusFilter from "@/components/patientAppointment/statusFilter";
 import AppointmentList from "@/components/patientAppointment/appointmentList";
 import { Appointment, MyAppointmentsState } from "./types";
 
-
 const MyAppointmentsContainer = () => {
   const dispatch = useDispatch();
   const userData = localStorage.getItem("user");
@@ -16,8 +15,12 @@ const MyAppointmentsContainer = () => {
     dispatch(fetchMyAppointments(userId));
   }, [userId]);
 
-  const { data, loading, error } = useSelector((state: { myAppointments: MyAppointmentsState }) => state.myAppointments);
-  const appointments = Array.isArray(data?.data?.appointments) ? data.data.appointments : [];
+  const { data, loading, error } = useSelector(
+    (state: { myAppointments: MyAppointmentsState }) => state.myAppointments
+  );
+  const appointments = Array.isArray(data?.data?.appointments)
+    ? data.data.appointments
+    : [];
 
   const [selectedStatus, setSelectedStatus] = useState("all");
 
@@ -33,13 +36,19 @@ const MyAppointmentsContainer = () => {
   const filteredAppointments =
     selectedStatus === "all"
       ? appointments
-      : appointments.filter((appointment: Appointment) => appointment.status.toLowerCase() === selectedStatus);
+      : appointments.filter(
+          (appointment: Appointment) =>
+            appointment.status.toLowerCase() === selectedStatus
+        );
 
   return (
     <div className="container mx-auto px-4 mt-16 sm:mt-24">
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
         <h1 className="text-xl sm:text-2xl font-bold">My Appointments</h1>
-        <StatusFilter selectedStatus={selectedStatus} setSelectedStatus={setSelectedStatus} />
+        <StatusFilter
+          selectedStatus={selectedStatus}
+          setSelectedStatus={setSelectedStatus}
+        />
       </div>
       <AppointmentList appointments={filteredAppointments} />
     </div>

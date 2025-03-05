@@ -47,8 +47,10 @@ const ExceptionAvailabilityContainer = () => {
   useEffect(() => {
     if (showDeleteConfirmation) {
       document.addEventListener("mousedown", handleOutsideClick);
+      setDisable(false);
     } else {
       document.removeEventListener("mousedown", handleOutsideClick);
+      setDisable(false);
     }
     
     return () => {

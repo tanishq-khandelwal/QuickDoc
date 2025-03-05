@@ -1,7 +1,7 @@
 import React from "react";
 import AvailabilityComponent from "@/components/availability/AvailabilityComponent";
 import { Button } from "@/components/ui/button";
-import TimezoneDropdown from "@/components/availability/timezone";
+// import TimezoneDropdown from "@/components/availability/timezone";
 import ExceptionAvailabilityContainer from "@/containers/doctor/exceptionAvailability";
 import { AvailabilityPresentationProps } from "../types";
 
@@ -31,12 +31,12 @@ const AvailabilityPresentation: React.FC<AvailabilityPresentationProps> = ({
           Set your weekly availability for your patients
         </div>
 
-        <div className="flex mb-2 gap-4 items-center">
+        {/* <div className="flex mb-2 gap-4 items-center">
           <span className="text-xl text-black font-semibold">Time Zone :</span>
           <div>
             <TimezoneDropdown />
           </div>
-        </div>
+        </div> */}
 
         <div className="flex flex-col lg:flex-row border rounded-2xl shadow-md p-6 w-full">
           <div className="lg:w-1/2 lg:border-r-2 border-b-2 p-4">
