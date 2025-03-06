@@ -11,8 +11,7 @@ export async function getUserAvailability(data: any) {
     "sunday",
   ];
 
-  // Extract exception availabilities (special dates)
-  const exceptionAvailabilities = data?.exception_availabilities?.map((day) => ({
+  const exceptionAvailabilities = data?.exception_availabilities?.map((day:any) => ({
     date: DateTime.fromISO(day?.special_date, { zone: "Asia/Kolkata" }).toISODate(),
     available: day?.is_available,
     start_time: day?.start_time,

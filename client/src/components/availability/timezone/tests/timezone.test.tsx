@@ -24,4 +24,9 @@ describe.only("TimezoneDropdown Component", () => {
     fireEvent.change(selectElement, { target: { value: "America/New_York" } });
     expect(selectElement).toHaveValue("America/New_York");
   });
+
+  it("matches snapshot", () => {
+    const { asFragment } = render(<TimezoneDropdown />);
+    expect(asFragment()).toMatchSnapshot();
+  });
 });

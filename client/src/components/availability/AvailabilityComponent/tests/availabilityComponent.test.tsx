@@ -40,4 +40,9 @@ describe("AvailabilityComponent", () => {
     render(<AvailabilityComponent {...defaultProps} />);
     expect(screen.getAllByText("Unavailable").length).toBe(2);
   });
+
+  it("matches snapshot", () => {
+    const { asFragment } = render(<AvailabilityComponent {...defaultProps} />);
+    expect(asFragment()).toMatchSnapshot();
+  });
 });
