@@ -2,6 +2,10 @@ import { render, screen } from "@testing-library/react";
 import AvailabilityComponent from "..";
 
 describe("AvailabilityComponent", () => {
+  beforeEach(() => {
+    jest.clearAllMocks();
+  });
+
   const defaultProps = {
     weekDays: [
       { id: 1, title: "Monday" },

@@ -138,4 +138,9 @@ describe("AvailabilityModal", () => {
       expect(screen.getByText("Mutation failed")).toBeInTheDocument();
     });
   });
+
+  it("matches snapshot", () => {
+    const { asFragment } = render(<AvailabilityModal {...defaultProps} />);
+    expect(asFragment()).toMatchSnapshot();
+  });
 });
