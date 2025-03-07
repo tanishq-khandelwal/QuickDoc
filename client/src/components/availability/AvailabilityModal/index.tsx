@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
 import { useMutation } from "@apollo/client";
-import { UPDATE_EXCEPTION_AVAILABILITY } from "@/queries/doctor/availability"; // Import FETCH_AVAILABILITY
+import { UPDATE_EXCEPTION_AVAILABILITY } from "@/queries/doctor/availability";
 import toast from "react-hot-toast";
 import { DateTime } from "luxon";
 import { AvailabilityModalProps } from "../types";
@@ -24,7 +24,6 @@ const AvailabilityModal: React.FC<AvailabilityModalProps> = ({
   const role = localStorage.getItem("role");
   const dispatch = useDispatch();
 
-  // Set default date on mount
   useEffect(() => {
     if (!selectedDate) {
       setSelectedDate(today);
@@ -61,7 +60,7 @@ const AvailabilityModal: React.FC<AvailabilityModalProps> = ({
       toast.dismiss("loading");
       toast.success("Availability Updated Successfully");
 
-      setShowModal(false); // Close the modal after successful update
+      setShowModal(false);
       dispatch(fetchException(doctorId));
     } catch (err) {
       toast.dismiss("loading");

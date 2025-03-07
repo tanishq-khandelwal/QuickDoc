@@ -1,4 +1,4 @@
-import MyappointmentReducer from "../reducers"; 
+import MyappointmentReducer from "../reducers";
 import {
   FETCH_MY_APPOINTMENTS_REQUEST,
   FETCH_MY_APPOINTMENTS_SUCCESS,
@@ -6,6 +6,10 @@ import {
 } from "../constants";
 
 describe("MyappointmentReducer", () => {
+  beforeEach(() => {
+    jest.clearAllMocks();
+  });
+
   const initialState = {
     data: null,
     loading: false,
@@ -13,7 +17,9 @@ describe("MyappointmentReducer", () => {
   };
 
   it("should return the initial state when an unknown action is dispatched", () => {
-    expect(MyappointmentReducer(undefined, { type: "UNKNOWN_ACTION" })).toEqual(initialState);
+    expect(MyappointmentReducer(undefined, { type: "UNKNOWN_ACTION" })).toEqual(
+      initialState
+    );
   });
 
   it("should handle FETCH_MY_APPOINTMENTS_REQUEST", () => {
@@ -32,16 +38,20 @@ describe("MyappointmentReducer", () => {
       end_time: "10:30 AM",
       patient_time_zone: "UTC",
       status: "approved",
-        user: {
-          name: "Dr. Smith",
-          email:"tsk@gmail.com",
-          phone_number: "123-456-7890",
-        },
-      
+      user: {
+        name: "Dr. Smith",
+        email: "tsk@gmail.com",
+        phone_number: "123-456-7890",
+      },
     };
 
     const action = { type: FETCH_MY_APPOINTMENTS_SUCCESS, payload: mockData };
-    const expectedState = { ...initialState, data: mockData, loading: false, error: null };
+    const expectedState = {
+      ...initialState,
+      data: mockData,
+      loading: false,
+      error: null,
+    };
 
     expect(MyappointmentReducer(initialState, action)).toEqual(expectedState);
   });

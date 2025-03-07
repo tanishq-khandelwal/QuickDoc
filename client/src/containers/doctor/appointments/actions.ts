@@ -14,8 +14,6 @@ export const fetchAppointmentsFailure = () => ({
   type: FETCH_APPOINTMENTS_FAILURE,
 });
 
-// for updating appointment status
-
 export const updateApppointment = (data: {
   appointmentId: number;
   status: string;

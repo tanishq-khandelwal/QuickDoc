@@ -2,6 +2,10 @@ import { render, screen } from "@testing-library/react";
 import AvailabilityComponent from "..";
 
 describe("AvailabilityComponent", () => {
+  beforeEach(() => {
+    jest.clearAllMocks();
+  });
+
   const defaultProps = {
     weekDays: [
       { id: 1, title: "Monday" },
@@ -39,5 +43,10 @@ describe("AvailabilityComponent", () => {
   it("renders with all days unavailable", () => {
     render(<AvailabilityComponent {...defaultProps} />);
     expect(screen.getAllByText("Unavailable").length).toBe(2);
+  });
+
+  it("matches snapshot", () => {
+    const { asFragment } = render(<AvailabilityComponent {...defaultProps} />);
+    expect(asFragment()).toMatchSnapshot();
   });
 });

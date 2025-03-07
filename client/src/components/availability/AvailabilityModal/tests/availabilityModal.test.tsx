@@ -36,6 +36,10 @@ const localStorageMock = {
 Object.defineProperty(window, "localStorage", { value: localStorageMock });
 
 describe("AvailabilityModal", () => {
+  beforeEach(() => {
+    jest.clearAllMocks();
+  });
+
   const mockSetShowModal = jest.fn();
   const mockSetSelectedDate = jest.fn();
   const today = new Date();
