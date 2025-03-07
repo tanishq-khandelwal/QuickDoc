@@ -35,6 +35,10 @@ jest.mock("lucide-react", () => ({
 }));
 
 describe("ExceptionAvailability", () => {
+  beforeEach(() => {
+    jest.clearAllMocks();
+  });
+
   it("renders the component correctly", () => {
     render(<ExceptionAvailability {...mockProps} />);
 

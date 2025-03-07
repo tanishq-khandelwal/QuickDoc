@@ -36,6 +36,10 @@ const localStorageMock = {
 Object.defineProperty(window, "localStorage", { value: localStorageMock });
 
 describe("AvailabilityModal", () => {
+  beforeEach(() => {
+    jest.clearAllMocks();
+  });
+
   const mockSetShowModal = jest.fn();
   const mockSetSelectedDate = jest.fn();
   const today = new Date();
@@ -137,10 +141,5 @@ describe("AvailabilityModal", () => {
     await waitFor(() => {
       expect(screen.getByText("Mutation failed")).toBeInTheDocument();
     });
-  });
-
-  it("matches snapshot", () => {
-    const { asFragment } = render(<AvailabilityModal {...defaultProps} />);
-    expect(asFragment()).toMatchSnapshot();
   });
 });

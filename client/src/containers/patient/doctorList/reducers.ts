@@ -19,7 +19,7 @@ interface FetchDoctorsFailureAction {
   payload: string;
 }
 
-type DoctorListAction =
+export type DoctorListAction =
   | FetchDoctorsRequestAction
   | FetchDoctorsSuccessAction
   | FetchDoctorsFailureAction;

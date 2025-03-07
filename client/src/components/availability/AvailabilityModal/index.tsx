@@ -24,7 +24,6 @@ const AvailabilityModal: React.FC<AvailabilityModalProps> = ({
   const role = localStorage.getItem("role");
   const dispatch = useDispatch();
 
-  // Set default date on mount
   useEffect(() => {
     if (!selectedDate) {
       setSelectedDate(today);

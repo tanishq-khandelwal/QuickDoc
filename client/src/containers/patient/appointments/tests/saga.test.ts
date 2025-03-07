@@ -9,8 +9,7 @@ import {
 import { ApolloQueryResult } from "@apollo/client";
 import { fetchMyAppointmentAction } from "../types";
 
-// Properly define mockClient inside the mock function
-jest.mock('@/apolloClient', () => {
+jest.mock("@/apolloClient", () => {
   const mockClient = {
     query: jest.fn(),
   };
@@ -20,9 +19,13 @@ jest.mock('@/apolloClient', () => {
   };
 });
 
-import client from "@/apolloClient"; // Import after mocking
+import client from "@/apolloClient";
 
 describe("fetchMyAppointment Saga", () => {
+  beforeEach(() => {
+    jest.clearAllMocks();
+  });
+
   const mockAction: fetchMyAppointmentAction = {
     type: FETCH_MY_APPOINTMENTS_REQUEST,
     payload: { userId: 1 },
