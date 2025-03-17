@@ -25,6 +25,11 @@ type AppointmentType = {
 
 const AppointmentsContainer = () => {
   const dispatch = useDispatch();
+
+  useEffect(() => {
+    dispatch(fetchAppointments(doctorId));
+  }, []);
+
   const { data, loading, error } = useSelector(
     (state: RootState) => state.allAppointments
   );
@@ -36,10 +41,6 @@ const AppointmentsContainer = () => {
 
   const userData = localStorage.getItem("user");
   const doctorId = userData ? JSON.parse(userData).doctorId : null;
-
-  useEffect(() => {
-    dispatch(fetchAppointments(doctorId));
-  }, []);
 
   useEffect(() => {
     if (data?.appointments) {
