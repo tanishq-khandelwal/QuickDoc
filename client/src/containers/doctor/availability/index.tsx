@@ -4,30 +4,32 @@ import { UPDATE_MULTIPLE_AVAILABILITIES } from "@/queries/doctor/availability";
 import { DateTime } from "luxon";
 import toast from "react-hot-toast";
 import { weekDays, timeSlots } from "./constants";
-import { fetchAvailability } from "./actions";
-import { useDispatch } from "react-redux";
 
 import { AvailabilityContainerProps, AvailabilityDay } from "./types";
 import AvailabilityPresentation from "@/components/availability/AvailabilityPresentation";
+
+const timezones = [
+  { label: "UTC", value: "UTC" },
+  { label: "America/New_York", value: "America/New_York" },
+  { label: "Europe/London", value: "Europe/London" },
+  { label: "Asia/Calcutta", value: "Asia/Calcutta" },
+  { label: "Australia/Sydney", value: "Australia/Sydney" },
+];
 
 const AvailabilityContainer: React.FC<AvailabilityContainerProps> = ({
   data,
   reduxLoading,
   doctorId,
 }) => {
-  const [modifiedDays, setModifiedDays] = useState<Set<number>>(
-    new Set<number>()
-  );
+  const systemZone = DateTime.local().zoneName || "UTC";
+
   const [availability, setAvailability] = useState<{
     [key: number]: AvailabilityDay;
   }>({});
-  const [initialAvailability, setInitialAvailability] = useState<{
-    [key: number]: AvailabilityDay;
-  }>({});
+  const [selectedTimezone, setSelectedTimezone] = useState<string>(systemZone);
   const [errors, setErrors] = useState<{ [key: number]: string }>({});
   const [disabled, setDisable] = useState<boolean>(false);
   const role = localStorage.getItem("role") || "";
-  const dispatch = useDispatch();
 
   useEffect(() => {
     if (data?.data?.doctor_availability) {
@@ -47,8 +49,12 @@ const AvailabilityContainer: React.FC<AvailabilityContainerProps> = ({
         return acc;
       }, {} as { [key: number]: AvailabilityDay });
 
-      setInitialAvailability(newAvailability);
       setAvailability(newAvailability);
+
+      // Set timezone from existing data if available
+      if (appointmentData.length > 0 && appointmentData[0].time_zone) {
+        setSelectedTimezone(appointmentData[0].time_zone);
+      }
     }
   }, [data]);
 
@@ -98,8 +104,11 @@ const AvailabilityContainer: React.FC<AvailabilityContainerProps> = ({
 
       return updatedAvailability;
     });
+  };
 
-    setModifiedDays((prev) => new Set(prev).add(dayId));
+  const handleTimezoneChange = (timezone: string) => {
+    setSelectedTimezone(timezone);
+    console.log("Selected Timezone:", timezone);
   };
 
   const [updateMultipleAvailabilities] = useMutation(
@@ -107,54 +116,31 @@ const AvailabilityContainer: React.FC<AvailabilityContainerProps> = ({
   );
 
   const handleSave = async (): Promise<void> => {
+    if (Object.keys(errors).length > 0) {
+      toast.error("Please resolve time conflicts before saving");
+      return;
+    }
+
     setDisable(true);
     toast.loading("Loading..", { id: "loading" });
 
-    const changedDaysArray = weekDays.reduce(
-      (acc, day) => {
-        const initialDay = initialAvailability[day.id];
-        const modifiedDay = availability[day.id];
-
-        const isTimeChanged =
-          initialDay.startTime !== modifiedDay.startTime ||
-          initialDay.endTime !== modifiedDay.endTime;
-        const isSelectedChanged = initialDay.selected !== modifiedDay.selected;
-
-        if (isTimeChanged || isSelectedChanged) {
-          acc.push({
-            availableDay: day.title,
-            startTime: modifiedDay.startTime,
-            endTime: modifiedDay.endTime,
-            available: modifiedDay.selected,
-          });
-        }
-
-        return acc;
-      },
-      [] as Array<{
-        availableDay: string;
-        startTime: string;
-        endTime: string;
-        available: boolean;
-      }>
-    );
-
-    setModifiedDays(new Set());
-
     try {
-      const updates = changedDaysArray.map((day) => ({
+      const updates = weekDays.map((day) => ({
         where: {
           doctor_id: { _eq: doctorId },
-          available_days: { _eq: day.availableDay },
+          available_days: { _eq: day.title },
         },
         _set: {
-          start_time: DateTime.fromFormat(day.startTime, "h:mm a").toFormat(
-            "HH:mm:ss"
-          ),
-          end_time: DateTime.fromFormat(day.endTime, "h:mm a").toFormat(
-            "HH:mm:ss"
-          ),
-          is_available: day.available,
+          start_time: DateTime.fromFormat(
+            availability[day.id].startTime,
+            "h:mm a"
+          ).toFormat("HH:mm:ss"),
+          end_time: DateTime.fromFormat(
+            availability[day.id].endTime,
+            "h:mm a"
+          ).toFormat("HH:mm:ss"),
+          is_available: availability[day.id].selected,
+          time_zone: selectedTimezone,
         },
       }));
 
@@ -168,7 +154,7 @@ const AvailabilityContainer: React.FC<AvailabilityContainerProps> = ({
       toast.dismiss("loading");
       toast.success("Availability Updated");
       setDisable(false);
-      dispatch(fetchAvailability(doctorId));
+      // dispatch(fetchAvailability(doctorId));
     } catch (error) {
       toast.dismiss("loading");
       toast.error(`Failed to update availability: ${error}`);
@@ -188,6 +174,9 @@ const AvailabilityContainer: React.FC<AvailabilityContainerProps> = ({
       errors={errors}
       handleSave={handleSave}
       disabled={disabled || role === "guestdoctor"}
+      selectedTimezone={selectedTimezone}
+      onTimezoneChange={handleTimezoneChange}
+      timezones={timezones}
     />
   );
 };

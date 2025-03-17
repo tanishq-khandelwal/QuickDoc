@@ -6,7 +6,7 @@ import {
 import { AppointmentType } from "./saga";
 
 type AppointmentState = {
-  data: { appointments: AppointmentType[] } | null; // Ensure it's an object with appointments array
+  data: { appointments: AppointmentType[] } | null; 
   loading: boolean;
   error: string | null;
 };
@@ -16,7 +16,7 @@ type FetchAppointmentsRequestAction = {
 };
 type FetchAppointmentsSuccessAction = { 
   type: typeof FETCH_APPOINTMENTS_SUCCESS; 
-  payload: AppointmentType[];  // Fix: Expect an array instead of a single object
+  payload: AppointmentType[];  
 };
 
 type FetchAppointmentsFailureAction = {

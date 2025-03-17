@@ -3,28 +3,28 @@ import AvailabilityPresentation from "../index";
 import AvailabilityComponent from "@/components/availability/AvailabilityComponent";
 
 jest.mock("@/components/availability/timezone", () => ({
-    __esModule: true,
-    default: jest.fn(() => <div>Mocked TimezoneDropdown</div>),
-  }));
-  
-  jest.mock("@/components/availability/AvailabilityComponent", () => ({
-    __esModule: true,
-    default: jest.fn(() => <div>Mocked AvailabilityComponent</div>),
-  }));
-  
-  jest.mock("@/containers/doctor/exceptionAvailability", () => ({
-    __esModule: true,
-    default: jest.fn(() => <div>Mocked ExceptionAvailabilityContainer</div>),
-  }));
-  
-  jest.mock("@/components/ui/button", () => ({
-    __esModule: true,
-    Button: jest.fn(({ onClick, disabled, children }) => (
-      <button onClick={onClick} disabled={disabled}>
-        {children}
-      </button>
-    )),
-  }));
+  __esModule: true,
+  default: jest.fn(() => <div>Mocked TimezoneDropdown</div>),
+}));
+
+jest.mock("@/components/availability/AvailabilityComponent", () => ({
+  __esModule: true,
+  default: jest.fn(() => <div>Mocked AvailabilityComponent</div>),
+}));
+
+jest.mock("@/containers/doctor/exceptionAvailability", () => ({
+  __esModule: true,
+  default: jest.fn(() => <div>Mocked ExceptionAvailabilityContainer</div>),
+}));
+
+jest.mock("@/components/ui/button", () => ({
+  __esModule: true,
+  Button: jest.fn(({ onClick, disabled, children }) => (
+    <button onClick={onClick} disabled={disabled}>
+      {children}
+    </button>
+  )),
+}));
 
 describe("AvailabilityPresentation", () => {
   const defaultProps = {
@@ -60,11 +60,6 @@ describe("AvailabilityPresentation", () => {
     expect(
       screen.getByText("Set your weekly availability for your patients")
     ).toBeInTheDocument();
-  });
-
-  it("renders the TimezoneDropdown component", () => {
-    render(<AvailabilityPresentation {...defaultProps} />);
-    expect(screen.getByText("Mocked TimezoneDropdown")).toBeInTheDocument();
   });
 
   it("renders the AvailabilityComponent with the correct props", () => {

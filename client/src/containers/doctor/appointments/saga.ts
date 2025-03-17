@@ -40,13 +40,11 @@ function* fetchAppointment(action: FetchAppointmentAction) {
       }
     );
 
-    // console.log(response);
     yield put({
       type: FETCH_APPOINTMENTS_SUCCESS,
       payload: response?.data?.appointments,
     });
   } catch (error) {
-    // Handle error
     console.error("Error fetching appointment:", error);
   }
 }

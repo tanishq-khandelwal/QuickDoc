@@ -1,0 +1,43 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`TimezoneDropdown Component matches snapshot 1`] = `
+<DocumentFragment>
+  <div>
+    <select
+      class="border-2 px-2 py-2 rounded-lg cursor-pointer"
+    >
+      <option
+        value=""
+      >
+        Select Timezone
+      </option>
+      <option
+        value="UTC"
+      >
+        UTC
+      </option>
+      <option
+        value="America/New_York"
+      >
+        America/New_York
+      </option>
+      <option
+        value="Europe/London"
+      >
+        Europe/London
+      </option>
+      <option
+        selected=""
+        value="Asia/Calcutta"
+      >
+        Asia/Calcutta
+      </option>
+      <option
+        value="Australia/Sydney"
+      >
+        Australia/Sydney
+      </option>
+    </select>
+  </div>
+</DocumentFragment>
+`;

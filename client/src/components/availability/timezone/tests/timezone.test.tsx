@@ -3,6 +3,8 @@ import "@testing-library/jest-dom";
 import TimezoneDropdown from "..";
 
 describe.only("TimezoneDropdown Component", () => {
+
+  
   it("renders dropdown with default value", () => {
     render(<TimezoneDropdown />);
     const selectElement = screen.getByRole("combobox");
@@ -23,5 +25,10 @@ describe.only("TimezoneDropdown Component", () => {
     const selectElement = screen.getByRole("combobox");
     fireEvent.change(selectElement, { target: { value: "America/New_York" } });
     expect(selectElement).toHaveValue("America/New_York");
+  });
+
+  it("matches snapshot", () => {
+    const { asFragment } = render(<TimezoneDropdown />);
+    expect(asFragment()).toMatchSnapshot();
   });
 });
