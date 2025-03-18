@@ -6,6 +6,7 @@ import { CHECK_USER, CREATE_USER } from "../queries/UserQueries.ts";
 
 const cookieOptions: CookieOptions = {
   secure: true,
+  domain: 'quick-doc-drab.vercel.app',
   sameSite: "none",
   maxAge: 7 * 24 * 60 * 60 * 1000,
   httpOnly: false,
