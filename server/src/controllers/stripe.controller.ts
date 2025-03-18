@@ -14,7 +14,7 @@ export const createCheckoutSession = async (req: Request, res: Response) => {
           price_data: {
             currency: 'INR',
             product_data: { name: 'QuickDoc' },
-            unit_amount: price * 100, // Price in paise
+            unit_amount: price * 100,
           },
           quantity,
         },

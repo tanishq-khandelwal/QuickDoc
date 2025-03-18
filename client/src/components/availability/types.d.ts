@@ -49,4 +49,7 @@ export interface AvailabilityPresentationProps {
   errors: { [key: number]: string };
   handleSave: () => Promise<void>;
   disabled: boolean;
+  selectedTimezone?: string;
+  onTimezoneChange?: (timezone: string) => void;
+  timezones?: { label: string; value: string }[];
 }

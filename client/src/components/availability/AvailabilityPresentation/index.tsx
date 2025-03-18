@@ -16,6 +16,9 @@ const AvailabilityPresentation: React.FC<AvailabilityPresentationProps> = ({
   errors,
   handleSave,
   disabled,
+  selectedTimezone,
+  onTimezoneChange,
+  timezones,
 }) => {
   if (reduxLoading) {
     return <div className="mt-14"></div>;
@@ -31,12 +34,22 @@ const AvailabilityPresentation: React.FC<AvailabilityPresentationProps> = ({
           Set your weekly availability for your patients
         </div>
 
-        {/* <div className="flex mb-2 gap-4 items-center">
-          <span className="text-xl text-black font-semibold">Time Zone :</span>
-          <div>
-            <TimezoneDropdown />
-          </div>
-        </div> */}
+        <div className="flex mb-2 gap-4 items-center">
+        <span className="text-xl text-black font-semibold">Time Zone :</span>
+        <div>
+          <select 
+            onChange={(e) => onTimezoneChange?.(e.target.value)} 
+            value={selectedTimezone} 
+            className="border-2 px-2 py-2 rounded-lg cursor-pointer"
+          >
+            {timezones?.map((timezone) => (
+              <option key={timezone.value} value={timezone.value}>
+                {timezone.label}
+              </option>
+            ))}
+          </select>
+        </div>
+      </div>
 
         <div className="flex flex-col lg:flex-row border rounded-2xl shadow-md p-6 w-full">
           <div className="lg:w-1/2 lg:border-r-2 border-b-2 p-4">

@@ -12,8 +12,7 @@ const ExceptionAvailabilityContainer = () => {
   const userData = localStorage.getItem("user");
   const doctorId = userData ? JSON.parse(userData).doctorId : null;
   const [disabled, setDisable] = useState(false);
-  
-  // Ref for the modal content
+
   const modalRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -30,12 +29,10 @@ const ExceptionAvailabilityContainer = () => {
   const [selectedDate, setSelectedDate] = useState<Date | undefined>(
     new Date()
   );
-  
-  // New state for delete confirmation modal
+
   const [showDeleteConfirmation, setShowDeleteConfirmation] = useState(false);
   const [pendingDeleteId, setPendingDeleteId] = useState<number | null>(null);
 
-  // Handle click outside the modal
   const handleOutsideClick = (e: MouseEvent) => {
     if (modalRef.current && !modalRef.current.contains(e.target as Node)) {
       setShowDeleteConfirmation(false);
@@ -43,7 +40,6 @@ const ExceptionAvailabilityContainer = () => {
     }
   };
 
-  // Add and remove event listener for outside clicks
   useEffect(() => {
     if (showDeleteConfirmation) {
       document.addEventListener("mousedown", handleOutsideClick);
@@ -52,13 +48,12 @@ const ExceptionAvailabilityContainer = () => {
       document.removeEventListener("mousedown", handleOutsideClick);
       setDisable(false);
     }
-    
+
     return () => {
       document.removeEventListener("mousedown", handleOutsideClick);
     };
   }, [showDeleteConfirmation]);
 
-  // Modified to show confirmation modal first
   const confirmDelete = (availabilityId: number) => {
     setPendingDeleteId(availabilityId);
     setShowDeleteConfirmation(true);
@@ -66,7 +61,6 @@ const ExceptionAvailabilityContainer = () => {
 
   const handleDelete = async (availabilityId: number) => {
     const toastId = toast.loading("Deleting exception...");
-
     try {
       const { data } = await deleteException({
         variables: { availabilityId },
@@ -97,13 +91,14 @@ const ExceptionAvailabilityContainer = () => {
 
     return (
       <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-        <div 
+        <div
           ref={modalRef}
           className="bg-white p-6 rounded-lg shadow-lg max-w-md w-full"
         >
           <h3 className="text-lg font-medium mb-4">Confirm Deletion</h3>
           <p className="mb-6">
-            Are you sure you want to delete the Exception availability for this day?
+            Are you sure you want to delete the Exception availability for this
+            day?
           </p>
           <div className="flex justify-end space-x-4">
             <button

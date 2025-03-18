@@ -1,0 +1,54 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`AvailabilityComponent matches snapshot 1`] = `
+<DocumentFragment>
+  <div
+    class="space-y-4"
+  >
+    <div
+      class="flex items-center justify-between"
+    >
+      <div
+        class="flex items-center gap-4"
+      >
+        <input
+          class="w-5 h-5 accent-blue-500 cursor-pointer"
+          type="checkbox"
+        />
+        <span
+          class="text-lg font-medium"
+        >
+          Monday
+        </span>
+      </div>
+      <div
+        class="text-gray-600"
+      >
+        Unavailable
+      </div>
+    </div>
+    <div
+      class="flex items-center justify-between"
+    >
+      <div
+        class="flex items-center gap-4"
+      >
+        <input
+          class="w-5 h-5 accent-blue-500 cursor-pointer"
+          type="checkbox"
+        />
+        <span
+          class="text-lg font-medium"
+        >
+          Tuesday
+        </span>
+      </div>
+      <div
+        class="text-gray-600"
+      >
+        Unavailable
+      </div>
+    </div>
+  </div>
+</DocumentFragment>
+`;
