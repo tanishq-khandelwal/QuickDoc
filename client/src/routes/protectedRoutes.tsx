@@ -1,7 +1,5 @@
 import toast from "react-hot-toast";
 import { Navigate, Outlet, useLocation } from "react-router-dom";
-import Cookies from "js-cookie";
-import { jwtDecode as jwt_decode } from "jwt-decode";
 import { useState, useEffect } from "react";
 
 interface ProtectedRouteProps {
@@ -11,28 +9,20 @@ interface ProtectedRouteProps {
 const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ allowedRoles }) => {
   const location = useLocation();
   const [role, setRole] = useState<string | null>(null);
-  const [isLoading, setIsLoading] = useState(true); 
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    const token = Cookies.get("token");
+    const storedRole = localStorage.getItem("role");
 
-    if (token) {
-      try {
-        const decodedToken = jwt_decode<{ email: string; role: string }>(token);
-        setRole(decodedToken.role);
-      } catch (error) {
-        console.error("Error decoding token:", error);
-        toast.error("Invalid token! Please log in again.");
-        Cookies.remove("token");
-      }
+    if (storedRole) {
+      setRole(storedRole);
     }
 
     setIsLoading(false);
   }, []);
 
-
   if (isLoading) {
-    return <div>Loading...</div>;
+    return <div className="flex items-center justify-center h-screen">Loading...</div>;
   }
 
   if (!role) {
@@ -40,9 +30,8 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ allowedRoles }) => {
     return <Navigate to="/signup" state={{ from: location }} replace />;
   }
 
-
   if (!allowedRoles.includes(role)) {
-    console.log("Protected Role",role)
+    console.log("Protected Role", role);
     return <Navigate to="/denied" state={{ from: location }} replace />;
   }
 
