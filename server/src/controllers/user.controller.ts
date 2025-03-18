@@ -1,15 +1,10 @@
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
-import { Request, Response } from "express";
+import { CookieOptions, Request, Response } from "express";
 import { apolloClient } from "../config/hasuraClient.ts";
 import { CHECK_USER, CREATE_USER } from "../queries/UserQueries.ts";
 
-const cookieOptions: {
-  secure: boolean;
-  sameSite: "lax" | "strict" | "none";
-  maxAge: number;
-  httpOnly: boolean;
-} = {
+const cookieOptions: CookieOptions = {
   secure: true,
   sameSite: "none",
   maxAge: 7 * 24 * 60 * 60 * 1000,
