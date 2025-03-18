@@ -2,7 +2,6 @@ import { takeLatest, call, put } from 'redux-saga/effects';
 import axios from 'axios';
 import {SIGNUP_REQUEST, signupSuccess, signupFailure} from '../../actions/authActions';
 
-// Define Types for the Login Credentials and Response
 type SignupCredentials={
     name:string,
     email:string,
@@ -18,10 +17,12 @@ type SignupResponse= {
   }>;
 }
 
+const BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
+
 // Function to call the actual login API
 const signupAPI = async (credentials: SignupCredentials): Promise<SignupResponse> => {
   try {
-    const response = await axios.post('http://localhost:3000/api/v1/user/register', credentials,{
+    const response = await axios.post(`${BACKEND_URL}/api/v1/user/register`, credentials,{
         withCredentials:true,
     });
     console.log("response is"+response.data);

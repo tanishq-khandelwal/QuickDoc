@@ -17,9 +17,11 @@ type LoginResponse= {
   };
 }
 
+const BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
+
 const loginAPI = async (credentials: LoginCredentials): Promise<LoginResponse> => {
   try {
-    const response = await axios.post('http://localhost:3000/api/v1/user/login', credentials,{
+    const response = await axios.post(`${BACKEND_URL}/api/v1/user/login`, credentials,{
         withCredentials:true,
     });
     console.log("response is"+response);

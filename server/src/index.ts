@@ -18,7 +18,7 @@ app.set("trust proxy", 1);
 
 app.use(
     cors({
-      origin: ["http://localhost:5173", "*"],
+      origin: ["http://localhost:5173",'https://quick-doc-drab.vercel.app'],
       credentials: true,
       methods: "GET, POST, PUT, DELETE", // Specify the allowed HTTP methods
       allowedHeaders: "Content-Type, Authorization",

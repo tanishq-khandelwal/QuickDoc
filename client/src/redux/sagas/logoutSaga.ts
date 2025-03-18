@@ -4,8 +4,9 @@ import axios from 'axios';
 
 // Function to call the logout API (if you have one)
 const logoutAPI = async () => {
+  const BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
   try {
-    const response = await axios.post('http://localhost:3000/api/v1/user/logout', {}, {
+    const response = await axios.post(`${BACKEND_URL}/api/v1/user/logout`, {}, {
       withCredentials: true, // Assuming your backend uses cookies for authentication
     });
     console.log("Logout API Response:", response.data);

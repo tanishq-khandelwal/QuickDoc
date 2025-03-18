@@ -10,6 +10,7 @@ interface CheckoutButtonProps {
   price:number
 }
 
+const BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
 export default function CheckoutButton({ onSuccess,price }: CheckoutButtonProps) {
   const [Booked, setBooked] = useState(false);
   const handleCheckout = async () => {
@@ -22,7 +23,7 @@ export default function CheckoutButton({ onSuccess,price }: CheckoutButtonProps)
 
     try {
       const session = await fetch(
-        "http://localhost:3000/api/create-checkout-session",
+        `${BACKEND_URL}/api/create-checkout-session`,
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },
