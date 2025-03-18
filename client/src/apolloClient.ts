@@ -20,7 +20,7 @@ const authLink = setContext((_, { headers }) => {
   return {
     headers: {
       ...headers,
-       "x-hasura-admin-secret": import.meta.env.VITE_HASURA_ADMIN_SECRET,
+      //  "x-hasura-admin-secret": import.meta.env.VITE_HASURA_ADMIN_SECRET,
       Authorization: token ? `Bearer ${token}` : "",
     },
   };
