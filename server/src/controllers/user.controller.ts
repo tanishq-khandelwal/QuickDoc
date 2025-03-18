@@ -129,6 +129,7 @@ export const LoginUser = async (
     const token = jwt.sign(tokenPayload, jwtSecret, { expiresIn: "1d" });
 
     res.cookie("token", token, cookieOptions);
+    console.log("Token",token);
 
     const returnData = {
       user_id: result.data.users[0].user_id,
