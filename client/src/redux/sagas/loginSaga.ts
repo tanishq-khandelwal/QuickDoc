@@ -15,6 +15,7 @@ type LoginResponse= {
     name:string;
     doctorId:number
   };
+  token: string;
 }
 
 const BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
@@ -42,6 +43,7 @@ function* loginSaga(action: { type: string; payload: LoginCredentials }) {
       localStorage.setItem("user",JSON.stringify(response.data)); 
       localStorage.setItem("role", role);
       localStorage.setItem("isLoggedIn","true");
+      localStorage.setItem("token",response.token)
     }
 
     yield put(loginSuccess(response.data)); 

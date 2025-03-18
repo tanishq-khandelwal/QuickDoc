@@ -1,11 +1,9 @@
 import { ApolloClient, InMemoryCache, HttpLink, from } from "@apollo/client";
 import { setContext } from "@apollo/client/link/context";
 
-// Function to extract the JWT token from cookies
-const getTokenFromCookies = () => {
-  const cookies = document.cookie.split("; ");
-  const tokenCookie = cookies.find((row) => row.startsWith("token="));
-  return tokenCookie ? tokenCookie.split("=")[1] : null;
+// Function to get the token from localStorage
+const getTokenFromLocalStorage = () => {
+  return localStorage.getItem("token"); // Assuming 'token' is the key in localStorage
 };
 
 // HTTP Link for GraphQL endpoint
@@ -16,12 +14,11 @@ const httpLink = new HttpLink({
 
 // Middleware to dynamically attach Authorization header
 const authLink = setContext((_, { headers }) => {
-  const token = getTokenFromCookies();
-  console.log(token);
+  const token = getTokenFromLocalStorage();
+  console.log("Token:", token);
   return {
     headers: {
       ...headers,
-      //  "x-hasura-admin-secret": import.meta.env.VITE_HASURA_ADMIN_SECRET,
       Authorization: token ? `Bearer ${token}` : "",
     },
   };
