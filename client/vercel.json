@@ -1,4 +1,17 @@
 {
-    "rewrites":[{"source":"/(.*)", "destination":"/"}]
-   
-   }
+    "rewrites": [
+      { "source": "/(.*)", "destination": "/" }
+    ],
+    "headers": [
+      {
+        "source": "/(.*)",
+        "headers": [
+          { "key": "Access-Control-Allow-Credentials", "value": "true" },
+          { "key": "Access-Control-Allow-Origin", "value": "https://lenient-caribou-34.hasura.app/v1/graphql" },
+          { "key": "Access-Control-Allow-Methods", "value": "GET, POST, OPTIONS" },
+          { "key": "Access-Control-Allow-Headers", "value": "Authorization, Content-Type" }
+        ]
+      }
+    ]
+  }
+  

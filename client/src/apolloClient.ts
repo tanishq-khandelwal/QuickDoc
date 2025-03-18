@@ -17,6 +17,7 @@ const httpLink = new HttpLink({
 // Middleware to dynamically attach Authorization header
 const authLink = setContext((_, { headers }) => {
   const token = getTokenFromCookies();
+  console.log(token)
   return {
     headers: {
       ...headers,
@@ -25,6 +26,8 @@ const authLink = setContext((_, { headers }) => {
     },
   };
 });
+
+
 
 const client = new ApolloClient({
   link: from([authLink, httpLink]),
